@@ -33,11 +33,10 @@
 		<field index="25" term="http://rs.tdwg.org/dwc/terms/locationRemarks"/>
 		<field index="26" term="http://rs.tdwg.org/dwc/terms/decimalLongitude"/>
 		<field index="27" term="http://rs.tdwg.org/dwc/terms/decimalLatitude"/>
-		<field index="28" term="http://rs.tdwg.org/dwc/terms/decimalLatitude"/>
-		<field index="29" term="http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters"/>
-		<field index="30" term="http://rs.tdwg.org/dwc/terms/geodeticDatum"/>
-		<field index="31" term="http://rs.tdwg.org/dwc/terms/georeferencedDate"/>
-		<field index="32" term="http://rs.tdwg.org/dwc/terms/sex"/>
+		<field index="28" term="http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters"/>
+		<field index="29" term="http://rs.tdwg.org/dwc/terms/geodeticDatum"/>
+		<field index="30" term="http://rs.tdwg.org/dwc/terms/georeferencedDate"/>
+		<field index="31" term="http://rs.tdwg.org/dwc/terms/sex"/>
 		<field default="NHMD" term="http://rs.tdwg.org/dwc/terms/institutionCode"/>
 		<field default="http://grbio.org/cool/xxx" term="http://rs.tdwg.org/dwc/terms/institutionID"/>
 		<field default="http://creativecommons.org/licenses/by/4.0/deed.en_US" term="http://purl.org/dc/terms/license"/>
