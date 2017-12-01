@@ -23,6 +23,7 @@ module DwCGemstone
       @term = schema_node.attributes['rowType'].value
       table_name = @term.split('/').last.underscore.pluralize.to_sym
       @attributes = parse_fields(schema_node.css('field'))
+      @attributes.unshift(name: :coreid, index: @key[:foreign]) if @kind == :extension
       contents = schema_node.css('files')
 #       make_table(table_name, nil)
     end
@@ -54,7 +55,7 @@ module DwCGemstone
         term = field.attributes['term'].value
         path = term.split('/')
         header = path.last.underscore
-        col_name = col_headers.include?(header) ? path.push(header).join('_') : header
+        header += '&' if col_headers.include?(header)
         [
           [:term, term],
           [:name, header.to_sym],

@@ -61,6 +61,7 @@
 		<field index="6" term="http://purl.org/dc/terms/rights"/>
 		<field index="7" term="http://rs.tdwg.org/ac/terms/licenseLogoURL"/>
 		<field index="8" term="http://ns.adobe.com/photoshop/1.0/Credit"/>
-		<field default="http://creativecommons.org/licenses/by/4.0/deed.en_US" term="http://purl.org/dc/terms/rights"/>
+		<field default="© 2008 XY Museum" term="http://purl.org/dc/terms/rights"/>
+		<field default="http://creativecommons.org/licenses/by/4.0/deed.en_US" term="http://purl.org/dc/elements/1.1/rights"/>
 	</extension>
 </archive>

@@ -4,6 +4,7 @@ GEM
     mini_portile2 (2.3.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
+    psych (3.0.0)
     sequel (5.2.0)
     sqlite3 (1.3.13)
 
@@ -12,6 +13,7 @@ PLATFORMS
 
 DEPENDENCIES
   nokogiri
+  psych
   sequel
   sqlite3
 
