@@ -9,7 +9,7 @@ module DwCGemstone
   	before(:all) do
   	  ArchiveStore.instance.connect('dwca_spec.db')
   		doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
-  		@core = SchemaEntity.new(doc.css('core').first)
+  		@core = SchemaEntity.new(doc.css('core').first
   	end
 
   	it 'determines the kind' do
