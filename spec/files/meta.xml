@@ -2,7 +2,7 @@
 <archive xmlns="http://rs.tdwg.org/dwc/text/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd">
 	<core fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
 		<files>
-			<location>occurrence.txt</location>
+			<location>occurrence.csv</location>
 		</files>
 		<id index="0"/>
 		<field index="0" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
@@ -50,7 +50,7 @@
 	</core>
 	<extension fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://rs.tdwg.org/ac/terms/Multimedia">
 		<files>
-			<location>collectionobjectattachment.csv</location>
+			<location>media.csv</location>
 		</files>
 		<coreid index="0"/>
 		<field index="1" term="http://purl.org/dc/terms/identifier"/>

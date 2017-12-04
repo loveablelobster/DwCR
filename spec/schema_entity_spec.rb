@@ -2,14 +2,12 @@
 
 require 'psych'
 
-require_relative '../lib/archive_store'
 require_relative '../lib/schema_entity'
 
 #
 module DwCGemstone
   RSpec.describe SchemaEntity do
     before(:all) do
-#       ArchiveStore.instance.connect('dwca_spec.db')
       @doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       @core = SchemaEntity.new(@doc.css('core').first)
       @media = SchemaEntity.new(@doc.css('extension').first)
@@ -58,8 +56,9 @@ module DwCGemstone
       end
     end
 
-    it 'determined the maximum length for each column' do pending 'questionable feature'
-      #
+    it 'gets the path to the contents file' do
+    	expect(@core.contents).to eq('occurrence.csv')
+    	expect(@media.contents).to eq('media.csv')
     end
   end
 end

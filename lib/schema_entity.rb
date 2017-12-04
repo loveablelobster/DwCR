@@ -8,7 +8,7 @@ require_relative 'archive_store'
 module DwCGemstone
   #
   class SchemaEntity
-    attr_reader :kind, :term, :attributes, :key, :content_path
+    attr_reader :kind, :term, :attributes, :key, :contents
 
     def initialize(schema_node)
       @kind = parse_kind(schema_node)
@@ -16,7 +16,7 @@ module DwCGemstone
       @term = schema_node.attributes['rowType'].value
       @attributes = []
       parse_fieldset(schema_node.css('field'))
-      @content_path = schema_node.css('files').first.css('location').first.text
+      @contents = schema_node.css('files').first.css('location').first.text
     end
 
     private
