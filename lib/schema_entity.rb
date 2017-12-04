@@ -8,24 +8,15 @@ require_relative 'archive_store'
 module DwCGemstone
   #
   class SchemaEntity
-    attr_reader :kind, :term, :attributes, :key
+    attr_reader :kind, :term, :attributes, :key, :content_path
 
     def initialize(schema_node)
-      @kind = case schema_node.name
-              when 'core'
-                :core
-              when 'extension'
-                :extension
-              else
-                raise RuntimeError, "invalid node: #{schema_node.name}"
-              end
+      @kind = parse_kind(schema_node)
       @key = key_column(schema_node)
       @term = schema_node.attributes['rowType'].value
-      table_name = @term.split('/').last.underscore.pluralize.to_sym
-      parse_fields(schema_node.css('field'))
-      @attributes.unshift(name: :coreid, index: @key[:foreign]) if @kind == :extension
-      contents = schema_node.css('files')
-#       make_table(table_name, nil)
+      @attributes = []
+      parse_fieldset(schema_node.css('field'))
+      @content_path = schema_node.css('files').first.css('location').first.text
     end
 
     private
@@ -49,33 +40,47 @@ module DwCGemstone
       { key => schema_node.css(tag).first.attributes['index'].value.to_i }
     end
 
-    def make_table(table_name, columns)
-      # check if table exists
-      # if not, create it
-      ArchiveStore.instance.db.create_table table_name do
-        primary_key :id
-      end
+    def parse_field(field)
+      term = field.attributes['term'].value
+      { term: term,
+        name: column_name(term),
+        index: field.attributes['index']&.value&.to_i,
+        default: field.attributes['default']&.value }
     end
 
-    def parse_fields(nodeset)
-      @attributes = [] # FIXME: should be @attributes
-      nodeset.each do |field|
-        term = field.attributes['term'].value
-        name = column_name(term)
-        index = field.attributes['index']&.value&.to_i
-        default = field.attributes['default']&.value
-        col_def = { term: term, name: name, index: index, default: default }
-        upsert(col_def)
-      end
+    def parse_fieldset(nodeset)
+      nodeset.each { |field| upsert_attribute(parse_field(field)) }
+      return if @kind == :core
+      @attributes.unshift(name: :coreid, index: @key[:foreign])
     end
 
-    def upsert(col_def)
-      if (column = @attributes.find { |c| c[:term] == col_def[:term] })
-        column[:index] ||= col_def[:index]
-        column[:default] ||= col_def[:default]
+    def parse_kind(schema_node)
+      case schema_node.name
+      when 'core'
+        :core
+      when 'extension'
+        :extension
       else
-        @attributes << col_def.compact
+        raise "invalid node: #{schema_node.name}"
+      end
+    end
+
+    def upsert_attribute(hash)
+      if (column = @attributes.find { |c| c[:term] == hash[:term] })
+        column[:index] ||= hash[:index]
+        column[:default] ||= hash[:default]
+      else
+        @attributes << hash.compact
       end
     end
   end
 end
+
+#     def make_table(table_name, columns)
+#       table_name = @term.split('/').last.underscore.pluralize.to_sym
+#       # check if table exists
+#       # if not, create it
+#       ArchiveStore.instance.db.create_table table_name do
+#         primary_key :id
+#       end
+#     end

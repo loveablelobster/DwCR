@@ -18,6 +18,7 @@ module DwCGemstone
     context 'determines the kind' do
       it 'determines the kind' do
         expect(@core.kind).to eq(:core)
+        expect(@media.kind).to eq(:extension)
       end
 
       it 'raises and exception if the kind is invalid' do
@@ -27,6 +28,7 @@ module DwCGemstone
 
     it 'gets the term' do
       expect(@core.term).to eq('http://rs.tdwg.org/dwc/terms/Occurrence')
+      expect(@media.term).to eq('http://rs.tdwg.org/ac/terms/Multimedia')
     end
 
     context 'gets the columns' do
