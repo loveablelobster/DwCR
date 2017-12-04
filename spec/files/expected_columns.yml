@@ -170,6 +170,9 @@ occurrence:
     !ruby/sym default: 'Aves'
 media:
   -
+    !ruby/sym name: :coreid
+    !ruby/sym index: 0
+  -
     !ruby/sym term: 'http://purl.org/dc/terms/identifier'
     !ruby/sym name: :identifier
     !ruby/sym index: 1
@@ -179,7 +182,7 @@ media:
     !ruby/sym index: 2
   -
     !ruby/sym term: 'http://purl.org/dc/terms/title'
-    !ruby/sym mame: :title
+    !ruby/sym name: :title
     !ruby/sym index: 3
   -
     !ruby/sym term: 'http://purl.org/dc/terms/format'
@@ -193,18 +196,15 @@ media:
     !ruby/sym term: 'http://purl.org/dc/terms/rights'
     !ruby/sym name: :rights
     !ruby/sym index: 6
+    !ruby/sym default: '© 2008 XY Museum'
   -
     !ruby/sym term: 'http://rs.tdwg.org/ac/terms/licenseLogoURL'
-    !ruby/sym name: license_logo_url
+    !ruby/sym name: :license_logo_url
     !ruby/sym index: 7
   -
     !ruby/sym term: 'http://ns.adobe.com/photoshop/1.0/Credit'
     !ruby/sym name: :credit
     !ruby/sym index: 8
-  -
-    !ruby/sym term: 'http://purl.org/dc/terms/rights'
-    !ruby/sym name: :rights
-    !ruby/sym default: '© 2008 XY Museum'
   -
     !ruby/sym term: 'http://purl.org/dc/elements/1.1/rights'
     !ruby/sym name: :rights!

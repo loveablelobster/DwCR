@@ -10,9 +10,9 @@ module DwCGemstone
   RSpec.describe SchemaEntity do
     before(:all) do
 #       ArchiveStore.instance.connect('dwca_spec.db')
-      doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
-      @core = SchemaEntity.new(doc.css('core').first)
-      @media = SchemaEntity.new(doc.css('extension').first)
+      @doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
+      @core = SchemaEntity.new(@doc.css('core').first)
+      @media = SchemaEntity.new(@doc.css('extension').first)
     end
 
     context 'determines the kind' do
@@ -20,8 +20,8 @@ module DwCGemstone
         expect(@core.kind).to eq(:core)
       end
 
-      it 'raises and exception if the kind is invalid' do pending 'not implemented'
-        #
+      it 'raises and exception if the kind is invalid' do
+        expect { SchemaEntity.new(@doc.css('invalid').first) }.to raise_error(RuntimeError, 'invalid node: invalid')
       end
     end
 
@@ -34,30 +34,30 @@ module DwCGemstone
         expect(@core.attributes).to eq(Psych.load_file('spec/files/expected_columns.yml')['occurrence'])
       end
 
-      it 'suffixes duplicate column names with `!`' do pending 'not implemented'
-        #
+      it 'ensures unique column names' do
+        expect(@media.attributes).to include(term: 'http://purl.org/dc/elements/1.1/rights',
+                                             name: :rights!,
+                                             default: 'http://creativecommons.org/licenses/by/4.0/deed.en_US')
       end
 
-      it 'sets the default for existing columns' do pending 'not implemented'
-        # when a name appears twice, it should check for the namespace
-        # making sure it is the same column (and not substitute the term)
-        # probably means rewriting the parse_fields method
-        # so that it does not map the nodeset, but iterates, building an array
-        # against which it checks
+      it 'sets the default for existing columns' do
+        expect(@media.attributes).to include(term: 'http://purl.org/dc/terms/rights',
+                                             name: :rights,
+                                             index: 6,
+                                             default: '© 2008 XY Museum')
       end
 
       it 'gets the id colum' do
         expect(@core.key).to eq(primary: 0)
       end
+
+      it 'inserts the id column for extensions' do
+      	expect(@media.key).to eq(foreign: 0)
+      end
     end
 
     it 'determined the maximum length for each column' do pending 'questionable feature'
       #
-    end
-
-    # move this and table building to class of it's own or as module methods
-    it 'sets default values for the columns' do pending 'not implemented'
-      # ideally these should be set as default values for the column in the schema
     end
   end
 end

@@ -64,4 +64,6 @@
 		<field default="© 2008 XY Museum" term="http://purl.org/dc/terms/rights"/>
 		<field default="http://creativecommons.org/licenses/by/4.0/deed.en_US" term="http://purl.org/dc/elements/1.1/rights"/>
 	</extension>
+	<invalid fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://example.org">
+	</invalid>
 </archive>
