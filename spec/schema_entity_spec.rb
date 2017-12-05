@@ -8,7 +8,7 @@ require_relative '../lib/schema_entity'
 module DwCGemstone
   RSpec.describe SchemaEntity do
     before(:all) do
-      @doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
+      @doc = File.open('spec/files/meta_spec.xml') { |f| Nokogiri::XML(f) }
       @core = SchemaEntity.new(@doc.css('core').first)
       @media = SchemaEntity.new(@doc.css('extension').first)
     end
