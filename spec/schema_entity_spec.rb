@@ -15,8 +15,8 @@ module DwCGemstone
 
     context 'determines the kind' do
       it 'determines the kind' do
-        expect(@core.kind).to eq(:core)
-        expect(@media.kind).to eq(:extension)
+        expect(@core.kind).to be :core
+        expect(@media.kind).to be :extension
       end
 
       it 'raises and exception if the kind is invalid' do
@@ -30,8 +30,8 @@ module DwCGemstone
     end
 
     it 'derives an extension name as symbol from the term' do
-      expect(@core.name).to eq(:occurrence)
-      expect(@media.name).to eq(:multimedia)
+      expect(@core.name).to be :occurrence
+      expect(@media.name).to be :multimedia
     end
 
     context 'gets the columns' do
