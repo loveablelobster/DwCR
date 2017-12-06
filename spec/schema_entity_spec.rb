@@ -29,6 +29,11 @@ module DwCGemstone
       expect(@media.term).to eq('http://rs.tdwg.org/ac/terms/Multimedia')
     end
 
+    it 'derives an extension name as symbol from the term' do
+      expect(@core.name).to eq(:occurrence)
+      expect(@media.name).to eq(:multimedia)
+    end
+
     context 'gets the columns' do
       it 'gets the columns' do
         expect(@core.attributes).to eq(Psych.load_file('spec/files/expected_columns.yml')['occurrence'])
@@ -56,9 +61,9 @@ module DwCGemstone
       end
     end
 
-    it 'gets the path to the contents file' do
-    	expect(@core.contents).to eq('occurrence.csv')
-    	expect(@media.contents).to eq('media.csv')
+    it 'gets the names of the contents files' do
+    	expect(@core.contents).to eq(['occurrence.csv'])
+    	expect(@media.contents).to eq(['media.csv'])
     end
   end
 end

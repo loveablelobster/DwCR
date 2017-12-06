@@ -6,12 +6,17 @@ require 'csv'
 module DwCGemstone
   # schema: a SchemaEntity
   class TableContents
-    attr_reader :name, :table
+    attr_reader :name, # short name of the extension, e.g. :occurrence
+                :file, # full path of the .dwc file holding the full csv table
+                :table # the CSV::Table
+
     def initialize(path, schema)
       @columns = schema.attributes
       @name = schema.name
-      @file = Pathname.new(path + schema.contents).sub_ext('.dwc')
-      make_table(path + schema.contents)
+
+      @file = Pathname.new(path + schema.name.id2name + '.dwc')
+
+      make_table(path, schema.contents)
       @table = CSV.table(@file, converters: nil)
     end
 
@@ -25,13 +30,15 @@ module DwCGemstone
 
     private
 
-    def make_table(file)
+    def make_table(path, files)
       headers = @columns.select { |c| c[:index] }
-                      .sort_by { |c| c[:index] }
-                      .map { |c| c[:name] }
+                        .sort_by { |c| c[:index] }
+                        .map { |c| c[:name] }
       CSV.open(@file, 'w', write_headers: true, headers: headers) do |dest|
-        CSV.open(file) do |source|
-          source.each { |row| dest << row }
+        files.each do |f|
+          CSV.open(path + f) do |source|
+            source.each { |row| dest << row }
+          end
         end
       end
     end

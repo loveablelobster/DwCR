@@ -12,25 +12,33 @@ module DwCGemstone
       @path = 'spec/files/'
       @doc = File.open(@path + 'meta.xml') { |f| Nokogiri::XML(f) }
       @schema = SchemaEntity.new(@doc.css('extension').first)
-      @schemafile = TableContents.new(@path, @schema)
+      @contents = TableContents.new(@path, @schema)
     end
 
-    it 'gets the file as table with headers' do
-      expect(@schemafile.table).to eq(CSV.table(@path + 'expected_table.csv', converters: nil))
+    it 'has a shortname (symbol)' do
+      expect(@contents.name).to eq(:multimedia)
+    end
+
+    it 'loads all files into a CSV::Table' do
+      expect(@contents.table).to eq(CSV.table(@path + 'expected_table.csv', converters: nil))
+    end
+
+    it 'holds a reference to the generated .dwc file' do
+    	expect(@contents.file).to eq(Pathname.new('spec/files/multimedia.dwc'))
     end
 
     it 'determines the maximum length for each column' do
-      expect(@schemafile.max_length(:coreid)).to eq(36)
-      expect(@schemafile.max_length(:identifier)).to eq(36)
-      expect(@schemafile.max_length(:access_uri)).to eq(30)
-      expect(@schemafile.max_length(:title)).to eq(22)
-      expect(@schemafile.max_length(:format)).to eq(10)
-      expect(@schemafile.max_length(:owner)).to eq(0)
-      expect(@schemafile.max_length(:rights)).to eq(16)
+      expect(@contents.max_length(:coreid)).to eq(36)
+      expect(@contents.max_length(:identifier)).to eq(36)
+      expect(@contents.max_length(:access_uri)).to eq(30)
+      expect(@contents.max_length(:title)).to eq(22)
+      expect(@contents.max_length(:format)).to eq(10)
+      expect(@contents.max_length(:owner)).to eq(0)
+      expect(@contents.max_length(:rights)).to eq(16)
     end
 
     after(:all) do
-    	File.delete('spec/files/media.dwc')
+    	File.delete(@contents.file)
     end
   end
 end

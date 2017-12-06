@@ -8,16 +8,21 @@ require_relative 'archive_store'
 module DwCGemstone
   #
   class SchemaEntity
-    attr_reader :kind, :name, :term, :attributes, :key, :contents
+    attr_reader :kind,       # :core or :extension
+                :term,       # the URI for the definition
+                :name,       # short name of the extension, e.g. :occurrence
+                :attributes, # the column definitions
+                :key,        # the key (id) column
+                :contents    # the names of the files containing the data
 
     def initialize(schema_node)
       @kind = parse_kind(schema_node)
       @key = key_column(schema_node)
       @term = schema_node.attributes['rowType'].value
+      @name = @term.split('/').last.underscore.to_sym
       @attributes = []
       parse_fieldset(schema_node.css('field'))
-      @contents = schema_node.css('files').first.css('location').first.text
-      @name = File.basename(@contents, '.*')
+      @contents = files(schema_node.css('files'))
     end
 
     private
@@ -28,6 +33,12 @@ module DwCGemstone
       return n unless @attributes.find { |a| a[:name] == n && a[:term] != term }
       s += '!'
       s.to_sym
+    end
+
+    def files(schema_node)
+      schema_node.map do |f|
+        f.css('location').first.text
+      end
     end
 
     def key_column(schema_node)
