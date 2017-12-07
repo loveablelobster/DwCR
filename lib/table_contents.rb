@@ -7,8 +7,7 @@ module DwCGemstone
   # schema: a SchemaEntity
   class TableContents
     attr_reader :name, # short name of the extension, e.g. :occurrence
-                :file, # full path of the .dwc file holding the full csv table
-                :table # the CSV::Table
+                :file  # full path of the .dwc file holding the full csv table
 
     def initialize(path, schema)
       @columns = schema.attributes
