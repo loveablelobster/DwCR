@@ -77,6 +77,11 @@ module DwCGemstone
 		                                                nil, nil])
         end
       end
+
+      it 'updates the length if the default is updated' do
+        fields[8].default = 'a minimally longer default'
+      	expect(fields[8].length).to be 26
+      end
     end
   end
 end

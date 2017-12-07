@@ -6,8 +6,8 @@ require 'nokogiri'
 module DwCGemstone
   #
   class SchemaAttribute
-    attr_accessor :alt_name, :default, :length
-    attr_reader :name, :term, :index
+    attr_accessor :alt_name, :length
+    attr_reader :name, :term, :index, :default
 
     def initialize(field_node)
       @term = field_node.attributes['term']&.value
@@ -16,6 +16,15 @@ module DwCGemstone
       @index = field_node.attributes['index']&.value&.to_i
       @default = field_node.attributes['default']&.value
       @length = @default&.length
+    end
+
+    def default=(new_default)
+      @default = new_default
+      @length = @default&.length
+    end
+
+    def to_h
+      { term: @term, name: @alt_name, index: @index, default: @default }.compact
     end
 
     private

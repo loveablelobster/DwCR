@@ -2,7 +2,8 @@
 
 require 'nokogiri'
 
-require_relative 'archive_store'
+require_relative 'archive_store' # needed for sequel string and inflections
+require_relative 'schema_attribute'
 
 #
 module DwCGemstone
@@ -17,23 +18,32 @@ module DwCGemstone
 
     def initialize(schema_node)
       @kind = parse_kind(schema_node)
-      @key = key_column(schema_node)
+      @key = key_column(schema_node) # FIXME: necessary?
       @term = schema_node.attributes['rowType'].value
       @name = @term.split('/').last.underscore.to_sym
       @attributes = []
-      parse_fieldset(schema_node.css('field'))
+      parse_fieldset(schema_node)
       @contents = files(schema_node.css('files'))
     end
 
-    private
-
-    def column_name(term)
-      s = term.split('/').last.underscore
-      n = s.to_sym
-      return n unless @attributes.find { |a| a[:name] == n && a[:term] != term }
-      s += '!'
-      s.to_sym
+    def attribute(id)
+      case id
+      when String
+        @attributes.find { |a| a.term == id }
+      when Symbol
+        @attributes.find { |a| a.name == id || a.alt_name == id }
+      when Integer
+        @attributes[id]
+      else
+        raise ArgumentError
+      end
     end
+
+    def content_headers
+      @attributes.select(&:index).sort_by(&:index).map(&:alt_name)
+    end
+
+    private
 
     def files(schema_node)
       schema_node.map do |f|
@@ -41,6 +51,7 @@ module DwCGemstone
       end
     end
 
+    # FIXME: necessary?
     def key_column(schema_node)
       if @kind == :core
         key = :primary
@@ -52,18 +63,19 @@ module DwCGemstone
       { key => schema_node.css(tag).first.attributes['index'].value.to_i }
     end
 
-    def parse_field(field)
-      term = field.attributes['term'].value
-      { term: term,
-        name: column_name(term),
-        index: field.attributes['index']&.value&.to_i,
-        default: field.attributes['default']&.value }
-    end
-
     def parse_fieldset(nodeset)
-      nodeset.each { |field| upsert_attribute(parse_field(field)) }
+      nodeset.css('field').each do |field|
+        if (existing = attribute(field.attributes['term'].value))
+          existing.index ||= field.attributes['index']&.value&.to_i
+          existing.default ||= field.attributes['default']&.value
+        else
+          new = SchemaAttribute.new(field)
+          new.alt_name = new.name.id2name.concat('!').to_sym if attribute(new.name)
+          @attributes << new
+        end
+      end
       return if @kind == :core
-      @attributes.unshift(name: :coreid, index: @key[:foreign])
+      @attributes.unshift(SchemaAttribute.new(nodeset.css('coreid').first))
     end
 
     def parse_kind(schema_node)
@@ -76,23 +88,5 @@ module DwCGemstone
         raise "invalid node: #{schema_node.name}"
       end
     end
-
-    def upsert_attribute(hash)
-      if (column = @attributes.find { |c| c[:term] == hash[:term] })
-        column[:index] ||= hash[:index]
-        column[:default] ||= hash[:default]
-      else
-        @attributes << hash.compact
-      end
-    end
   end
 end
-
-#     def make_table(table_name, columns)
-#       table_name = @term.split('/').last.underscore.pluralize.to_sym
-#       # check if table exists
-#       # if not, create it
-#       ArchiveStore.instance.db.create_table table_name do
-#         primary_key :id
-#       end
-#     end

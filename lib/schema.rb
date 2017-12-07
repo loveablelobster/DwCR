@@ -46,3 +46,12 @@ module DwCGemstone
     end
   end
 end
+
+#     def make_table(table_name, columns)
+#       table_name = @term.split('/').last.underscore.pluralize.to_sym
+#       # check if table exists
+#       # if not, create it
+#       ArchiveStore.instance.db.create_table table_name do
+#         primary_key :id
+#       end
+#     end

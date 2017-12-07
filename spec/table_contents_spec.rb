@@ -15,8 +15,8 @@ module DwCGemstone
       @contents = TableContents.new(@path, @schema)
     end
 
-    it 'has a shortname (symbol)' do
-      expect(@contents.name).to eq(:multimedia)
+    it 'has a schema with a shortname (symbol)' do
+      expect(@contents.schema.name).to eq(:multimedia)
     end
 
     it 'loads all files into a CSV::Table' do
@@ -28,13 +28,15 @@ module DwCGemstone
     end
 
     it 'determines the maximum length for each column' do
-      expect(@contents.max_length(:coreid)).to eq(36)
-      expect(@contents.max_length(:identifier)).to eq(36)
-      expect(@contents.max_length(:access_uri)).to eq(30)
-      expect(@contents.max_length(:title)).to eq(22)
-      expect(@contents.max_length(:format)).to eq(10)
-      expect(@contents.max_length(:owner)).to eq(0)
-      expect(@contents.max_length(:rights)).to eq(16)
+      expect(@contents.content_lengths).to eq({ coreid: 36,
+                                                identifier: 36,
+                                                access_uri: 30,
+                                                title: 22,
+                                                format: 10,
+                                                owner: 0,
+                                                rights: 16,
+                                                license_logo_url: 0,
+                                                credit: 0 })
     end
 
     after(:all) do

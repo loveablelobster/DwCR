@@ -36,20 +36,20 @@ module DwCGemstone
 
     context 'gets the columns' do
       it 'gets the columns' do
-        expect(@core.attributes).to eq(Psych.load_file('spec/files/expected_columns.yml')['occurrence'])
+        expect(@core.attributes.map(&:to_h)).to eq(Psych.load_file('spec/files/expected_columns.yml')['occurrence'])
       end
 
       it 'ensures unique column names' do
-        expect(@media.attributes).to include(term: 'http://purl.org/dc/elements/1.1/rights',
+        expect(@media.attributes.map(&:to_h)).to include(term: 'http://purl.org/dc/elements/1.1/rights',
                                              name: :rights!,
                                              default: 'http://creativecommons.org/licenses/by/4.0/deed.en_US')
       end
 
       it 'sets the default for existing columns' do
-        expect(@media.attributes).to include(term: 'http://purl.org/dc/terms/rights',
-                                             name: :rights,
-                                             index: 6,
-                                             default: '© 2008 XY Museum')
+        expect(@media.attributes.map(&:to_h)).to include(term: 'http://purl.org/dc/terms/rights',
+                                                         name: :rights,
+                                                         index: 6,
+                                                         default: '© 2008 XY Museum')
       end
 
       it 'gets the id colum' do
@@ -64,6 +64,18 @@ module DwCGemstone
     it 'gets the names of the contents files' do
     	expect(@core.contents).to eq(['occurrence.csv'])
     	expect(@media.contents).to eq(['media.csv'])
+    end
+
+    it 'returns a list of alt_names as content headers, sorted by index' do
+    	expect(@media.content_headers).to eq([:coreid,
+                                            :identifier,
+                                            :access_uri,
+                                            :title,
+                                            :format,
+                                            :owner,
+                                            :rights,
+                                            :license_logo_url,
+                                            :credit])
     end
   end
 end
