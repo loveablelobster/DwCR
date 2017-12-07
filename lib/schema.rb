@@ -8,6 +8,8 @@ require_relative 'schema_entity'
 module DwCGemstone
   # holds all SchemaEntities
   class Schema
+    attr_reader :entities
+
     def initialize(schema_def)
       @entities = [SchemaEntity.new(schema_def.css('core').first)]
       @entities.concat(load_extensions(schema_def.css('extension')))
