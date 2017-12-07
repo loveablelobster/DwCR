@@ -77,5 +77,9 @@ module DwCGemstone
                                             :license_logo_url,
                                             :credit])
     end
+
+    it 'updates the attribute lengths' do pending 'implemented, not tested'
+      #
+    end
   end
 end

@@ -16,7 +16,7 @@ module DwCGemstone
       @meta = File.open(meta_file) { |f| Nokogiri::XML(f) }
       @work_dir = File.dirname(meta_file) + '/'
       @schema = Schema.new(@meta)
-      @contents = load_contents.to_h
+      @contents = load_contents
 #       load_core
 #       load_extensions
     end
@@ -24,9 +24,12 @@ module DwCGemstone
     private
 
     def load_contents
-      @schema.entities.map do |entity|
-        [entity.name, TableContents.new(@work_dir, entity)]
+      contents = @schema.entities.map do |entity|
+        table_contents = TableContents.new(@work_dir, entity)
+        entity.update(table_contents.content_lengths)
+        [entity.name, table_contents]
       end
+      contents.to_h
     end
 
 #     def load_core

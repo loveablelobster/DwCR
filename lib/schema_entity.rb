@@ -43,6 +43,12 @@ module DwCGemstone
       @attributes.select(&:index).sort_by(&:index).map(&:alt_name)
     end
 
+    def update(attribute_lengths)
+      attribute_lengths.each do |name, length|
+        attribute(name).length = length
+      end
+    end
+
     private
 
     def files(schema_node)
