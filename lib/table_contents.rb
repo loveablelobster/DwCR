@@ -17,15 +17,18 @@ module DwCGemstone
       @file = Pathname.new(path + schema.name.id2name + '.dwc')
 
       make_table(path, schema.contents)
-      @table = CSV.table(@file, converters: nil)
     end
 
     def max_length(col)
       # FIXME: move the default width test to the SchemaEntity
       col_def = @columns.find { |c| c[:index] == col || c[:name] == col }
       default_width = col_def[:default]&.length || 0
-      max_cell_width = @table.by_col[col].map { |cell| cell&.length || 0 }.max
+      max_cell_width = table.by_col[col].map { |cell| cell&.length || 0 }.max
       max_cell_width > default_width ? max_cell_width : default_width
+    end
+
+    def table
+      CSV.table(@file, converters: nil)
     end
 
     private
