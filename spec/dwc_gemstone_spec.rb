@@ -8,7 +8,7 @@ require_relative '../lib/dwc_gemstone'
 module DwCGemstone
   RSpec.describe DwCGemstone do
   	before(:all) do
-      @gemstone = DwCGemstone.new('spec/files/meta.xml')
+      @gemstone = DwCGemstone.new('spec/files/meta.xml', col_lengths: true)
     end
 
     context 'on initialzation it' do

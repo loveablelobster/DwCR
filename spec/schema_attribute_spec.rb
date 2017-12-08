@@ -9,7 +9,7 @@ module DwCGemstone
     let(:fields) do
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       field_nodes = doc.css('extension').first.css('field')
-      field_nodes.map { |field_node| SchemaAttribute.new(field_node) }
+      field_nodes.map { |field_node| SchemaAttribute.new(field_node, col_lengths: true) }
     end
 
     let(:coreid) do

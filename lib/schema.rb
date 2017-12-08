@@ -10,8 +10,9 @@ module DwCGemstone
   class Schema
     attr_reader :entities
 
-    def initialize(schema_def)
-      @entities = [SchemaEntity.new(schema_def.css('core').first)]
+    def initialize(schema_def, options = { col_lengths: false })
+      @options = options
+      @entities = [SchemaEntity.new(schema_def.css('core').first, col_lengths: @options[:col_lengths])]
       @entities.concat(load_extensions(schema_def.css('extension')))
     end
 
@@ -42,7 +43,7 @@ module DwCGemstone
     private
 
     def load_extensions(node_set)
-      node_set.css('extension').map { |extension| SchemaEntity.new(extension) }
+      node_set.css('extension').map { |extension| SchemaEntity.new(extension, col_lengths: @options[:col_lengths]) }
     end
   end
 end

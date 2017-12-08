@@ -16,7 +16,8 @@ module DwCGemstone
                 :key,        # the key (id) column
                 :contents    # the names of the files containing the data
 
-    def initialize(schema_node)
+    def initialize(schema_node, options = { col_lengths: false })
+      @options = options
       @kind = parse_kind(schema_node)
       @key = key_column(schema_node) # FIXME: necessary?
       @term = schema_node.attributes['rowType'].value
@@ -75,7 +76,7 @@ module DwCGemstone
           existing.index ||= field.attributes['index']&.value&.to_i
           existing.default ||= field.attributes['default']&.value
         else
-          new = SchemaAttribute.new(field)
+          new = SchemaAttribute.new(field, col_lengths: @options[:col_lengths])
           new.alt_name = new.name.id2name.concat('!').to_sym if attribute(new.name)
           @attributes << new
         end
