@@ -4,28 +4,24 @@ require 'csv'
 
 #
 module DwCGemstone
-  # schema: a SchemaEntity
+  # name: Symbol
   class TableContents
     attr_reader :name, # short name of the extension, e.g. :occurrence
                 :file, # full path of the .dwc file holding the full csv table
                 :schema
 
-    def initialize(path, table_schema)
-      @schema = table_schema
-      @file = Pathname.new(path + @schema.name.id2name + '.dwc')
-
-      make_table(path, @schema.contents)
+    def initialize(name:, path:, files:, headers:) # use headers instead
+      @name = name
+      @headers = headers
+      @file = Pathname.new(path + @name.id2name + '.dwc')
+      make_table(path, files)
     end
 
     def content_lengths
-      length_map = table.by_col.map do |col|
-        attr = @schema.attribute(col.first)
-        default_length = attr.length || 0
+      lengths = table.by_col.map do |col|
         max_length = col[1].map { |cell| cell&.length || 0 }.max
-        length = max_length > default_length ? max_length : default_length
-        [attr.alt_name, length]
       end
-      length_map.to_h
+      @headers.zip(lengths).to_h
     end
 
     def table
@@ -37,7 +33,7 @@ module DwCGemstone
     def make_table(path, files)
       CSV.open(@file, 'w',
                write_headers: true,
-               headers: @schema.content_headers) do |dest|
+               headers: @headers) do |dest|
         files.each do |f|
           CSV.open(path + f) do |source|
             source.each { |row| dest << row }

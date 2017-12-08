@@ -10,13 +10,16 @@ module DwCGemstone
   RSpec.describe TableContents do
     before(:all) do
       @path = 'spec/files/'
-      @doc = File.open(@path + 'meta.xml') { |f| Nokogiri::XML(f) }
-      @schema = SchemaEntity.new(@doc.css('extension').first)
-      @contents = TableContents.new(@path, @schema)
+      doc = File.open(@path + 'meta.xml') { |f| Nokogiri::XML(f) }
+      @entity = SchemaEntity.new(doc.css('extension').first)
+      @contents = TableContents.new(name: @entity.name,
+                                    path: @path,
+                                    files: @entity.contents,
+                                    headers: @entity.content_headers)
     end
 
-    it 'has a schema with a shortname (symbol)' do
-      expect(@contents.schema.name).to eq(:multimedia)
+    it 'has a shortname (symbol)' do
+      expect(@contents.name).to eq(:multimedia)
     end
 
     it 'loads all files into a CSV::Table' do
@@ -34,7 +37,7 @@ module DwCGemstone
                                                 title: 22,
                                                 format: 10,
                                                 owner: 0,
-                                                rights: 16,
+                                                rights: 0,
                                                 license_logo_url: 0,
                                                 credit: 0 })
     end

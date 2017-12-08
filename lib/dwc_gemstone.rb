@@ -52,7 +52,10 @@ module DwCGemstone
     def load_contents
       content_path = @work_dir + '/'
       contents = @schema.entities.map do |entity|
-        table_contents = TableContents.new(content_path, entity)
+        table_contents = TableContents.new(name: entity.name,
+                                           path: content_path,
+                                           files: entity.contents,
+                                           headers: entity.content_headers)
         entity.update(table_contents.content_lengths) if @options[:col_lengths]
         [entity.name, table_contents]
       end
