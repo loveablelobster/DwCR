@@ -3,209 +3,271 @@ occurrence:
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/occurrenceID'
     !ruby/sym name: :occurrence_id
+    !ruby/sym alt_name: :occurrence_id
     !ruby/sym index: 0
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/catalogNumber'
     !ruby/sym name: :catalog_number
+    !ruby/sym alt_name: :catalog_number
     !ruby/sym index: 1
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/otherCatalogNumbers'
     !ruby/sym name: :other_catalog_numbers
+    !ruby/sym alt_name: :other_catalog_numbers
     !ruby/sym index: 2
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/fieldNumber'
     !ruby/sym name: :field_number
+    !ruby/sym alt_name: :field_number
     !ruby/sym index: 3
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/typeStatus'
     !ruby/sym name: :type_status
+    !ruby/sym alt_name: :type_status
     !ruby/sym index: 4
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/eventDate'
     !ruby/sym name: :event_date
+    !ruby/sym alt_name: :event_date
     !ruby/sym index: 5
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/recordedBy'
     !ruby/sym name: :recorded_by
+    !ruby/sym alt_name: :recorded_by
     !ruby/sym index: 6
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/eventRemarks'
     !ruby/sym name: :event_remarks
+    !ruby/sym alt_name: :event_remarks
     !ruby/sym index: 7
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/preparations'
     !ruby/sym name: :preparations
+    !ruby/sym alt_name: :preparations
     !ruby/sym index: 8
   -
     !ruby/sym term: 'http://purl.org/dc/terms/modified'
     !ruby/sym name: :modified
+    !ruby/sym alt_name: :modified
     !ruby/sym index: 9
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/order'
     !ruby/sym name: :order
+    !ruby/sym alt_name: :order
     !ruby/sym index: 10
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/family'
     !ruby/sym name: :family
+    !ruby/sym alt_name: :family
     !ruby/sym index: 11
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/genus'
     !ruby/sym name: :genus
+    !ruby/sym alt_name: :genus
     !ruby/sym index: 12
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/specificEpithet'
     !ruby/sym name: :specific_epithet
+    !ruby/sym alt_name: :specific_epithet
     !ruby/sym index: 13
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/infraspecificEpithet'
     !ruby/sym name: :infraspecific_epithet
+    !ruby/sym alt_name: :infraspecific_epithet
     !ruby/sym index: 14
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/scientificName'
     !ruby/sym name: :scientific_name
+    !ruby/sym alt_name: :scientific_name
     !ruby/sym index: 15
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/continent'
     !ruby/sym name: :continent
+    !ruby/sym alt_name: :continent
     !ruby/sym index: 16
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/country'
     !ruby/sym name: :country
+    !ruby/sym alt_name: :country
     !ruby/sym index: 17
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/stateProvince'
     !ruby/sym name: :state_province
+    !ruby/sym alt_name: :state_province
     !ruby/sym index: 18
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/county'
     !ruby/sym name: :county
+    !ruby/sym alt_name: :county
     !ruby/sym index: 19
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/higherGeography'
     !ruby/sym name: :higher_geography
+    !ruby/sym alt_name: :higher_geography
     !ruby/sym index: 20
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/islandGroup'
     !ruby/sym name: :island_group
+    !ruby/sym alt_name: :island_group
     !ruby/sym index: 21
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/island'
     !ruby/sym name: :island
+    !ruby/sym alt_name: :island
     !ruby/sym index: 22
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/waterBody'
     !ruby/sym name: :water_body
+    !ruby/sym alt_name: :water_body
     !ruby/sym index: 23
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/locality'
     !ruby/sym name: :locality
+    !ruby/sym alt_name: :locality
     !ruby/sym index: 24
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/locationRemarks'
     !ruby/sym name: :location_remarks
+    !ruby/sym alt_name: :location_remarks
     !ruby/sym index: 25
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/decimalLongitude'
     !ruby/sym name: :decimal_longitude
+    !ruby/sym alt_name: :decimal_longitude
     !ruby/sym index: 26
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/decimalLatitude'
     !ruby/sym name: :decimal_latitude
+    !ruby/sym alt_name: :decimal_latitude
     !ruby/sym index: 27
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters'
     !ruby/sym name: :coordinate_uncertainty_in_meters
+    !ruby/sym alt_name: :coordinate_uncertainty_in_meters
     !ruby/sym index: 28
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/geodeticDatum'
     !ruby/sym name: :geodetic_datum
+    !ruby/sym alt_name: :geodetic_datum
     !ruby/sym index: 29
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/georeferencedDate'
     !ruby/sym name: :georeferenced_date
+    !ruby/sym alt_name: :georeferenced_date
     !ruby/sym index: 30
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/sex'
     !ruby/sym name: :sex
+    !ruby/sym alt_name: :sex
     !ruby/sym index: 31
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/institutionCode'
     !ruby/sym name: :institution_code
+    !ruby/sym alt_name: :institution_code
     !ruby/sym default: 'NHMD'
+    !ruby/sym length: 4
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/institutionID'
     !ruby/sym name: :institution_id
+    !ruby/sym alt_name: :institution_id
     !ruby/sym default: 'http://grbio.org/cool/xxx'
+    !ruby/sym length: 25
   -
     !ruby/sym term: 'http://purl.org/dc/terms/license'
     !ruby/sym name: :license
+    !ruby/sym alt_name: :license
     !ruby/sym default: 'http://creativecommons.org/licenses/by/4.0/deed.en_US'
+    !ruby/sym length: 53
   -
     !ruby/sym term: 'http://purl.org/dc/terms/accessRights'
     !ruby/sym name: :access_rights
+    !ruby/sym alt_name: :access_rights
     !ruby/sym default: 'http://snm.ku.dk/xxx'
+    !ruby/sym length: 20
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/collectionCode'
     !ruby/sym name: :collection_code
+    !ruby/sym alt_name: :collection_code
     !ruby/sym default: 'AV'
+    !ruby/sym length: 2
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/basisOfRecord'
     !ruby/sym name: :basis_of_record
+    !ruby/sym alt_name: :basis_of_record
     !ruby/sym default: 'PreservedSpecimen'
+    !ruby/sym length: 17
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/datasetName'
     !ruby/sym name: :dataset_name
+    !ruby/sym alt_name: :dataset_name
     !ruby/sym default: 'Natural History Museum of Denmark ornithological collection'
+    !ruby/sym length: 59
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/kingdom'
     !ruby/sym name: :kingdom
+    !ruby/sym alt_name: :kingdom
     !ruby/sym default: 'Animalia'
+    !ruby/sym length: 8
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/phylum'
     !ruby/sym name: :phylum
+    !ruby/sym alt_name: :phylum
     !ruby/sym default: 'Chordata'
+    !ruby/sym length: 8
   -
     !ruby/sym term: 'http://rs.tdwg.org/dwc/terms/class'
     !ruby/sym name: :class
+    !ruby/sym alt_name: :class
     !ruby/sym default: 'Aves'
+    !ruby/sym length: 4
 media:
   -
     !ruby/sym name: :coreid
+    !ruby/sym alt_name: :coreid
     !ruby/sym index: 0
   -
     !ruby/sym term: 'http://purl.org/dc/terms/identifier'
     !ruby/sym name: :identifier
+    !ruby/sym alt_name: :identifier
     !ruby/sym index: 1
   -
     !ruby/sym term: 'http://rs.tdwg.org/ac/terms/accessURI'
     !ruby/sym name: :access_uri
+    !ruby/sym alt_name: :access_uri
     !ruby/sym index: 2
   -
     !ruby/sym term: 'http://purl.org/dc/terms/title'
     !ruby/sym name: :title
+    !ruby/sym alt_name: :title
     !ruby/sym index: 3
   -
     !ruby/sym term: 'http://purl.org/dc/terms/format'
     !ruby/sym name: :format
+    !ruby/sym alt_name: :format
     !ruby/sym index: 4
   -
     !ruby/sym term: 'http://ns.adobe.com/xap/1.0/rights/Owner'
     !ruby/sym name: :owner
+    !ruby/sym alt_name: :owner
     !ruby/sym index: 5
   -
     !ruby/sym term: 'http://purl.org/dc/terms/rights'
     !ruby/sym name: :rights
+    !ruby/sym alt_name: :rights
     !ruby/sym index: 6
     !ruby/sym default: '© 2008 XY Museum'
   -
     !ruby/sym term: 'http://rs.tdwg.org/ac/terms/licenseLogoURL'
     !ruby/sym name: :license_logo_url
+    !ruby/sym alt_name: :license_logo_url
     !ruby/sym index: 7
   -
     !ruby/sym term: 'http://ns.adobe.com/photoshop/1.0/Credit'
     !ruby/sym name: :credit
+    !ruby/sym alt_name: :credit
     !ruby/sym index: 8
   -
     !ruby/sym term: 'http://purl.org/dc/elements/1.1/rights'
-    !ruby/sym name: :rights!
+    !ruby/sym name: :rights
+    !ruby/sym alt_name: :rights!
     !ruby/sym default: 'http://creativecommons.org/licenses/by/4.0/deed.en_US'

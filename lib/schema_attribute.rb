@@ -10,6 +10,7 @@ module DwCGemstone
     attr_reader :name, :term, :index
     attr_writer :max_content_length
 
+    #
     def initialize(field_node, options = { col_lengths: false })
       @options = options
       @term = field_node.attributes['term']&.value
@@ -20,12 +21,22 @@ module DwCGemstone
       @max_content_length = nil
     end
 
+    # Returns the maximum string length for the attribute
+    # which is the greater of either the length of the `default`
+    # or the `max_content_length`
+    # returns `nil`` if neither is set
     def length
       [@default&.length, @max_content_length].compact.max
     end
 
+    #
     def to_h
-      { term: @term, name: @alt_name, index: @index, default: @default }.compact
+      { term: @term,
+        name: @name,
+        alt_name: @alt_name,
+        index: @index,
+        default: @default,
+        length: length }.compact
     end
 
     private

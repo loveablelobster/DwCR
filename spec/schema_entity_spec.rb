@@ -41,15 +41,19 @@ module DwCGemstone
 
       it 'ensures unique column names' do
         expect(@media.attributes.map(&:to_h)).to include(term: 'http://purl.org/dc/elements/1.1/rights',
-                                             name: :rights!,
-                                             default: 'http://creativecommons.org/licenses/by/4.0/deed.en_US')
+                                                         name: :rights,
+                                                         alt_name: :rights!,
+                                                         default: 'http://creativecommons.org/licenses/by/4.0/deed.en_US',
+                                                         length: 53)
       end
 
       it 'sets the default for existing columns' do
         expect(@media.attributes.map(&:to_h)).to include(term: 'http://purl.org/dc/terms/rights',
                                                          name: :rights,
+                                                         alt_name: :rights,
                                                          index: 6,
-                                                         default: '© 2008 XY Museum')
+                                                         default: '© 2008 XY Museum',
+                                                         length: 20)
       end
 
       it 'gets the id colum' do
@@ -87,7 +91,7 @@ module DwCGemstone
                     rights: 20,
                     license_logo_url: 20,
                     credit: 20)
-      expect(@media.attributes.map(&:length)).to eq([20, 20, 20, 20, 20, 20, 20, 20, 20, nil])
+      expect(@media.attributes.map(&:length)).to eq([20, 20, 20, 20, 20, 20, 20, 20, 20, 53])
     end
   end
 end
