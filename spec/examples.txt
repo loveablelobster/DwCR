@@ -1,8 +1,10 @@
 example_id                               | status | run_time        |
 ---------------------------------------- | ------ | --------------- |
-./spec/dwc_gemstone_spec.rb[1:1:1]       | passed | 0.0001 seconds  |
-./spec/dwc_gemstone_spec.rb[1:1:2]       | passed | 0.00008 seconds |
-./spec/dwc_gemstone_spec.rb[1:1:3]       | passed | 0.0003 seconds  |
+./spec/dwc_gemstone_spec.rb[1:1:1]       | passed | 0.00082 seconds |
+./spec/dwc_gemstone_spec.rb[1:1:2]       | passed | 0.0001 seconds  |
+./spec/dwc_gemstone_spec.rb[1:1:3]       | passed | 0.00046 seconds |
+./spec/dwc_gemstone_spec.rb[1:2:1]       | passed | 0.0012 seconds  |
+./spec/dwc_gemstone_spec.rb[1:2:2]       | passed | 0.00955 seconds |
 ./spec/schema_attribute_spec.rb[1:1:1]   | passed | 0.00055 seconds |
 ./spec/schema_attribute_spec.rb[1:1:2]   | passed | 0.00101 seconds |
 ./spec/schema_attribute_spec.rb[1:1:3]   | passed | 0.00114 seconds |

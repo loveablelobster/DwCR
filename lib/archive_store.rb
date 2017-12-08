@@ -19,5 +19,13 @@ module DwCGemstone
     def connect(archive_path)
       @db = Sequel.sqlite(archive_path)
     end
+
+#     def method_missing(name, *args, &block)
+#       @db.send(name, *args, &block) || super
+#     end
+#
+#     def respond_to_missing?(name, include_private = false)
+#       @db.respond_to?(name, include_private) || super
+#     end
   end
 end

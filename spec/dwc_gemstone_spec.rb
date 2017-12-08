@@ -8,7 +8,9 @@ require_relative '../lib/dwc_gemstone'
 module DwCGemstone
   RSpec.describe DwCGemstone do
   	before(:all) do
-      @gemstone = DwCGemstone.new('spec/files/meta.xml', col_lengths: true)
+      @gemstone = DwCGemstone.new('spec/files/meta.xml',
+                                  location: 'spec/files/test.db',
+                                  col_lengths: true)
     end
 
     context 'on initialzation it' do
@@ -43,8 +45,21 @@ module DwCGemstone
       end
     end
 
+    context 'persists the contents in a SQLite database' do
+      it 'creates the SQLite database' do
+        @gemstone.make
+        expect(@gemstone.store).not_to be_nil
+      end
+
+      it 'creates the tables' do
+      	@gemstone.build_schema
+      	expect(@gemstone.store[:occurrence]).not_to be_nil
+      end
+    end
+
     after(:all) do
       @gemstone.contents.each_value { |c| File.delete(c.file) }
+#       File.delete('spec/files/test.db')
     end
   end
 end
