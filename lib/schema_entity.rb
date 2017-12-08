@@ -32,7 +32,7 @@ module DwCGemstone
       when String
         @attributes.find { |a| a.term == id }
       when Symbol
-        @attributes.find { |a| a.name == id || a.alt_name == id }
+        @attributes.find { |a| a.alt_name == id || a.name == id }
       when Integer
         @attributes[id]
       else

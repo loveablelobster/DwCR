@@ -78,8 +78,16 @@ module DwCGemstone
                                             :credit])
     end
 
-    it 'updates the attribute lengths' do pending 'implemented, not tested'
-      #
+    it 'updates the attribute lengths' do
+      @media.update(coreid: 20, identifier: 20,
+                    access_uri: 20,
+                    title: 20,
+                    format: 20,
+                    owner: 20,
+                    rights: 20,
+                    license_logo_url: 20,
+                    credit: 20)
+      expect(@media.attributes.map(&:length)).to eq([20, 20, 20, 20, 20, 20, 20, 20, 20, nil])
     end
   end
 end
