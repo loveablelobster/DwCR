@@ -20,10 +20,6 @@ module DwCGemstone
       @max_content_length = nil
     end
 
-    def default=(new_default)
-      @default = new_default
-    end
-
     def length
       [@default&.length, @max_content_length].compact.max
     end
