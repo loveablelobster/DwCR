@@ -55,6 +55,11 @@ module DwCGemstone
       	@gemstone.build_schema
       	expect(@gemstone.store[:occurrence]).not_to be_nil
       end
+
+      it 'loads all table contents' do
+        @gemstone.load_tables
+        expect(@gemstone.store[:occurrence].count).not_to be 0
+      end
     end
 
     after(:all) do

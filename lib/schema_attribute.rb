@@ -7,7 +7,7 @@ module DwCGemstone
   #
   class SchemaAttribute
     attr_accessor :alt_name, :default
-    attr_reader :name, :term, :index
+    attr_reader :name, :term, :index, :db_index
     attr_writer :max_content_length
 
     #
@@ -19,6 +19,24 @@ module DwCGemstone
       @index = field_node.attributes['index']&.value&.to_i
       @default = field_node.attributes['default']&.value
       @max_content_length = nil
+      @db_index = false # other vales: true, { unique: true }
+    end
+
+    def column_schema
+      [alt_name, :string, { index: db_index, default: default }]
+    end
+
+    def db_index=(index_option)
+      @db_index = case index_option
+      when true
+      	true
+      when :unique
+        { unique: true }
+      when :false
+        false
+      else
+        raise ArgumentError
+      end
     end
 
     # Returns the maximum string length for the attribute

@@ -19,7 +19,7 @@ module DwCGemstone
 
     def content_lengths
       lengths = table.by_col.map do |col|
-        max_length = col[1].map { |cell| cell&.length || 0 }.max
+        col[1].map { |cell| cell&.length || 0 }.max
       end
       @headers.zip(lengths).to_h
     end

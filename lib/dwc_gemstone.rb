@@ -28,21 +28,23 @@ module DwCGemstone
       @schema.entities.each do |entity|
         @store.create_table entity.name do
           primary_key :id
-#             String :occurrence_id, index: true
-#             String :identifier, index: {unique: true}
+          entity.attributes.each { |attribute| column(*attribute.column_schema) }
         end
       end
       @is_built = true
     end
 
-    def load_tables
+    def load_tables # should be load table(table_name)
       build_schema unless @is_built
-      # load the table contents
+      @contents.each do |table, content|
+        content.table.each do |row|
+          @store[table].insert(row.to_h)
+        end
+      end
     end
 
     def make
       file = @options[:location] || @work_dir + '/' + @work_dir.split('/').last + '.db'
-      puts file
       ArchiveStore.instance.connect(file)
       @store = ArchiveStore.instance.db
     end

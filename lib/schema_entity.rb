@@ -19,11 +19,11 @@ module DwCGemstone
     def initialize(schema_node, options = { col_lengths: false })
       @options = options
       @kind = parse_kind(schema_node)
-      @key = key_column(schema_node) # FIXME: necessary?
       @term = schema_node.attributes['rowType'].value
       @name = @term.split('/').last.underscore.to_sym
       @attributes = []
       parse_fieldset(schema_node)
+      @key = key_column(schema_node)
       @contents = files(schema_node.css('files'))
     end
 
@@ -34,7 +34,7 @@ module DwCGemstone
       when Symbol
         @attributes.find { |a| a.alt_name == id || a.name == id }
       when Integer
-        @attributes[id]
+        @attributes.find { |a| a.index == id }
       else
         raise ArgumentError
       end
@@ -58,16 +58,19 @@ module DwCGemstone
       end
     end
 
-    # FIXME: necessary?
     def key_column(schema_node)
       if @kind == :core
         key = :primary
         tag = 'id'
+        db_index = :unique
       else
         key = :foreign
         tag = 'coreid'
+        db_index = true
       end
-      { key => schema_node.css(tag).first.attributes['index'].value.to_i }
+      key_index = schema_node.css(tag).first.attributes['index'].value.to_i
+      attribute(key_index).db_index = db_index
+      { key => attribute(key_index).alt_name }
     end
 
     def parse_fieldset(nodeset)

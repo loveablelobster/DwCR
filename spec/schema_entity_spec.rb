@@ -57,11 +57,11 @@ module DwCGemstone
       end
 
       it 'gets the id colum' do
-        expect(@core.key).to eq(primary: 0)
+        expect(@core.key).to eq(primary: :occurrence_id)
       end
 
       it 'inserts the id column for extensions' do
-      	expect(@media.key).to eq(foreign: 0)
+      	expect(@media.key).to eq(foreign: :coreid)
       end
     end
 
@@ -80,6 +80,11 @@ module DwCGemstone
                                             :rights,
                                             :license_logo_url,
                                             :credit])
+    end
+
+    it 'sets the database indexing option for primary and foreign key columns' do
+      expect(@core.attribute(:occurrence_id).column_schema).to eq([:occurrence_id, { index: { unique: true }, default: nil }])
+      expect(@media.attribute(:coreid).column_schema).to eq([:coreid, { index: true, default: nil }])
     end
 
     it 'updates the attribute lengths' do
