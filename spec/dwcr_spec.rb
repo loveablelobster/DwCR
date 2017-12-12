@@ -2,13 +2,13 @@
 
 require 'psych'
 
-require_relative '../lib/dwc_gemstone'
+require_relative '../lib/dwcr'
 
 #
-module DwCGemstone
-  RSpec.describe DwCGemstone do
+module DwCR
+  RSpec.describe DwCR do
   	before(:all) do
-      @gemstone = DwCGemstone.new('spec/files/meta.xml',
+      @gemstone = DwCR.new('spec/files/meta.xml',
                                   location: 'spec/files/test.db',
                                   col_lengths: true)
     end

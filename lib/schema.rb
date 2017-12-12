@@ -5,7 +5,7 @@ require 'nokogiri'
 require_relative 'schema_entity'
 
 #
-module DwCGemstone
+module DwCR
   # holds all SchemaEntities
   class Schema
     attr_reader :entities

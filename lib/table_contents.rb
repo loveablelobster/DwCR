@@ -3,7 +3,7 @@
 require 'csv'
 
 #
-module DwCGemstone
+module DwCR
   # name: Symbol
   class TableContents
     attr_reader :name, # short name of the extension, e.g. :occurrence

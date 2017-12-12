@@ -7,7 +7,7 @@ require 'sqlite3'
 require_relative 'inflections'
 
 #
-module DwCGemstone
+module DwCR
   Sequel.extension :inflector
 
   #

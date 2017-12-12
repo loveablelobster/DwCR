@@ -4,7 +4,7 @@ require_relative '../lib/schema_attribute'
 require_relative '../lib/archive_store'
 
 #
-module DwCGemstone
+module DwCR
   RSpec.describe SchemaAttribute do
     let(:fields) do
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }

@@ -7,10 +7,10 @@ require_relative 'schema'
 require_relative 'table_contents'
 
 #
-module DwCGemstone
+module DwCR
   # meta_file: the DwCA meta.xml file
   # location: the path where the SQLite file will be stored
-  class DwCGemstone
+  class DwCR
     attr_reader :schema,   # a Schema object
                 :contents, # a hash { SchemaEntity.name => TableContents }
                 :store     # the SQLite database instance
@@ -21,6 +21,8 @@ module DwCGemstone
       @work_dir = File.dirname(meta_file)
       @schema = Schema.new(@meta, col_lengths: @options[:col_lengths])
       @contents = load_contents
+      @store = nil
+      @is_built = false
     end
 
     def build_schema

@@ -5,7 +5,7 @@ require 'psych'
 require_relative '../lib/schema'
 
 #
-module DwCGemstone
+module DwCR
   RSpec.describe Schema do
     before(:all) do
       @doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }

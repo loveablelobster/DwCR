@@ -6,7 +6,7 @@ require_relative '../lib/schema_entity'
 require_relative '../lib/table_contents'
 
 #
-module DwCGemstone
+module DwCR
   RSpec.describe TableContents do
     before(:all) do
       @path = 'spec/files/'

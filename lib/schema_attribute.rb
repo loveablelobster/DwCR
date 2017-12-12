@@ -3,7 +3,7 @@
 require 'nokogiri'
 
 #
-module DwCGemstone
+module DwCR
   #
   class SchemaAttribute
     attr_accessor :alt_name, :default

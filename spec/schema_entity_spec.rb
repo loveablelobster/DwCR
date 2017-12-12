@@ -5,7 +5,7 @@ require 'psych'
 require_relative '../lib/schema_entity'
 
 #
-module DwCGemstone
+module DwCR
   RSpec.describe SchemaEntity do
     before(:all) do
       @doc = File.open('spec/files/meta_spec.xml') { |f| Nokogiri::XML(f) }
@@ -83,8 +83,8 @@ module DwCGemstone
     end
 
     it 'sets the database indexing option for primary and foreign key columns' do
-      expect(@core.attribute(:occurrence_id).column_schema).to eq([:occurrence_id, { index: { unique: true }, default: nil }])
-      expect(@media.attribute(:coreid).column_schema).to eq([:coreid, { index: true, default: nil }])
+      expect(@core.attribute(:occurrence_id).column_schema).to eq([:occurrence_id, :string, { index: { unique: true }, default: nil }])
+      expect(@media.attribute(:coreid).column_schema).to eq([:coreid, :string, { index: true, default: nil }])
     end
 
     it 'updates the attribute lengths' do

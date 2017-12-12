@@ -6,7 +6,7 @@ require_relative 'archive_store' # needed for sequel string and inflections
 require_relative 'schema_attribute'
 
 #
-module DwCGemstone
+module DwCR
   #
   class SchemaEntity
     attr_reader :kind,       # :core or :extension
