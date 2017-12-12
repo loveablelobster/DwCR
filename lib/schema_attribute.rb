@@ -5,14 +5,14 @@ require 'nokogiri'
 #
 module DwCR
   #
-  class SchemaAttribute
-    attr_accessor :alt_name, :default
-    attr_reader :name, :term, :index
-    attr_writer :max_content_length
+  class SchemaAttribute# < Sequel::Model
+#     many_to_one :table_definition
+    attr_accessor :alt_name, :default # these
+    attr_reader :name, :term, :index  # can
+    attr_writer :max_content_length   # all go
 
     #
-    def initialize(field_node, options = { col_lengths: false })
-      @options = options
+    def initialize(field_node) # move column lengths to schema
       @term = field_node.attributes['term']&.value
       @name = attribute_name(field_node)
       @alt_name = @name
@@ -76,6 +76,7 @@ module DwCR
 
     private
 
+    # move to module method
     def attribute_name(field_node)
       @term ? @term.split('/').last.underscore.to_sym : field_node.name.to_sym
     end

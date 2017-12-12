@@ -26,10 +26,6 @@ module DwCR
   end
 
   class TableDefinition < Sequel::Model
-    one_to_many :column_definitions
-  end
-
-  class ColumnDefinition < Sequel::Model
-    many_to_one :table_definition
+    one_to_many :schema_attributes # in lib/schema_attribute
   end
 end

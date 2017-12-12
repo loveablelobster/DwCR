@@ -79,7 +79,7 @@ module DwCR
           existing.index ||= field.attributes['index']&.value&.to_i
           existing.default ||= field.attributes['default']&.value
         else
-          new = SchemaAttribute.new(field, col_lengths: @options[:col_lengths])
+          new = SchemaAttribute.new(field)
           new.alt_name = new.name.id2name.concat('!').to_sym if attribute(new.name)
           @attributes << new
         end
