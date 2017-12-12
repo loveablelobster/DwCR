@@ -44,7 +44,9 @@ module DwCR
                                                          name: :rights,
                                                          alt_name: :rights!,
                                                          default: 'http://creativecommons.org/licenses/by/4.0/deed.en_US',
-                                                         length: 53)
+                                                         length: 53,
+                                                         has_index: false,
+                                                         is_unique: false)
       end
 
       it 'sets the default for existing columns' do
@@ -53,7 +55,9 @@ module DwCR
                                                          alt_name: :rights,
                                                          index: 6,
                                                          default: '© 2008 XY Museum',
-                                                         length: 20)
+                                                         length: 20,
+                                                         has_index: false,
+                                                         is_unique: false)
       end
 
       it 'gets the id colum' do

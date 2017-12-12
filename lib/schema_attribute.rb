@@ -7,7 +7,7 @@ module DwCR
   #
   class SchemaAttribute
     attr_accessor :alt_name, :default
-    attr_reader :name, :term, :index, :db_index
+    attr_reader :name, :term, :index
     attr_writer :max_content_length
 
     #
@@ -19,21 +19,35 @@ module DwCR
       @index = field_node.attributes['index']&.value&.to_i
       @default = field_node.attributes['default']&.value
       @max_content_length = nil
-      @db_index = false # other vales: true, { unique: true }
+      @has_index = false
+      @is_unique = false
     end
 
     def column_schema
-      [alt_name, :string, { index: db_index, default: default }]
+      [alt_name, :string, { index: index_options, default: default }]
     end
 
-    def db_index=(index_option)
-      @db_index = case index_option
-      when true
-      	true
-      when :unique
+    def index_options
+      if @has_index && @is_unique
         { unique: true }
-      when :false
+      elsif @has_index
+        true
+      else
         false
+      end
+    end
+
+    def index_options=(index_options)
+      case index_options
+      when true
+      	@has_index = true
+      	@is_unique = false
+      when :unique
+        @has_index = true
+        @is_unique = true
+      when :false
+        @has_index = false
+        @is_unique = false
       else
         raise ArgumentError
       end
@@ -54,8 +68,11 @@ module DwCR
         alt_name: @alt_name,
         index: @index,
         default: @default,
-        length: length }.compact
+        length: length,
+      	has_index: @has_index,
+      	is_unique: @is_unique }.compact
     end
+
 
     private
 

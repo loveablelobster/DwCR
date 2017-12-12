@@ -62,14 +62,14 @@ module DwCR
       if @kind == :core
         key = :primary
         tag = 'id'
-        db_index = :unique
+        index_options = :unique
       else
         key = :foreign
         tag = 'coreid'
-        db_index = true
+        index_options = true
       end
       key_index = schema_node.css(tag).first.attributes['index'].value.to_i
-      attribute(key_index).db_index = db_index
+      attribute(key_index).index_options = index_options
       { key => attribute(key_index).alt_name }
     end
 
