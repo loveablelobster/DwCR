@@ -29,8 +29,8 @@ module DwCR
       expect(@media.term).to eq('http://rs.tdwg.org/ac/terms/Multimedia')
     end
 
-    it 'derives an extension name as symbol from the term' do
-      expect(@core.name).to be :occurrence
+    it 'derives pluralized extension name as symbol from the term' do
+      expect(@core.name).to be :occurrences
       expect(@media.name).to be :multimedia
     end
 

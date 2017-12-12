@@ -15,7 +15,7 @@ module DwCR
 
     context 'on initialzation it' do
       it 'parses the schema' do
-        expect(@gemstone.schema.core.name).to eq(:occurrence)
+        expect(@gemstone.schema.core.name).to be :occurrences
         expect(@gemstone.schema.extensions).to be_an Array
         expect(@gemstone.schema.extensions.length).to be 1
         expect(@gemstone.schema.extensions.first.name).to be :multimedia
@@ -23,7 +23,7 @@ module DwCR
 
       it 'reads the contents and creates .dwc files' do
         expect(@gemstone.contents[:multimedia].file).to eq(Pathname.new('spec/files/multimedia.dwc'))
-        expect(@gemstone.contents[:occurrence].file).to eq(Pathname.new('spec/files/occurrence.dwc'))
+        expect(@gemstone.contents[:occurrences].file).to eq(Pathname.new('spec/files/occurrences.dwc'))
       end
 
       it 'updates the lengths of the schema attributes' do
@@ -53,12 +53,12 @@ module DwCR
 
       it 'creates the tables' do
       	@gemstone.build_schema
-      	expect(@gemstone.store[:occurrence]).not_to be_nil
+      	expect(@gemstone.store[:occurrences]).not_to be_nil
       end
 
       it 'loads all table contents' do
         @gemstone.load_tables
-        expect(@gemstone.store[:occurrence].count).not_to be 0
+        expect(@gemstone.store[:occurrences].count).not_to be 0
       end
     end
 

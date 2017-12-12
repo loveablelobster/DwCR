@@ -4,11 +4,11 @@ require 'singleton'
 require 'sequel'
 require 'sqlite3'
 
-require_relative 'inflections'
 
 #
 module DwCR
   Sequel.extension :inflector
+  require_relative 'inflections'
 
   #
   class ArchiveStore
@@ -19,13 +19,5 @@ module DwCR
     def connect(archive_path)
       @db = Sequel.sqlite(archive_path)
     end
-
-#     def method_missing(name, *args, &block)
-#       @db.send(name, *args, &block) || super
-#     end
-#
-#     def respond_to_missing?(name, include_private = false)
-#       @db.respond_to?(name, include_private) || super
-#     end
   end
 end

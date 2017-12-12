@@ -13,7 +13,7 @@ module DwCR
     end
 
     it 'loads the core entity' do
-      expect(@schema.core.name).to eq(:occurrence)
+      expect(@schema.core.name).to be :occurrences
     end
 
     it 'loads all extensions into an array' do
@@ -28,12 +28,12 @@ module DwCR
 
     it 'finds any entity by term or name' do
     	expect(@schema.entity('http://rs.tdwg.org/ac/terms/Multimedia').name).to be :multimedia
-    	expect(@schema.entity('http://rs.tdwg.org/dwc/terms/Occurrence').name).to be :occurrence
+    	expect(@schema.entity('http://rs.tdwg.org/dwc/terms/Occurrence').name).to be :occurrences
     end
 
     it 'finds any entity by name' do
       expect(@schema.entity(:multimedia).term).to eq 'http://rs.tdwg.org/ac/terms/Multimedia'
-    	expect(@schema.entity(:occurrence).term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
+    	expect(@schema.entity(:occurrences).term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
     end
 
     it 'raises and exception when trying to find an entity with an invalid argument' do

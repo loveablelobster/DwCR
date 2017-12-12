@@ -11,7 +11,7 @@ module DwCR
   class SchemaEntity
     attr_reader :kind,       # :core or :extension
                 :term,       # the URI for the definition
-                :name,       # short name of the extension, e.g. :occurrence
+                :name,       # pluralized name of the extension as symbol
                 :attributes, # the column definitions
                 :key,        # the key (id) column
                 :contents    # the names of the files containing the data
@@ -20,7 +20,7 @@ module DwCR
       @options = options
       @kind = parse_kind(schema_node)
       @term = schema_node.attributes['rowType'].value
-      @name = @term.split('/').last.underscore.to_sym
+      @name = @term.split('/').last.tableize.to_sym
       @attributes = []
       parse_fieldset(schema_node)
       @key = key_column(schema_node)
