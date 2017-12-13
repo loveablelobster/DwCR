@@ -33,26 +33,27 @@ module DwCR
     end
 
     def index_options
-      if @has_index && @is_unique
+      if has_index && is_unique
         { unique: true }
-      elsif @has_index
+      elsif has_index
         true
       else
         false
       end
     end
 
+    # FIXME: this may be redundant/confusing, remove and set the values instead?
     def index_options=(index_options)
       case index_options
       when true
-      	@has_index = true
-      	@is_unique = false
+      	has_index = true
+      	is_unique = false
       when :unique
-        @has_index = true
-        @is_unique = true
+        has_index = true
+        is_unique = true
       when :false
-        @has_index = false
-        @is_unique = false
+        has_index = false
+        is_unique = false
       else
         raise ArgumentError
       end
@@ -65,25 +66,5 @@ module DwCR
     def length
       [default&.length, max_content_length].compact.max
     end
-
-    #
-    def to_h
-      { term: @term,
-        name: @name,
-        alt_name: @alt_name,
-        index: @index,
-        default: @default,
-        length: length,
-      	has_index: @has_index,
-      	is_unique: @is_unique }.compact
-    end
-
-
-#     private
-
-    # move to module method
-#     def attribute_name(field_node)
-#       @term ? @term.split('/').last.underscore.to_sym : field_node.name.to_sym
-#     end
   end
 end

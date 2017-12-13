@@ -105,51 +105,61 @@ module DwCR
                                                                     nil])
           end
         end
+      end
 
-        context 'the length of the column equal to' do
-          it 'the length of the default value' do
-            expect(SchemaAttribute[10].length).to be 16
-            expect(SchemaAttribute[11].length).to be 53
-          end
+      context 'returns the length of the column equal to' do
+        it 'the length of the default value' do
+          expect(SchemaAttribute[10].length).to be 16
+          expect(SchemaAttribute[11].length).to be 53
+        end
 
-          it 'the maximum content length if given and no default set' do
-          	attr = SchemaAttribute[1]
-            attr.max_content_length = 32
-            attr.save
-            expect(attr.length).to be 32
-            attr.max_content_length = nil
-            attr.save
-          end
+        it 'the maximum content length if given and no default set' do
+          attr = SchemaAttribute[1]
+          attr.max_content_length = 32
+          expect(attr.length).to be 32
+        end
 
-          it 'the maximum content length if given and larger than the default' do
-            attr = SchemaAttribute[10]
-            attr.max_content_length = 100
-            attr.save
-            expect(attr.length).to be 100
-            attr.max_content_length = nil
-            attr.save
-          end
+        it 'the maximum content length if given and larger than the default' do
+          attr = SchemaAttribute[10]
+          attr.max_content_length = 100
+          expect(attr.length).to be 100
+        end
 
-          it 'the default length if longer than a given max content length' do
-            attr = SchemaAttribute[11]
-            attr.max_content_length = 20
-            attr.save
-            expect(attr.length).to be 53
-            attr.max_content_length = nil
-            attr.save
-          end
+        it 'the default length if longer than a given max content length' do
+          attr = SchemaAttribute[11]
+          attr.max_content_length = 20
+          expect(attr.length).to be 53
+        end
 
-          it 'nil if there is no default value' do
-            expect(SchemaAttribute.all.map(&:length)[0..8]).to eq([nil,
-                                                                   nil,
-                                                                   nil,
-                                                                   nil,
-                                                                   nil,
-                                                                   nil,
-                                                                   nil,
-                                                                   nil,
-                                                                   nil])
-          end
+        it 'nil if there is no default value' do
+          expect(SchemaAttribute.all.map(&:length)[0..8]).to eq([nil,
+                                                                 nil,
+                                                                 nil,
+                                                                 nil,
+                                                                 nil,
+                                                                 nil,
+                                                                 nil,
+                                                                 nil,
+                                                                 nil])
+        end
+      end
+
+      context 'returns indexing options' do
+        it 'returns false if the column should not be indexed' do
+          expect(SchemaAttribute[1].index_options).to be_falsey
+        end
+
+        it 'returns true if the column should be indexed' do
+          attr = SchemaAttribute[1]
+          attr.has_index = true
+          expect(attr.index_options).to be_truthy
+        end
+
+        it 'returns a unique index as a hash option' do
+          attr = SchemaAttribute[1]
+          attr.has_index = true
+          attr.is_unique = true
+          expect(attr.index_options).to include(:unique => true)
         end
       end
     end
