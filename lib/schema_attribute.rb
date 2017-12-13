@@ -23,7 +23,11 @@ module DwCR
 
   #
   class SchemaAttribute < Sequel::Model
-    # FIXME: name and alt_name are no a strings, not symbols
+    # FIXME: name and alt_name are now strings, not symbols
+
+    # FIXME: once the SchemaEntity has been rewritten, enable this
+    # many_to_one :schema_entity
+
     def column_schema
       [alt_name, :string, { index: index_options, default: default }]
     end
