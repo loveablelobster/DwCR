@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/archive_store'
+require_relative '../lib/metaschema'
 
 #
 module DwCR
@@ -10,20 +11,15 @@ module DwCR
 
   RSpec.describe 'SchemaAttribute' do
     before(:all) do
+      # set up DB connection
       @db = ArchiveStore.instance.connect('spec/files/attribute_test.db')
-      @db.create_table :schema_attributes do
-    	  primary_key :id
-    	  column :name, :string
-    	  column :alt_name, :string
-    	  column :term, :string
-    	  column :default, :string
-    	  column :has_index, :boolean
-    	  column :is_unique, :boolean
-    	  column :index, :integer
-        column :max_content_length, :integer
-      end
 
+      # create the tables
+      DwCR.create_meta_schema(@db)
+
+      # load the model file
       require_relative '../lib/schema_attribute'
+
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       extension = doc.css('extension').first
       field_nodes = extension.css('field').to_a
