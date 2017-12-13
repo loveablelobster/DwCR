@@ -16,6 +16,7 @@ module DwCR
 
     attr_reader :db
 
+    # currently also returns the connection
     def connect(archive_path)
       @db = Sequel.sqlite(archive_path)
     end

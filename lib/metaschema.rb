@@ -19,9 +19,9 @@ module DwCR
     	column :term, :string
     	column :default, :string
     	column :has_index, :boolean
-    	column :is_unqique, :boolean
+    	column :is_unique, :boolean
     	column :index, :integer
-    	column :length, :integer
+      column :max_content_length, :integer
     end
   end
 
