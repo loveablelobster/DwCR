@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative '../lib/archive_store'
-require_relative '../lib/metaschema'
 
 #
 module DwCR
@@ -12,13 +11,7 @@ module DwCR
   RSpec.describe 'SchemaAttribute' do
     before(:all) do
       # set up DB connection
-      @db = ArchiveStore.instance.connect('spec/files/attribute_test.db')
-
-      # create the tables
-      DwCR.create_meta_schema(@db)
-
-      # load the model file
-      require_relative '../lib/schema_attribute'
+      @db = ArchiveStore.instance.connect()
 
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       extension = doc.css('extension').first
@@ -164,8 +157,8 @@ module DwCR
       end
     end
 
-    after(:all) do
-      File.delete('spec/files/attribute_test.db')
-    end
+#     after(:all) do
+#       File.delete('spec/files/attribute_test.db')
+#     end
   end
 end
