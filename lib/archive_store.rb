@@ -25,10 +25,11 @@ module DwCR
 
     def create_schema
       create_schema_attributes_table
-      require_relative 'schema_attribute'
+      require_relative 'models/schema_attribute'
       create_schema_entities_table
       # require relative 'schema_entity'
       create_content_files_table
+      require_relative 'models/content_file'
     end
 
     private
@@ -50,10 +51,10 @@ module DwCR
     def create_schema_entities_table
       @db.create_table :schema_entities do
       	primary_key :id
-        column :name, :string       # pluralized name of the extension
-        column :term, :string       # the URI for the definition
-      	column :is_core, :boolean   # FIXME: was: kind :core or :extension (there should be an option that there can only be one)
-        column :key, :integer       # FIXME: the key (id) column; was hash, should be integer; it's always a foreing key if the table != is_copre
+        column :name, :string        # pluralized name of the extension
+        column :term, :string        # the URI for the definition
+      	column :is_core, :boolean    # FIXME: was: kind :core or :extension (there should be an option that there can only be one)
+        column :key_column, :integer # FIXME: the key (id) column; was hash, should be integer; it's always a foreing key if the table != is_copre
         #has_many :attributes,         # the column definitions
         #has_many :contents            # the names of the files containing the data
       end
@@ -62,8 +63,8 @@ module DwCR
     def create_content_files_table
       @db.create_table :content_files do
         primary_key :id
-        column :name
-        column :path
+        column :name, :string
+        column :path, :string
       end
     end
   end
