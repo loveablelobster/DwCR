@@ -120,16 +120,32 @@ HEREDOC
               end
             end
 
-            it 'has a boolean `has_index` flag' do
-              expect(DwCR.parse_meta(meta)
+            context 'has a boolean `has_index` flag' do
+              it 'that is false for every field except the `key_column`' do
+                expect(DwCR.parse_meta(meta)
+                           .first[:fields][1..2]
+                           .map { |f| f[:has_index] }).to contain_exactly(false, false)
+              end
+
+              it 'that is true for the `key_column`' do
+              	expect(DwCR.parse_meta(meta)
                            .first[:fields]
-                           .map { |f| f[:has_index] }).to contain_exactly(false, false, false)
+                           .first[:has_index]).to be_truthy
+              end
             end
 
-            it 'has a boolean `is_unique` flag' do
-              expect(DwCR.parse_meta(meta)
+            context 'has a boolean `is_unique` flag' do
+              it 'that is false for every field except the `key_column`' do
+                expect(DwCR.parse_meta(meta)
+                             .first[:fields][1..2]
+                             .map { |f| f[:is_unique] }).to contain_exactly(false, false)
+              end
+
+              it 'that is true for the `key_column`' do
+              	expect(DwCR.parse_meta(meta)
                            .first[:fields]
-                           .map { |f| f[:is_unique] }).to contain_exactly(false, false, false)
+                           .first[:is_unique]).to be_truthy
+              end
             end
         	end
         end
@@ -225,11 +241,18 @@ HEREDOC
               end
             end
 
-            # FIXME: this should be true for the coreid/id fields
-            it 'has a boolean `has_index` flag' do
-              expect(DwCR.parse_meta(meta)
+            context 'has a boolean `has_index` flag' do
+              it 'that is false for every field except the `key_column`' do
+                expect(DwCR.parse_meta(meta)
+                             .last[:fields][1...5]
+                             .map { |f| f[:has_index] }).to contain_exactly(false, false, false, false)
+              end
+
+              it 'that is true for the `key_column`' do
+              	expect(DwCR.parse_meta(meta)
                            .last[:fields]
-                           .map { |f| f[:has_index] }).to contain_exactly(false, false, false, false, false)
+                           .first[:has_index]).to be_truthy
+              end
             end
 
             it 'has a boolean `is_unique` flag' do
