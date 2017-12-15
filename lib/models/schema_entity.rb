@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'nokogiri'
-
 require_relative 'archive_store' # needed for sequel string and inflections
 require_relative 'schema_attribute'
 

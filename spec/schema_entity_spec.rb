@@ -2,7 +2,7 @@
 
 require 'psych'
 
-require_relative '../lib/schema_entity'
+require_relative '../lib/models/schema_entity'
 
 #
 module DwCR

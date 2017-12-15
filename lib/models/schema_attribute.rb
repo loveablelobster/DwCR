@@ -4,23 +4,6 @@ require 'nokogiri'
 
 #
 module DwCR
-  def self.parse_field_node(field_node)
-    term = field_node.attributes['term']&.value
-
-    # the coreid column of an extension will not have a term
-    name = term ? term.split('/').last.underscore : field_node.name
-
-    SchemaAttribute.create(
-      term: term,
-      name: name,
-      alt_name: name,
-      index: field_node.attributes['index']&.value&.to_i,
-      default: field_node.attributes['default']&.value,
-      has_index: false,
-      is_unique: false
-    )
-  end
-
   #
   class SchemaAttribute < Sequel::Model
     # FIXME: name and alt_name are now strings, not symbols
