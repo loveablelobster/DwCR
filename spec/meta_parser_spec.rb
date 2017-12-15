@@ -127,8 +127,15 @@ HEREDOC
         end
       end
 
-      it 'has the information on the content_files' do
-        expect(core[:content_files]).to contain_exactly({ name: 'occurrence.csv' })
+      context 'has the information on the content_files' do
+        it 'has an array of hashes' do
+          expect(core[:content_files].size).to be 1
+          expect(core[:content_files].map(&:class)).to contain_exactly(Hash)
+        end
+
+        it 'has the names of the content_files' do
+          expect(core[:content_files].first[:name]).to eq'occurrence.csv'
+        end
       end
     end
 
@@ -218,8 +225,15 @@ HEREDOC
         end
       end
 
-      it 'has the information on the content_files' do
-        expect(media[:content_files]).to contain_exactly({ name: 'media.csv' })
+      context 'has the information on the content_files' do
+        it 'has an array of hashes' do
+          expect(media[:content_files].size).to be 1
+          expect(media[:content_files].map(&:class)).to contain_exactly(Hash)
+        end
+
+        it 'has the names of the content_files' do
+          expect(media[:content_files].first[:name]).to eq 'media.csv'
+        end
       end
     end
   end
