@@ -8,5 +8,6 @@ gem 'nokogiri'
 gem 'sequel'
 gem 'sqlite3'
 
-# needed to load expected result for specs
+# testing
+gem 'rspec'
 gem 'psych'
