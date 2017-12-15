@@ -24,11 +24,11 @@ module DwCR
     end
 
     def create_schema
-      create_schema_attributes_table
-      require_relative 'models/schema_attribute'
       create_schema_entities_table
-      # require relative 'schema_entity'
+      create_schema_attributes_table
       create_content_files_table
+      require_relative 'models/schema_entity'
+      require_relative 'models/schema_attribute'
       require_relative 'models/content_file'
     end
 
@@ -37,6 +37,7 @@ module DwCR
     def create_schema_attributes_table
       @db.create_table :schema_attributes do
         primary_key :id
+        column :schema_entity_id, :integer
         column :name, :string
         column :alt_name, :string
         column :term, :string
@@ -63,6 +64,7 @@ module DwCR
     def create_content_files_table
       @db.create_table :content_files do
         primary_key :id
+        column :schema_entity_id, :integer
         column :name, :string
         column :path, :string
       end

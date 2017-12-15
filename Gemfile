@@ -10,4 +10,3 @@ gem 'sqlite3'
 
 # testing
 gem 'rspec'
-gem 'psych'
