@@ -43,6 +43,11 @@ module DwCR
       expect(@media.name).to eq 'multimedia'
     end
 
+    it 'has a symbol for the `table_name`' do
+    	expect(@core.table_name).to eq :occurrences
+    	expect(@media.table_name).to eq :multimedia
+    end
+
     context 'gets the columns' do
       it 'gets the columns' do
         expect(@core.schema_attributes[0].values).to include(:term => 'http://rs.tdwg.org/dwc/terms/occurrenceID',
