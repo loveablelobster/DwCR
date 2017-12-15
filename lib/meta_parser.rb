@@ -20,13 +20,14 @@ module DwCR
     tag = is_core ? 'id' : 'coreid'
     hash = name_term_hash(node)
     hash[:is_core] = is_core
-    hash[:fields] = parse_fieldset(node)
-    hash[:key_column] = key_column(node, tag, hash[:fields])
+    hash[:schema_attributes] = parse_fieldset(node)
+    hash[:key_column] = key_column(node, tag, hash[:schema_attributes])
+    hash[:content_files] = parse_content_files node.css('files')
     hash
   end
 
   def self.index_options(hash)
-    hash[:fields].each do |field|
+    hash[:schema_attributes].each do |field|
       next unless field[:index] == hash[:key_column]
       field[:has_index] = true
       break unless hash[:is_core]
@@ -46,6 +47,12 @@ module DwCR
     hash
   end
 
+  def self.parse_content_files(nodeset)
+    nodeset.map do |file|
+      { name: file.css('location').first.text }
+    end
+  end
+
   def self.parse_core(node)
     raise 'Invalid meta.xml: multiple core files: #{node}' if node.size > 1
     index_options(entity_hash(node.first, is_core: true))
@@ -54,7 +61,7 @@ module DwCR
   def self.parse_extensions(nodeset)
     nodeset.map do |node|
       hash = entity_hash(node, is_core: false)
-      hash[:fields].unshift(parse_field_node(node.css('coreid').first))
+      hash[:schema_attributes].unshift(parse_field_node(node.css('coreid').first))
       index_options(hash)
     end
   end
