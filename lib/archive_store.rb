@@ -19,11 +19,11 @@ module DwCR
     # currently also returns the connection
     def connect(archive_path = nil)
       @db = Sequel.sqlite(archive_path)
-      create_schema
+      create_meta_schema
       @db
     end
 
-    def create_schema
+    def create_meta_schema
       create_schema_entities_table
       create_schema_attributes_table
       create_content_files_table
@@ -32,10 +32,32 @@ module DwCR
       require_relative 'models/content_file'
     end
 
+    def create_schema
+#       @schema.entities.each do |entity|
+#         @store.create_table entity.name do
+#           primary_key :id
+#           entity.attributes.each { |attribute| column(*attribute.column_schema) }
+#         end
+#       end
+#       @is_built = true
+    end
+
+    def has_contents?
+      # check all tables that had content files associated
+    end
+
+    def has_meta_schema?
+
+    end
+
+    def has_schema?
+
+    end
+
     private
 
     def create_schema_attributes_table
-      @db.create_table :schema_attributes do
+      @db.create_table? :schema_attributes do
         primary_key :id
         column :schema_entity_id, :integer
         column :name, :string
@@ -50,7 +72,7 @@ module DwCR
     end
 
     def create_schema_entities_table
-      @db.create_table :schema_entities do
+      @db.create_table? :schema_entities do
       	primary_key :id
         column :name, :string        # pluralized name of the extension
         column :term, :string        # the URI for the definition
@@ -62,7 +84,7 @@ module DwCR
     end
 
     def create_content_files_table
-      @db.create_table :content_files do
+      @db.create_table? :content_files do
         primary_key :id
         column :schema_entity_id, :integer
         column :name, :string

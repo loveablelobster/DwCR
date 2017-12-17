@@ -25,6 +25,7 @@ module DwCR
       @is_built = false
     end
 
+    # FIXUME: move to archive_store
     def build_schema
       make unless @store
       @schema.entities.each do |entity|
