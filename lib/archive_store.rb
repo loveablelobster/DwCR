@@ -14,12 +14,15 @@ module DwCR
   def self.create_model(model_name, source, *associations)
     c = Class.new(Sequel::Model(source)) do
     	associations.each do |association|
-    	  # add associations here
+    	  associate(association[:type],
+    	            association[:name],
+    	            class: association[:class_name],
+    	            class_namespace: 'DwCR',
+    	            key: association[:key])
     	end
     end
 
     self.const_set model_name, c
-#     Sequel::Model.const_set model_name, c
   end
 
   #
@@ -45,16 +48,36 @@ module DwCR
     end
 
     def create_models
+      core = SchemaEntity.first(is_core: true)
+      core_id = "#{core.name.singularize}_id".to_sym
+      extensions = SchemaEntity.where(is_core: false)
       SchemaEntity.each do |entity|
-        DwCR.create_model(entity.name.classify, entity.table_name)
+        class_name = entity.name.classify
+        associations = if entity.is_core
+          extensions.map do |extension|
+            { type: :one_to_many,
+              name: extension.table_name,
+              class_name: extension.name.classify,
+              key: core_id }
+          end
+        else
+          [{ type: :many_to_one,
+             name: core.name.singularize.to_sym,
+             class_name: core.name.classify,
+             key: :id }]
+        end
+        DwCR.create_model(class_name, entity.table_name, *associations)
       end
     end
 
     def create_schema
+      core_id = SchemaEntity.first(is_core: true).name.singularize
       SchemaEntity.each do |entity|
-        @db.create_table entity.name do
+        @db.create_table entity.table_name do
           primary_key :id
           entity.schema_attributes.each { |attribute| column(*attribute.column_schema) }
+          next if entity.is_core
+          column "#{core_id.to_sym}_id".to_sym, :integer
         end
       end
     end
