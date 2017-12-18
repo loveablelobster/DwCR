@@ -22,10 +22,6 @@ module DwCR
       it 'determines the kind' do
         expect(@core[:is_core]).to be true
         expect(@media[:is_core]).to be false
-
-        # FIXME: necessary ?
-        expect(@core.kind).to be :core
-        expect(@media.kind).to be :extension
       end
 #
 #       it 'raises and exception if the kind is invalid' do

@@ -18,18 +18,9 @@ module DwCR
     one_to_many :schema_attributes
     one_to_many :content_files
 
-#     def attribute(id)
-#       case id
-#       when String
-#         @attributes.find { |a| a.term == id }
-#       when Symbol
-#         @attributes.find { |a| a.alt_name == id || a.name == id }
-#       when Integer
-#         @attributes.find { |a| a.index == id }
-#       else
-#         raise ArgumentError
-#       end
-#     end
+    def class_name
+      name.classify
+    end
 
     def content_headers
       schema_attributes_dataset.exclude(index: nil)
@@ -45,11 +36,6 @@ module DwCR
         key = :foreign
       end
       { key => schema_attributes_dataset.where(index: key_column).first.alt_name }
-    end
-
-    # FIXME: necessary ?
-    def kind
-      is_core ? :core : :extension
     end
 
     def table_name

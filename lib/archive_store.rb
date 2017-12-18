@@ -32,6 +32,17 @@ module DwCR
       @db
     end
 
+    def association(left_entity, right_entity)
+        options = { class: right_entity.class_name, class_namespace: 'DwCR' }
+      if left_entity.is_core
+        options[:key] = "#{left_entity.name.singularize}_id".to_sym
+        [:one_to_many, right_entity.table_name, options]
+      else
+        options[:key] = :id
+        [:many_to_one, right_entity.name.singularize.to_sym, options]
+      end
+    end
+
     def create_meta_schema
       create_schema_entities_table
       create_schema_attributes_table
@@ -49,15 +60,10 @@ module DwCR
         class_name = entity.name.classify
         associations = if entity.is_core
           extensions.map do |extension|
-            # FIXME: move this to entity?
-            [:one_to_many, extension.table_name,
-              { class: extension.name.classify,
-                class_namespace: 'DwCR',
-                key: core_id }]
+            association(entity, extension)
           end
         else
-          [[:many_to_one, core.name.singularize.to_sym,
-            { class: core.name.classify, class_namespace: 'DwCR', key: :id }]]
+          [association(entity, core)]
         end
         DwCR.create_model(class_name, entity.table_name, *associations)
       end
