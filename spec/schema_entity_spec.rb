@@ -11,7 +11,7 @@ module DwCR
 
   RSpec.describe 'SchemaEntity' do
     before(:all) do
-      db = ArchiveStore.instance.connect()
+      @db = ArchiveStore.instance.connect #('spec/files/test.db')
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       parsed_meta = DwCR.parse_meta(doc)
       @core = DwCR.create_schema_entity(parsed_meta.first)
@@ -131,5 +131,12 @@ module DwCR
 #                     credit: 20)
 #       expect(@media.attributes.map(&:length)).to eq([20, 20, 20, 20, 20, 20, 20, 20, 20, 53])
 #     end
+
+    context 'it creates the schema and model for the data' do
+      it 'creates the tables for the `core` and extensions' do
+        ArchiveStore.instance.create_schema
+        expect(@db.table_exists?(:schema_entities)).to be_truthy
+      end
+    end
   end
 end

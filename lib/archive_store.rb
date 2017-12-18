@@ -33,13 +33,12 @@ module DwCR
     end
 
     def create_schema
-#       @schema.entities.each do |entity|
-#         @store.create_table entity.name do
-#           primary_key :id
-#           entity.attributes.each { |attribute| column(*attribute.column_schema) }
-#         end
-#       end
-#       @is_built = true
+      SchemaEntity.each do |entity|
+        @db.create_table entity.name do
+          primary_key :id
+          entity.schema_attributes.each { |attribute| column(*attribute.column_schema) }
+        end
+      end
     end
 
     def has_contents?
@@ -47,7 +46,10 @@ module DwCR
     end
 
     def has_meta_schema?
-
+      # @db.schema(:schema_entities)
+        # returns the schema for the given table as an array
+        # use to check presence of certain columns?
+      @db.table_exists?(:schema_attributes) && @db.table_exists?(:schema_entities) && @db.table_exists?(:content_files)
     end
 
     def has_schema?
@@ -78,8 +80,6 @@ module DwCR
         column :term, :string        # the URI for the definition
       	column :is_core, :boolean    # FIXME: was: kind :core or :extension (there should be an option that there can only be one)
         column :key_column, :integer # FIXME: the key (id) column; was hash, should be integer; it's always a foreing key if the table != is_copre
-        #has_many :attributes,         # the column definitions
-        #has_many :contents            # the names of the files containing the data
       end
     end
 
