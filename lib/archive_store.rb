@@ -10,19 +10,13 @@ module DwCR
   Sequel.extension :inflector
   require_relative 'inflections'
 
-  # from: https://johnragan.wordpress.com/2010/02/18/ruby-metaprogramming-dynamically-defining-classes-and-methods/
   def self.create_model(model_name, source, *associations)
-    c = Class.new(Sequel::Model(source)) do
+    model_class = Class.new(Sequel::Model(source)) do
     	associations.each do |association|
-    	  associate(association[:type],
-    	            association[:name],
-    	            class: association[:class_name],
-    	            class_namespace: 'DwCR',
-    	            key: association[:key])
+    	  associate(*association)
     	end
     end
-
-    self.const_set model_name, c
+    self.const_set model_name, model_class
   end
 
   #
@@ -55,16 +49,15 @@ module DwCR
         class_name = entity.name.classify
         associations = if entity.is_core
           extensions.map do |extension|
-            { type: :one_to_many,
-              name: extension.table_name,
-              class_name: extension.name.classify,
-              key: core_id }
+            # FIXME: move this to entity?
+            [:one_to_many, extension.table_name,
+              { class: extension.name.classify,
+                class_namespace: 'DwCR',
+                key: core_id }]
           end
         else
-          [{ type: :many_to_one,
-             name: core.name.singularize.to_sym,
-             class_name: core.name.classify,
-             key: :id }]
+          [[:many_to_one, core.name.singularize.to_sym,
+            { class: core.name.classify, class_namespace: 'DwCR', key: :id }]]
         end
         DwCR.create_model(class_name, entity.table_name, *associations)
       end
