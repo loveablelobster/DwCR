@@ -1,9 +1,9 @@
 example_id                                 | status | run_time        |
 ------------------------------------------ | ------ | --------------- |
-./spec/archive_store_spec.rb[1:1:1]        | passed | 0.0024 seconds  |
-./spec/archive_store_spec.rb[1:1:2]        | passed | 0.0003 seconds  |
-./spec/archive_store_spec.rb[1:2:1]        | passed | 0.00131 seconds |
-./spec/archive_store_spec.rb[1:2:2]        | passed | 0.00261 seconds |
+./spec/archive_store_spec.rb[1:1:1]        | passed | 0.00235 seconds |
+./spec/archive_store_spec.rb[1:1:2]        | passed | 0.00021 seconds |
+./spec/archive_store_spec.rb[1:2:1]        | passed | 0.00084 seconds |
+./spec/archive_store_spec.rb[1:2:2]        | passed | 0.00254 seconds |
 ./spec/dwcr_spec.rb[1:1:1]                 | passed | 0.00122 seconds |
 ./spec/dwcr_spec.rb[1:1:2]                 | passed | 0.00054 seconds |
 ./spec/dwcr_spec.rb[1:1:3]                 | passed | 0.00017 seconds |

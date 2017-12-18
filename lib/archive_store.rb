@@ -4,20 +4,12 @@ require 'singleton'
 require 'sequel'
 require 'sqlite3'
 
+require_relative 'models/dynamic_models'
 
 #
 module DwCR
   Sequel.extension :inflector
   require_relative 'inflections'
-
-  def self.create_model(model_name, source, *associations)
-    model_class = Class.new(Sequel::Model(source)) do
-    	associations.each do |association|
-    	  associate(*association)
-    	end
-    end
-    self.const_set model_name, model_class
-  end
 
   #
   class ArchiveStore
@@ -25,7 +17,6 @@ module DwCR
 
     attr_reader :db
 
-    # currently also returns the connection
     def connect(archive_path = nil)
       @db = Sequel.sqlite(archive_path)
       create_meta_schema
@@ -33,7 +24,7 @@ module DwCR
     end
 
     def association(left_entity, right_entity)
-        options = { class: right_entity.class_name, class_namespace: 'DwCR' }
+      options = { class: right_entity.class_name, class_namespace: 'DwCR' }
       if left_entity.is_core
         options[:key] = "#{left_entity.name.singularize}_id".to_sym
         [:one_to_many, right_entity.table_name, options]
@@ -41,6 +32,10 @@ module DwCR
         options[:key] = :id
         [:many_to_one, right_entity.name.singularize.to_sym, options]
       end
+    end
+
+    def foreign_key
+      SchemaEntity.first(is_core: true).class_name.foreign_key
     end
 
     def create_meta_schema
@@ -54,46 +49,30 @@ module DwCR
 
     def create_models
       core = SchemaEntity.first(is_core: true)
-      core_id = "#{core.name.singularize}_id".to_sym
       extensions = SchemaEntity.where(is_core: false)
       SchemaEntity.each do |entity|
-        class_name = entity.name.classify
-        associations = if entity.is_core
-          extensions.map do |extension|
-            association(entity, extension)
-          end
-        else
-          [association(entity, core)]
-        end
-        DwCR.create_model(class_name, entity.table_name, *associations)
+        assocs = if entity.is_core
+                   extensions.map { |extension| association(entity, extension) }
+                 else
+                   [association(entity, core)]
+                 end
+        DwCR.create_model(entity.class_name, entity.table_name, *assocs)
       end
     end
 
     def create_schema
-      core_id = SchemaEntity.first(is_core: true).name.singularize
       SchemaEntity.each do |entity|
-        @db.create_table entity.table_name do
-          primary_key :id
-          entity.schema_attributes.each { |attribute| column(*attribute.column_schema) }
-          next if entity.is_core
-          column "#{core_id.to_sym}_id".to_sym, :integer
-        end
+        create_schema_table(entity, foreign_key)
       end
     end
 
-    def has_contents?
-      # check all tables that had content files associated
-    end
-
-    def has_meta_schema?
-      # @db.schema(:schema_entities)
-        # returns the schema for the given table as an array
-        # use to check presence of certain columns?
-      @db.table_exists?(:schema_attributes) && @db.table_exists?(:schema_entities) && @db.table_exists?(:content_files)
-    end
-
-    def has_schema?
-
+    def create_schema_table(entity, foreign_key)
+      @db.create_table entity.table_name do
+        primary_key :id
+        entity.schema_attributes.each { |a| column(*a.column_schema) }
+        next if entity.is_core
+        column foreign_key, :integer
+      end
     end
 
     private
@@ -115,11 +94,11 @@ module DwCR
 
     def create_schema_entities_table
       @db.create_table? :schema_entities do
-      	primary_key :id
+        primary_key :id
         column :name, :string        # pluralized name of the extension
         column :term, :string        # the URI for the definition
-      	column :is_core, :boolean    # FIXME: was: kind :core or :extension (there should be an option that there can only be one)
-        column :key_column, :integer # FIXME: the key (id) column; was hash, should be integer; it's always a foreing key if the table != is_copre
+        column :is_core, :boolean
+        column :key_column, :integer
       end
     end
 

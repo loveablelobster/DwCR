@@ -9,7 +9,7 @@ module DwCR
     config.warnings = false
   end
 
-  RSpec.describe 'SchemaEntity' do
+  RSpec.describe ArchiveStore do
     before(:all) do
       @db = ArchiveStore.instance.connect #('spec/files/test.db')
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
