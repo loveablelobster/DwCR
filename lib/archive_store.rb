@@ -10,6 +10,18 @@ module DwCR
   Sequel.extension :inflector
   require_relative 'inflections'
 
+  # from: https://johnragan.wordpress.com/2010/02/18/ruby-metaprogramming-dynamically-defining-classes-and-methods/
+  def self.create_model(model_name, source, *associations)
+    c = Class.new(Sequel::Model(source)) do
+    	associations.each do |association|
+    	  # add associations here
+    	end
+    end
+
+    self.const_set model_name, c
+#     Sequel::Model.const_set model_name, c
+  end
+
   #
   class ArchiveStore
     include Singleton
@@ -30,6 +42,12 @@ module DwCR
       require_relative 'models/schema_entity'
       require_relative 'models/schema_attribute'
       require_relative 'models/content_file'
+    end
+
+    def create_models
+      SchemaEntity.each do |entity|
+        DwCR.create_model(entity.name.classify, entity.table_name)
+      end
     end
 
     def create_schema
