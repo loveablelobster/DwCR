@@ -11,7 +11,7 @@ module DwCR
 
   RSpec.describe ArchiveStore do
     before(:all) do
-      @db = ArchiveStore.instance.connect #('spec/files/test.db')
+      @db = ArchiveStore.instance.connect#('spec/files/test.db')
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       DwCR.parse_meta(doc).each { |e| DwCR.create_schema_entity(e) }
       ArchiveStore.instance.create_schema
@@ -94,8 +94,9 @@ module DwCR
 
     context 'creates the models' do
       it 'creates a model for media' do
-        Multimedia.create(owner: 'me')
+        new_media = Multimedia.create(owner: 'me')
         expect(Multimedia[1].owner).to eq('me')
+        new_media.delete
       end
 
       it 'creates associatiions' do
@@ -105,6 +106,14 @@ module DwCR
         obs.add_multimedia(owner: 'me')
         obs.add_multimedia(owner: 'somone else')
         expect(obs.multimedia.size).to be 2
+        obs.delete
+      end
+    end
+
+    context 'loads the data' do
+      it 'loads the core' do
+        ArchiveStore.instance.load_contents
+        expect(DwCR::Occurrence.first(occurrence_id: '1647532a-6033-48e1-a568-fc9739f1e802').catalog_number).to be 117447
       end
     end
   end

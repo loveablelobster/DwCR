@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'csv'
 require 'singleton'
 require 'sequel'
 require 'sqlite3'
@@ -113,7 +114,17 @@ module DwCR
     end
 
     def load_core
-      #
+      model = "DwCR::#{core.class_name}".constantize
+#       return nil if model.
+      files = core.content_files
+      headers = core.content_headers
+      path = Dir.pwd
+      files.each do |file|
+        filename = path + '/spec/files/' + file.name
+        CSV.open(filename).each do |row|
+          model.create(headers.zip(row).to_h)
+        end
+      end
     end
 
     def load_models
