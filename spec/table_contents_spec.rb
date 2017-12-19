@@ -2,48 +2,56 @@
 
 require 'psych'
 
-# require_relative '../lib/models/schema_entity'
 require_relative '../lib/table_contents'
 
 
 module DwCR
-  RSpec.describe TableContents do
-#     before(:all) do
-#       @path = 'spec/files/'
-#       doc = File.open(@path + 'meta.xml') { |f| Nokogiri::XML(f) }
-#       @entity = SchemaEntity.new(doc.css('extension').first)
-#       @contents = TableContents.new(name: @entity.name,
-#                                     path: @path,
-#                                     files: @entity.contents,
-#                                     headers: @entity.content_headers)
-#     end
-#
-#     it 'has a shortname (symbol)' do
-#       expect(@contents.name).to eq(:multimedia)
-#     end
-#
-#     it 'loads all files into a CSV::Table' do
-#       expect(@contents.table).to eq(CSV.table(@path + 'expected_table.csv', converters: nil))
-#     end
-#
-#     it 'holds a reference to the generated .dwc file' do
-#     	expect(@contents.file).to eq(Pathname.new('spec/files/multimedia.dwc'))
-#     end
-#
-#     it 'determines the maximum length for each column' do
-#       expect(@contents.content_lengths).to eq({ coreid: 36,
-#                                                 identifier: 36,
-#                                                 access_uri: 30,
-#                                                 title: 22,
-#                                                 format: 10,
-#                                                 owner: 0,
-#                                                 rights: 0,
-#                                                 license_logo_url: 0,
-#                                                 credit: 0 })
-#     end
-#
-#     after(:all) do
-#     	File.delete(@contents.file)
-#     end
+  RSpec.describe 'DwCR#column_lengths' do
+    let(:core_files) { ['spec/files/occurrence.csv'] }
+    let(:extn_files) { ['spec/files/media.csv'] }
+
+    it 'gets the maximum lengths for each column in an array of CSV files' do
+    	expect(DwCR.column_lengths(core_files)).to include(0=>36,
+                                                         1=>6,
+                                                         2=>19,
+                                                         3=>16,
+                                                         4=>8,
+                                                         5=>10,
+                                                         6=>81,
+                                                         7=>112,
+                                                         8=>43,
+                                                         9=>10,
+                                                         10=>19,
+                                                         11=>18,
+                                                         12=>18,
+                                                         13=>20,
+                                                         14=>27,
+                                                         15=>49,
+                                                         16=>13,
+                                                         17=>35,
+                                                         18=>46,
+                                                         19=>29,
+                                                         20=>70,
+                                                         21=>20,
+                                                         22=>19,
+                                                         23=>11,
+                                                         24=>98,
+                                                         25=>217,
+                                                         26=>15,
+                                                         27=>14,
+                                                         28=>0,
+                                                         29=>5,
+                                                         30=>10,
+                                                         31=>10)
+    	expect(DwCR.column_lengths(extn_files)).to include(0 => 36,
+                                                         1 => 36,
+                                                         2 => 30,
+                                                         3 => 22,
+                                                         4 => 10,
+                                                         5 => 0,
+                                                         6 => 0,
+                                                         7 => 0,
+                                                         8 => 0)
+    end
   end
 end
