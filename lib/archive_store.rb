@@ -83,7 +83,7 @@ module DwCR
         options[:key] = "#{left_entity.name.singularize}_id".to_sym
         [:one_to_many, right_entity.table_name, options]
       else
-        options[:key] = :id
+        options[:key] = "#{right_entity.name.singularize}_id".to_sym
         [:many_to_one, right_entity.name.singularize.to_sym, options]
       end
     end

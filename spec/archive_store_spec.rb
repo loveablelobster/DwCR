@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'pry'
+
 require_relative '../lib/archive_store'
 require_relative '../lib/meta_parser'
 
@@ -115,7 +117,8 @@ module DwCR
         ArchiveStore.instance.load_contents
         obs = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
         expect(obs.catalog_number).to be 138618
-        expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side',)
+        expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
+        binding.pry
       end
     end
   end

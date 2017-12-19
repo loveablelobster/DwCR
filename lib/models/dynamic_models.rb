@@ -3,9 +3,11 @@
 #
 module DwCR
   def self.create_model(model_name, source, *associations)
+    p associations
     model_class = Class.new(Sequel::Model(source)) do
       associations.each do |association|
         associate(*association)
+        next if association[0] == :many_to_one
         plugin :association_dependencies
         add_association_dependencies(association[1] => :destroy)
       end

@@ -10,4 +10,5 @@ gem 'sequel'
 gem 'sqlite3'
 
 # testing
+gem 'pry'
 gem 'rspec'
