@@ -66,6 +66,7 @@ module DwCR
 
     def load_contents
       load_core
+      load_extensions
     end
 
     private
@@ -137,6 +138,23 @@ module DwCR
                    [association(entity, core)]
                  end
         DwCR.create_model(entity.class_name, entity.table_name, *assocs)
+      end
+    end
+
+    def load_extensions
+      extensions.each do |extension|
+        model = model = "DwCR::#{extension.class_name}".constantize
+        files = extension.content_files
+        headers = extension.content_headers
+        path = Dir.pwd
+        files.each do |file|
+          filename = path + '/spec/files/' + file.name
+          CSV.open(filename).each do |row|\
+            core_instance = "DwCR::#{core.class_name}".constantize.first(core.key => row[extension.key_column])
+            p core_instance
+#             model.create(headers.zip(row).to_h)
+          end
+        end
       end
     end
   end

@@ -30,12 +30,7 @@ module DwCR
 
     # FIXME: necessary ?
     def key
-      if is_core
-        key = :primary
-      else
-        key = :foreign
-      end
-      { key => schema_attributes_dataset.where(index: key_column).first.alt_name }
+      schema_attributes_dataset.first(index: key_column).alt_name.to_sym
     end
 
     def table_name

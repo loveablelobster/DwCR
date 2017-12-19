@@ -83,14 +83,14 @@ module DwCR
         expect(@media.schema_attributes[6].default).to eq '© 2008 XY Museum'
       end
 
-      # FIXME: necessary ?
       it 'has the key for the core' do
         expect(@core.key_column).to be 0
-        expect(@core.key).to include(primary: 'occurrence_id')
+        expect(@core.key).to be :occurrence_id
       end
 
       it 'has the key extensions' do
-      	expect(@media.key).to eq(foreign: 'coreid')
+        expect(@media.key_column).to be 0
+      	expect(@media.key).to be :coreid
       end
     end
 
