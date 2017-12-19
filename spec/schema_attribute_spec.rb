@@ -10,7 +10,7 @@ module DwCR
 
   RSpec.describe 'SchemaAttribute' do
     before(:all) do
-      @db = ArchiveStore.instance.connect()
+      @db = ArchiveStore.instance.connect
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       DwCR.parse_meta(doc).last[:schema_attributes].map { |s| SchemaAttribute.create(s) }
     end

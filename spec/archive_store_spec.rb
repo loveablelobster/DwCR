@@ -15,7 +15,6 @@ module DwCR
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       DwCR.parse_meta(doc).each { |e| DwCR.create_schema_entity(e) }
       ArchiveStore.instance.create_schema
-      ArchiveStore.instance.create_models
     end
 
     context 'creates the schema' do
@@ -81,6 +80,16 @@ module DwCR
                                                                         :rights!,
                                                                         :occurrence_id)
       end
+    end
+
+    it 'fetches the core' do
+      expect(ArchiveStore.instance.core.class_name).to eq 'Occurrence'
+    end
+
+    it 'fetches the extensions' do
+      extensions = ArchiveStore.instance.extensions
+      expect(extensions).to be_a Sequel::Dataset
+      expect(extensions.map(&:class_name)).to include 'Multimedia'
     end
 
     context 'creates the models' do

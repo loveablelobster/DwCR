@@ -34,8 +34,17 @@ module DwCR
       end
     end
 
+    def core
+      SchemaEntity.first(is_core: true)
+    end
+
+    def extensions
+      SchemaEntity.where(is_core: false)
+    end
+
+    # gets the name of the foreign key from the core entity
     def foreign_key
-      SchemaEntity.first(is_core: true).class_name.foreign_key
+      core.class_name.foreign_key
     end
 
     def create_meta_schema
@@ -47,32 +56,15 @@ module DwCR
       require_relative 'models/content_file'
     end
 
-    def create_models
-      core = SchemaEntity.first(is_core: true)
-      extensions = SchemaEntity.where(is_core: false)
-      SchemaEntity.each do |entity|
-        assocs = if entity.is_core
-                   extensions.map { |extension| association(entity, extension) }
-                 else
-                   [association(entity, core)]
-                 end
-        DwCR.create_model(entity.class_name, entity.table_name, *assocs)
-      end
-    end
-
     def create_schema
       SchemaEntity.each do |entity|
         create_schema_table(entity, foreign_key)
       end
+      load_models
     end
 
-    def create_schema_table(entity, foreign_key)
-      @db.create_table entity.table_name do
-        primary_key :id
-        entity.schema_attributes.each { |a| column(*a.column_schema) }
-        next if entity.is_core
-        column foreign_key, :integer
-      end
+    def load_contents
+      load_core
     end
 
     private
@@ -108,6 +100,32 @@ module DwCR
         column :schema_entity_id, :integer
         column :name, :string
         column :path, :string
+      end
+    end
+
+    def create_schema_table(entity, foreign_key)
+      @db.create_table entity.table_name do
+        primary_key :id
+        entity.schema_attributes.each { |a| column(*a.column_schema) }
+        next if entity.is_core
+        column foreign_key, :integer
+      end
+    end
+
+    def load_core
+      #
+    end
+
+    def load_models
+      core = SchemaEntity.first(is_core: true)
+      extensions = SchemaEntity.where(is_core: false)
+      SchemaEntity.each do |entity|
+        assocs = if entity.is_core
+                   extensions.map { |extension| association(entity, extension) }
+                 else
+                   [association(entity, core)]
+                 end
+        DwCR.create_model(entity.class_name, entity.table_name, *assocs)
       end
     end
   end
