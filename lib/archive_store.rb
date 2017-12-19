@@ -115,8 +115,8 @@ module DwCR
     end
 
     def load_core
-      model = "DwCR::#{core.class_name}".constantize
-#       return nil if model.
+      model = core.get_model
+      return unless model.empty?
       files = core.content_files
       headers = core.content_headers
       path = Dir.pwd
@@ -143,14 +143,15 @@ module DwCR
 
     def load_extensions
       extensions.each do |extension|
-        model = model = "DwCR::#{extension.class_name}".constantize
+        next unless extension.get_model.empty?
+        model = extension.get_model
         files = extension.content_files
         headers = extension.content_headers
         path = Dir.pwd
         files.each do |file|
           filename = path + '/spec/files/' + file.name
           CSV.open(filename).each do |row|\
-            core_instance = "DwCR::#{core.class_name}".constantize.first(core.key => row[extension.key_column])
+            core_instance = core.get_model.first(core.key => row[extension.key_column])
             p core_instance
 #             model.create(headers.zip(row).to_h)
           end

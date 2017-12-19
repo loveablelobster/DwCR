@@ -28,7 +28,11 @@ module DwCR
                                .map(&:column_name)
     end
 
-    # FIXME: necessary ?
+    def get_model
+      modelname = 'DwCR::' + class_name
+      modelname.constantize
+    end
+
     def key
       schema_attributes_dataset.first(index: key_column).alt_name.to_sym
     end
