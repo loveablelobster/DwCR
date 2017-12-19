@@ -113,7 +113,9 @@ module DwCR
     context 'loads the data' do
       it 'loads the core' do
         ArchiveStore.instance.load_contents
-        expect(DwCR::Occurrence.first(occurrence_id: '1647532a-6033-48e1-a568-fc9739f1e802').catalog_number).to be 117447
+        obs = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
+        expect(obs.catalog_number).to be 138618
+        expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side',)
       end
     end
   end

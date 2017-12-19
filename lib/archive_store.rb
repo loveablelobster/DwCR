@@ -24,17 +24,6 @@ module DwCR
       @db
     end
 
-    def association(left_entity, right_entity)
-      options = { class: right_entity.class_name, class_namespace: 'DwCR' }
-      if left_entity.is_core
-        options[:key] = "#{left_entity.name.singularize}_id".to_sym
-        [:one_to_many, right_entity.table_name, options]
-      else
-        options[:key] = :id
-        [:many_to_one, right_entity.name.singularize.to_sym, options]
-      end
-    end
-
     def core
       SchemaEntity.first(is_core: true)
     end
@@ -70,6 +59,8 @@ module DwCR
     end
 
     private
+
+    # Create the Schema
 
     def create_schema_attributes_table
       @db.create_table? :schema_attributes do
@@ -114,17 +105,16 @@ module DwCR
       end
     end
 
-    def load_core
-      model = core.get_model
-      return unless model.empty?
-      files = core.content_files
-      headers = core.content_headers
-      path = Dir.pwd
-      files.each do |file|
-        filename = path + '/spec/files/' + file.name
-        CSV.open(filename).each do |row|
-          model.create(headers.zip(row).to_h)
-        end
+    # Create the Dynamic Models
+
+    def association(left_entity, right_entity)
+      options = { class: right_entity.class_name, class_namespace: 'DwCR' }
+      if left_entity.is_core
+        options[:key] = "#{left_entity.name.singularize}_id".to_sym
+        [:one_to_many, right_entity.table_name, options]
+      else
+        options[:key] = :id
+        [:many_to_one, right_entity.name.singularize.to_sym, options]
       end
     end
 
@@ -141,19 +131,35 @@ module DwCR
       end
     end
 
+    # Load Table Contents
+
+    def load_core
+      model = core.get_model
+      return unless model.empty?
+      files = core.content_files
+      headers = core.content_headers
+      path = Dir.pwd
+      files.each do |file|
+        filename = path + '/spec/files/' + file.name
+        CSV.open(filename).each do |row|
+          model.create(headers.zip(row).to_h)
+        end
+      end
+    end
+
     def load_extensions
       extensions.each do |extension|
         next unless extension.get_model.empty?
-        model = extension.get_model
         files = extension.content_files
         headers = extension.content_headers
         path = Dir.pwd
         files.each do |file|
           filename = path + '/spec/files/' + file.name
-          CSV.open(filename).each do |row|\
+          CSV.open(filename).each do |row|
+            data_row = headers.zip(row).to_h
             core_instance = core.get_model.first(core.key => row[extension.key_column])
-            p core_instance
-#             model.create(headers.zip(row).to_h)
+            method_name = 'add_' + extension.name.singularize
+            core_instance.send(method_name, data_row)
           end
         end
       end
