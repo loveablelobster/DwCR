@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'csv'
+require 'psych'
 require 'singleton'
 require 'sequel'
 require 'sqlite3'
@@ -38,9 +39,13 @@ module DwCR
     end
 
     def create_meta_schema
-      create_schema_entities_table
-      create_schema_attributes_table
-      create_content_files_table
+      table_defs = Psych.load_file('lib/metaschema.yml')
+      table_defs.each do |td|
+        @db.create_table? td.first do
+          primary_key :id
+          td.last.each { |c| column(*c) }
+        end
+      end
       require_relative 'models/schema_entity'
       require_relative 'models/schema_attribute'
       require_relative 'models/content_file'
@@ -60,42 +65,7 @@ module DwCR
 
     private
 
-    # Create the Schema
-
-    def create_schema_attributes_table
-      @db.create_table? :schema_attributes do
-        primary_key :id
-        column :schema_entity_id, :integer
-        column :name, :string
-        column :alt_name, :string
-        column :term, :string
-        column :default, :string
-        column :has_index, :boolean
-        column :is_unique, :boolean
-        column :index, :integer
-        column :max_content_length, :integer
-      end
-    end
-
-    def create_schema_entities_table
-      @db.create_table? :schema_entities do
-        primary_key :id
-        column :name, :string        # pluralized name of the extension
-        column :term, :string        # the URI for the definition
-        column :is_core, :boolean
-        column :key_column, :integer
-      end
-    end
-
-    def create_content_files_table
-      @db.create_table? :content_files do
-        primary_key :id
-        column :schema_entity_id, :integer
-        column :name, :string
-        column :path, :string
-      end
-    end
-
+    # Create the tables for the DwCA Schema
     def create_schema_table(entity, foreign_key)
       @db.create_table entity.table_name do
         primary_key :id
@@ -134,15 +104,14 @@ module DwCR
     # Load Table Contents
 
     def load_core
-      model = core.get_model
-      return unless model.empty?
+      return unless core.get_model.empty?
       files = core.content_files
       headers = core.content_headers
       path = Dir.pwd
       files.each do |file|
         filename = path + '/spec/files/' + file.name
         CSV.open(filename).each do |row|
-          model.create(headers.zip(row).to_h)
+          core.get_model.create(headers.zip(row).to_h)
         end
       end
     end
@@ -150,10 +119,9 @@ module DwCR
     def load_extensions
       extensions.each do |extension|
         next unless extension.get_model.empty?
-        files = extension.content_files
         headers = extension.content_headers
         path = Dir.pwd
-        files.each do |file|
+        extension.content_files.each do |file|
           filename = path + '/spec/files/' + file.name
           CSV.open(filename).each do |row|
             data_row = headers.zip(row).to_h
