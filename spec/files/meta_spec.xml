@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<archive xmlns="http://rs.tdwg.org/dwc/text/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd">
+	<core fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+		<files>
+			<location>occurrence.csv</location>
+		</files>
+		<id index="0"/>
+		<field index="0" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
+		<field index="1" term="http://rs.tdwg.org/dwc/terms/catalogNumber"/>
+		<field index="2" term="http://rs.tdwg.org/dwc/terms/otherCatalogNumbers"/>
+		<field index="3" term="http://rs.tdwg.org/dwc/terms/fieldNumber"/>
+		<field index="4" term="http://rs.tdwg.org/dwc/terms/typeStatus"/>
+		<field index="5" term="http://rs.tdwg.org/dwc/terms/eventDate"/>
+		<field index="6" term="http://rs.tdwg.org/dwc/terms/recordedBy"/>
+		<field index="7" term="http://rs.tdwg.org/dwc/terms/eventRemarks"/>
+		<field index="8" term="http://rs.tdwg.org/dwc/terms/preparations"/>
+		<field index="9" term="http://purl.org/dc/terms/modified"/>
+		<field index="10" term="http://rs.tdwg.org/dwc/terms/order"/>
+		<field index="11" term="http://rs.tdwg.org/dwc/terms/family"/>
+		<field index="12" term="http://rs.tdwg.org/dwc/terms/genus"/>
+		<field index="13" term="http://rs.tdwg.org/dwc/terms/specificEpithet"/>
+		<field index="14" term="http://rs.tdwg.org/dwc/terms/infraspecificEpithet"/>
+		<field index="15" term="http://rs.tdwg.org/dwc/terms/scientificName"/>
+		<field index="16" term="http://rs.tdwg.org/dwc/terms/continent"/>
+		<field index="17" term="http://rs.tdwg.org/dwc/terms/country"/>
+		<field index="18" term="http://rs.tdwg.org/dwc/terms/stateProvince"/>
+		<field index="19" term="http://rs.tdwg.org/dwc/terms/county"/>
+		<field index="20" term="http://rs.tdwg.org/dwc/terms/higherGeography"/>
+		<field index="21" term="http://rs.tdwg.org/dwc/terms/islandGroup"/>
+		<field index="22" term="http://rs.tdwg.org/dwc/terms/island"/>
+		<field index="23" term="http://rs.tdwg.org/dwc/terms/waterBody"/>
+		<field index="24" term="http://rs.tdwg.org/dwc/terms/locality"/>
+		<field index="25" term="http://rs.tdwg.org/dwc/terms/locationRemarks"/>
+		<field index="26" term="http://rs.tdwg.org/dwc/terms/decimalLongitude"/>
+		<field index="27" term="http://rs.tdwg.org/dwc/terms/decimalLatitude"/>
+		<field index="28" term="http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters"/>
+		<field index="29" term="http://rs.tdwg.org/dwc/terms/geodeticDatum"/>
+		<field index="30" term="http://rs.tdwg.org/dwc/terms/georeferencedDate"/>
+		<field index="31" term="http://rs.tdwg.org/dwc/terms/sex"/>
+		<field default="NHMD" term="http://rs.tdwg.org/dwc/terms/institutionCode"/>
+		<field default="http://grbio.org/cool/xxx" term="http://rs.tdwg.org/dwc/terms/institutionID"/>
+		<field default="http://creativecommons.org/licenses/by/4.0/deed.en_US" term="http://purl.org/dc/terms/license"/>
+		<field default="http://snm.ku.dk/xxx" term="http://purl.org/dc/terms/accessRights"/>
+		<field default="AV" term="http://rs.tdwg.org/dwc/terms/collectionCode"/>
+		<field default="PreservedSpecimen" term="http://rs.tdwg.org/dwc/terms/basisOfRecord"/>
+		<field default="Natural History Museum of Denmark ornithological collection" term="http://rs.tdwg.org/dwc/terms/datasetName"/>
+		<field default="Animalia" term="http://rs.tdwg.org/dwc/terms/kingdom"/>
+		<field default="Chordata" term="http://rs.tdwg.org/dwc/terms/phylum"/>
+		<field default="Aves" term="http://rs.tdwg.org/dwc/terms/class"/>
+	</core>
+	<extension fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://rs.tdwg.org/ac/terms/Multimedia">
+		<files>
+			<location>media.csv</location>
+		</files>
+		<coreid index="0"/>
+		<field index="1" term="http://purl.org/dc/terms/identifier"/>
+		<field index="2" term="http://rs.tdwg.org/ac/terms/accessURI"/>
+		<field index="3" term="http://purl.org/dc/terms/title"/>
+		<field index="4" term="http://purl.org/dc/terms/format"/>
+		<field index="5" term="http://ns.adobe.com/xap/1.0/rights/Owner"/>
+		<field index="6" term="http://purl.org/dc/terms/rights"/>
+		<field index="7" term="http://rs.tdwg.org/ac/terms/licenseLogoURL"/>
+		<field index="8" term="http://ns.adobe.com/photoshop/1.0/Credit"/>
+		<field default="© 2008 XY Museum" term="http://purl.org/dc/terms/rights"/>
+		<field default="http://creativecommons.org/licenses/by/4.0/deed.en_US" term="http://purl.org/dc/elements/1.1/rights"/>
+	</extension>
+	<invalid fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://example.org">
+	</invalid>
+</archive>
