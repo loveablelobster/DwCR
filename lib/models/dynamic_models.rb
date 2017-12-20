@@ -3,7 +3,6 @@
 #
 module DwCR
   def self.create_model(model_name, source, *associations)
-    p associations
     model_class = Class.new(Sequel::Model(source)) do
       associations.each do |association|
         associate(*association)

@@ -25,6 +25,10 @@ module DwCR
       @db
     end
 
+    def reset
+      @db.disconnect
+    end
+
     def core
       SchemaEntity.first(is_core: true)
     end
