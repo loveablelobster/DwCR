@@ -95,12 +95,6 @@ module DwCR
     end
 
     context 'creates the models' do
-      it 'creates a model for media' do
-        new_media = Multimedia.create(owner: 'me')
-        expect(Multimedia[1].owner).to eq('me')
-        new_media.delete
-      end
-
       it 'creates associatiions' do
         expect(Occurrence.associations).to include(:multimedia)
         expect(Multimedia.associations).to include(:occurrence)

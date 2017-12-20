@@ -158,8 +158,9 @@ HEREDOC
 
       context 'has the definitions for `fields`' do
         it 'has an array of hashes' do
-          expect(media[:schema_attributes].size).to be 5
-          expect(media[:schema_attributes].map(&:class)).to contain_exactly(Hash, Hash, Hash, Hash, Hash)
+          attrs = media[:schema_attributes]
+          expect(attrs.size).to be 5
+          expect(attrs.map(&:class).uniq).to contain_exactly(Hash)
         end
 
         context 'each field' do
@@ -191,7 +192,8 @@ HEREDOC
 
           context 'has an `index`' do
             it 'with an integer of the column in the source file(s)' do
-              expect(media[:schema_attributes][0...4].map { |f| f[:index] }).to eq([0, 1, 2, 6])
+              attrs = media[:schema_attributes][0...4]
+              expect(attrs.map { |f| f[:index] }).to eq([0, 1, 2, 6])
             end
 
             it 'or nil if the field is not in the source file(s)' do
@@ -201,17 +203,25 @@ HEREDOC
 
           context 'has a `default`' do
             it 'with a default value for the column' do
-              expect(media[:schema_attributes][3...5].map { |f| f[:default] }).to contain_exactly('© 2008 XY Museum', 'http://creativecommons.org/licenses/by/4.0/deed.en_US')
+              attrs = media[:schema_attributes]
+              defs = attrs[3...5].map { |f| f[:default] }
+              exp = ['© 2008 XY Museum',
+                     'http://creativecommons.org/licenses/by/4.0/deed.en_US']
+              expect(defs).to contain_exactly(*exp)
             end
 
             it 'or nil if the field does not have a default value' do
-              expect(media[:schema_attributes][0...3].map { |f| f[:default] }).to eq([nil, nil, nil])
+              attrs = media[:schema_attributes]
+              no_defs = attrs[0...3].map { |f| f[:default] }
+              expect(no_defs).to eq([nil, nil, nil])
             end
           end
 
           context 'has a boolean `has_index` flag' do
             it 'that is false for every field except the `key_column`' do
-              expect(media[:schema_attributes][1...5].map { |f| f[:has_index] }).to contain_exactly(false, false, false, false)
+              attrs = media[:schema_attributes]
+              false_indices = attrs[1...5].map { |f| f[:has_index] }
+              expect(false_indices.uniq).to contain_exactly(false)
             end
 
             it 'that is true for the `key_column`' do
@@ -219,8 +229,9 @@ HEREDOC
             end
           end
 
-          it 'has a boolean `is_unique` flag' do
-            expect(media[:schema_attributes].map { |f| f[:is_unique] }).to contain_exactly(false, false, false, false, false)
+          it 'has a boolean `is_unique` flag for the index' do
+            uniques = media[:schema_attributes].map { |f| f[:is_unique] }
+            expect(uniques.uniq).to contain_exactly(false)
           end
         end
       end

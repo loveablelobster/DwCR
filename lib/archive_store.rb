@@ -71,7 +71,7 @@ module DwCR
 
     # Create the tables for the DwCA Schema
     def create_schema_table(entity, foreign_key)
-      @db.create_table entity.table_name do
+      @db.create_table? entity.table_name do
         primary_key :id
         entity.schema_attributes.each { |a| column(*a.column_schema) }
         next if entity.is_core
