@@ -4,6 +4,10 @@
     - !ruby/sym schema_entity_id
     - !ruby/sym integer
   -
+    - !ruby/sym type
+    - !ruby/sym string
+    - !ruby/sym default: string
+  -
     - !ruby/sym name
     - !ruby/sym string
   -

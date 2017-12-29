@@ -8,7 +8,7 @@ require_relative '../lib/meta_parser'
 module DwCR
   RSpec.describe 'Methods that parse the meta xml and return' do
     before(:all) do
-      @xml = <<-HEREDOC
+      xml = <<-HEREDOC
 <?xml version="1.0" ?>
 <archive xmlns="http://rs.tdwg.org/dwc/text/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd">
 	<core fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
@@ -33,8 +33,8 @@ module DwCR
 	</extension>
 </archive>
 HEREDOC
-      @meta = Nokogiri::XML(@xml)
-      @parsed_meta = DwCR.parse_meta(Nokogiri::XML(@xml))
+      @meta = Nokogiri::XML(xml)
+      @parsed_meta = DwCR.parse_meta(Nokogiri::XML(xml))
     end
 
     let(:core) { @parsed_meta.first }

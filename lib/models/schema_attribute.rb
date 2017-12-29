@@ -6,18 +6,15 @@ require 'nokogiri'
 module DwCR
   #
   class SchemaAttribute < Sequel::Model
-    # FIXME: name and alt_name are now strings, not symbols
 
     many_to_one :schema_entity
 
-    # FIXME: needs testing
     def column_name
       alt_name.to_sym
     end
 
-    # FIXME: needs testing
     def column_schema
-      [column_name, :string, { index: index_options, default: default }]
+      [column_name, type.to_sym, { index: index_options, default: default }]
     end
 
     def index_options
@@ -27,23 +24,6 @@ module DwCR
         true
       else
         false
-      end
-    end
-
-    # FIXME: this may be redundant/confusing, remove and set the values instead?
-    def index_options=(index_options)
-      case index_options
-      when true
-      	has_index = true
-      	is_unique = false
-      when :unique
-        has_index = true
-        is_unique = true
-      when :false
-        has_index = false
-        is_unique = false
-      else
-        raise ArgumentError
       end
     end
 

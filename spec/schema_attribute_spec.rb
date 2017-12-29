@@ -10,110 +10,110 @@ module DwCR
 
   RSpec.describe 'SchemaAttribute' do
     before(:all) do
+      xml = <<-HEREDOC
+<?xml version="1.0" ?>
+<archive>
+	<core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+		<id index="0"/>
+	</core>
+	<extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
+		<coreid index="0"/>
+		<field index="1" term="http://example.org/terms/aTerm"/>
+		<field index="2" term="http://example.org/terms/bTerm"/>
+		<field default="b default" term="http://example.org/terms/bTerm"/>
+		<field default="c default" term="http://example.org/terms/cTerm"/>
+	</extension>
+</archive>
+HEREDOC
+
       @db = ArchiveStore.instance.connect
-      doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
-      DwCR.parse_meta(doc)
-          .last[:schema_attributes]
-          .map { |s| SchemaAttribute.create(s) }
+      DwCR.parse_meta(Nokogiri::XML(xml)).last[:schema_attributes]
+                                         .map { |s| SchemaAttribute.create(s) }
     end
 
-    context 'it persists SchemaAttribute objects' do
-      it 'persists all nodes as SchemaAttribute objects' do
-        expect(SchemaAttribute.all.count).to be >= 10
+    context 'upon initialization it presists' do
+      it 'the default column type `string`' do
+      	expect(SchemaAttribute.first(name: 'a_term').type).to eq 'string'
       end
 
-      context 'upon initialization it presists' do
-        context 'the ontological term' do
-          it 'as string if there is a term' do
-            a = SchemaAttribute.first(name: 'format')
-            expect(a.term).to eq 'http://purl.org/dc/terms/format'
-          end
-
-          it 'nil if there is no term' do
-            a = SchemaAttribute.first(name: 'coreid')
-            expect(a.term).to be_nil
-          end
+      context 'the index of the column in the DwCA source file' do
+        it 'an integer for the index if there is one' do
+          expect(SchemaAttribute.first(name: 'a_term').index).to be 1
         end
 
-        it 'a name' do
-          a = SchemaAttribute.first(term: 'http://purl.org/dc/terms/format')
-          expect(a.name).to eq 'format'
-        end
-
-        it 'an alt_name' do
-          a = SchemaAttribute.first(term: 'http://purl.org/dc/terms/format')
-          expect(a.alt_name).to eq 'format'
-        end
-
-        context 'the index of the column in the DwCA source file' do
-          it 'an integer for the index if there is one' do
-            expect(SchemaAttribute.first(name: 'access_uri').index).to be 2
-          end
-
-          it 'nil if there is no index' do
-            expect(SchemaAttribute.first(alt_name: 'rights!').index).to be_nil
-          end
-        end
-
-        context 'the default value' do
-          it 'the default value for the column' do
-            a = SchemaAttribute.first(term: 'http://purl.org/dc/terms/rights')
-            expect(a.default).to eq '© 2008 XY Museum'
-          end
-
-          it 'nil if there is no default value' do
-            a = SchemaAttribute.first(name: 'access_uri')
-            expect(a.default).to be_nil
-          end
+        it 'nil if there is no index' do
+          expect(SchemaAttribute.first(name: 'c_term').index).to be_nil
         end
       end
+    end
 
-      context 'returns the length of the column equal to' do
-        it 'the length of the default value' do
-          a1 = SchemaAttribute.first(term: 'http://purl.org/dc/terms/rights')
-          expect(a1.length).to be 16
-        end
+    it 'returns the column name for the schema as symbol' do
+      expect(SchemaAttribute.first(name: 'a_term').column_name).to be :a_term
+    end
 
-        it 'the maximum content length if given and no default set' do
-          attr = SchemaAttribute.first(name: 'coreid')
-          attr.max_content_length = 32
-          expect(attr.length).to be 32
-        end
+    it 'returns the schema for creation of the column' do
+      f = SchemaAttribute.first(name: 'coreid')
+      a = SchemaAttribute.first(name: 'a_term')
+      b = SchemaAttribute.first(name: 'b_term')
+      c = SchemaAttribute.first(name: 'c_term')
+      expect(f.column_schema).to eq([:coreid,
+                                     :string,
+                                     { index: true, default: nil }])
+      expect(a.column_schema).to eq([:a_term,
+                                     :string,
+                                     { index: false, default: nil }])
+      expect(b.column_schema).to eq([:b_term,
+                                     :string,
+                                     { index: false, default: 'b default' }])
+      expect(c.column_schema).to eq([:c_term,
+                                     :string,
+                                     { index: false, default: 'c default' }])
+    end
 
-        it 'the maximum content length if given and larger than the default' do
-          attr = SchemaAttribute.first(alt_name: 'rights!')
-          attr.max_content_length = 100
-          expect(attr.length).to be 100
-        end
-
-        it 'the default length if longer than a given max content length' do
-          attr = SchemaAttribute.first(alt_name: 'rights!')
-          attr.max_content_length = 20
-          expect(attr.length).to be 53
-        end
-
-        it 'nil if there is no default value' do
-          expect(SchemaAttribute.first(name: 'coreid').length).to be_nil
-        end
+    context 'returns the length of the column equal to' do
+      it 'the length of the default value' do
+        expect(SchemaAttribute.first(name: 'b_term').length).to be 9
       end
 
-      context 'returns indexing options' do
-        it 'returns false if the column should not be indexed' do
-          expect(SchemaAttribute.first(term: 'http://purl.org/dc/terms/rights')
-                                .index_options).to be_falsey
-        end
+      it 'the maximum content length if given and no default set' do
+        a = SchemaAttribute.first(name: 'a_term')
+        a.max_content_length = 32
+        expect(a.length).to be 32
+      end
 
-        it 'returns true if the column should be indexed' do
-          expect(SchemaAttribute.first(name: 'coreid')
-                                .index_options).to be_truthy
-        end
+      it 'the maximum content length if given and larger than the default' do
+        b = SchemaAttribute.first(name: 'b_term')
+        b.max_content_length = 100
+        expect(b.length).to be 100
+      end
 
-        it 'returns a unique index as a hash option' do
-          attr = SchemaAttribute.first(term: 'http://purl.org/dc/terms/rights')
-          attr.has_index = true
-          attr.is_unique = true
-          expect(attr.index_options).to include(unique: true)
-        end
+      it 'the default length if longer than a given max content length' do
+        b = SchemaAttribute.first(alt_name: 'b_term')
+        b.max_content_length = 8
+        expect(b.length).to be 9
+      end
+
+      it 'nil if there is no default value' do
+        expect(SchemaAttribute.first(name: 'a_term').length).to be_nil
+      end
+    end
+
+    context 'returns indexing options' do
+      it 'returns false if the column should not be indexed' do
+        expect(SchemaAttribute.first(name: 'a_term')
+                              .index_options).to be_falsey
+      end
+
+      it 'returns true if the column should be indexed' do
+        expect(SchemaAttribute.first(name: 'coreid')
+                              .index_options).to be_truthy
+      end
+
+      it 'returns a unique index as a hash option' do
+        a = SchemaAttribute.first(name: 'a_term')
+        a.has_index = true
+        a.is_unique = true
+        expect(a.index_options).to include(unique: true)
       end
     end
   end
