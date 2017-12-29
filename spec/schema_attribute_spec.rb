@@ -10,30 +10,31 @@ module DwCR
 
   RSpec.describe 'SchemaAttribute' do
     before(:all) do
-      xml = <<-HEREDOC
-<?xml version="1.0" ?>
-<archive>
-	<core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
-		<id index="0"/>
-	</core>
-	<extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
-		<coreid index="0"/>
-		<field index="1" term="http://example.org/terms/aTerm"/>
-		<field index="2" term="http://example.org/terms/bTerm"/>
-		<field default="b default" term="http://example.org/terms/bTerm"/>
-		<field default="c default" term="http://example.org/terms/cTerm"/>
-	</extension>
-</archive>
+      xml = <<~HEREDOC
+        <?xml version="1.0" ?>
+        <archive>
+          <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+            <id index="0"/>
+          </core>
+          <extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
+            <coreid index="0"/>
+            <field index="1" term="http://example.org/terms/aTerm"/>
+            <field index="2" term="http://example.org/terms/bTerm"/>
+            <field default="b default" term="http://example.org/terms/bTerm"/>
+            <field default="c default" term="http://example.org/terms/cTerm"/>
+          </extension>
+        </archive>
 HEREDOC
 
       @db = ArchiveStore.instance.connect
-      DwCR.parse_meta(Nokogiri::XML(xml)).last[:schema_attributes]
-                                         .map { |s| SchemaAttribute.create(s) }
+      DwCR.parse_meta(Nokogiri::XML(xml))
+          .last[:schema_attributes]
+          .map { |s| SchemaAttribute.create(s) }
     end
 
     context 'upon initialization it presists' do
       it 'the default column type `string`' do
-      	expect(SchemaAttribute.first(name: 'a_term').type).to eq 'string'
+        expect(SchemaAttribute.first(name: 'a_term').type).to eq 'string'
       end
 
       context 'the index of the column in the DwCA source file' do
