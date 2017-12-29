@@ -73,7 +73,7 @@ module DwCR
     def create_schema_table(entity, foreign_key)
       @db.create_table? entity.table_name do
         primary_key :id
-        entity.schema_attributes.each { |a| column(*a.column_schema) }
+        entity.schema_attributes.each { |a| column(*a.column_params) }
         next if entity.is_core
         column foreign_key, :integer
       end

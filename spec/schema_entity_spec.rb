@@ -86,16 +86,5 @@ module DwCR
                                                         :license_logo_url,
                                                         :credit)
     end
-
-    it 'sets indexing options for key columns' do
-      core_cs = @core.schema_attributes[0].column_schema
-      exp_core_cs = [:occurrence_id, :string,
-                     { index: { unique: true }, default: nil }]
-      media_cs = @media.schema_attributes[0].column_schema
-      exp_media_cs = [:coreid, :string,
-                      { index: true, default: nil }]
-      expect(core_cs).to eq(exp_core_cs)
-      expect(media_cs).to eq(exp_media_cs)
-    end
   end
 end

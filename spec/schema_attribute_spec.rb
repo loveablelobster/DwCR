@@ -15,6 +15,7 @@ module DwCR
         <archive>
           <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
             <id index="0"/>
+            <field index="0" term="http://example.org/terms/theID"/>
           </core>
           <extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
             <coreid index="0"/>
@@ -28,8 +29,9 @@ HEREDOC
 
       @db = ArchiveStore.instance.connect
       DwCR.parse_meta(Nokogiri::XML(xml))
-          .last[:schema_attributes]
-          .map { |s| SchemaAttribute.create(s) }
+          .each do |node|
+            node[:schema_attributes].map { |s| SchemaAttribute.create(s) }
+          end
     end
 
     context 'upon initialization it presists' do
@@ -53,20 +55,24 @@ HEREDOC
     end
 
     it 'returns the schema for creation of the column' do
+      k = SchemaAttribute.first(name: 'the_id')
       f = SchemaAttribute.first(name: 'coreid')
       a = SchemaAttribute.first(name: 'a_term')
       b = SchemaAttribute.first(name: 'b_term')
       c = SchemaAttribute.first(name: 'c_term')
-      expect(f.column_schema).to eq([:coreid,
+      expect(k.column_params).to eq([:the_id,
+                                     :string,
+                                     { index: { unique: true }, default: nil }])
+      expect(f.column_params).to eq([:coreid,
                                      :string,
                                      { index: true, default: nil }])
-      expect(a.column_schema).to eq([:a_term,
+      expect(a.column_params).to eq([:a_term,
                                      :string,
                                      { index: false, default: nil }])
-      expect(b.column_schema).to eq([:b_term,
+      expect(b.column_params).to eq([:b_term,
                                      :string,
                                      { index: false, default: 'b default' }])
-      expect(c.column_schema).to eq([:c_term,
+      expect(c.column_params).to eq([:c_term,
                                      :string,
                                      { index: false, default: 'c default' }])
     end
@@ -96,25 +102,6 @@ HEREDOC
 
       it 'nil if there is no default value' do
         expect(SchemaAttribute.first(name: 'a_term').length).to be_nil
-      end
-    end
-
-    context 'returns indexing options' do
-      it 'returns false if the column should not be indexed' do
-        expect(SchemaAttribute.first(name: 'a_term')
-                              .index_options).to be_falsey
-      end
-
-      it 'returns true if the column should be indexed' do
-        expect(SchemaAttribute.first(name: 'coreid')
-                              .index_options).to be_truthy
-      end
-
-      it 'returns a unique index as a hash option' do
-        a = SchemaAttribute.first(name: 'a_term')
-        a.has_index = true
-        a.is_unique = true
-        expect(a.index_options).to include(unique: true)
       end
     end
   end
