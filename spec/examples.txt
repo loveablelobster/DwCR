@@ -64,4 +64,4 @@ example_id                               | status | run_time        |
 ./spec/schema_entity_spec.rb[1:5:5]      | passed | 0.00028 seconds |
 ./spec/schema_entity_spec.rb[1:6]        | passed | 0.00022 seconds |
 ./spec/schema_entity_spec.rb[1:7]        | passed | 0.00041 seconds |
-./spec/table_contents_spec.rb[1:1]       | failed | 2.48 seconds    |
+./spec/table_contents_spec.rb[1:1]       | passed | 0.00049 seconds |
