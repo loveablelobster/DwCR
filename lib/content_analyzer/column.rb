@@ -4,13 +4,13 @@
 module DwCR
   #
   class Column
-    attr_accessor :header
-    attr_reader :type, :length
+    attr_reader :index, :type, :length
 
-    def initialize(header, contents, detectors = %i[col_type col_length])
+    def initialize(index, contents, detectors = %i[col_type col_length])
+      raise ArgumentError unless index.is_a? Integer
       detectors = [] if detectors == :none
       detectors = [detectors] if detectors.is_a? Symbol
-      @header = header
+      @index = index
       @type = nil
       @length = nil
       analyze(contents, detectors)

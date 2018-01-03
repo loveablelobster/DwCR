@@ -20,10 +20,10 @@ module DwCR
     end
 
     def consolidate(files)
-      files.group_by(&:header).map do |header, column|
+      files.group_by(&:index).map do |index, column|
         length = column.map(&:length).max
         types = column.map(&:type).uniq
-        [header, { length: length, type: common_type(types) }]
+        [index, { length: length, type: common_type(types) }]
       end
     end
 

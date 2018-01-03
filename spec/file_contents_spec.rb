@@ -6,10 +6,9 @@ module DwCR
   RSpec.describe DwCR::FileContents do
     let(:core) { FileContents.new('spec/files/occurrence.csv').columns }
 
-    # FIXME: these are ad-hoc headers
-    it 'gets the headers for each column in a CSV file' do
-      headers = core.map(&:header)
-      expect(headers).to contain_exactly(*Array.new(32) { |i| i})
+    it 'detremines the indices as headers for each column in a CSV file' do
+      indices = core.map(&:index)
+      expect(indices).to contain_exactly(*Array.new(32) { |i| i})
     end
 
     it 'gets the lengths for the columns' do
