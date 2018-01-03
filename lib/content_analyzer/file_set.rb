@@ -6,11 +6,10 @@ require_relative 'file_contents'
 module DwCR
   #
   class FileSet
-    attr_accessor :col_attrs
     attr_reader :columns
 
-    def initialize(files, col_attrs = %i[col_type col_length])
-      @col_attrs = col_attrs
+    def initialize(files, detectors = %i[col_type col_length])
+      @detectors = detectors
       @columns = analyze files
     end
 
@@ -29,7 +28,7 @@ module DwCR
     end
 
     def columns_for(file)
-      FileContents.new(file, @col_attrs).columns
+      FileContents.new(file, @detectors).columns
     end
 
     def common_type(types)

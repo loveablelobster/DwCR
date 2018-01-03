@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'psych'
-
 require_relative '../lib/content_analyzer/file_contents'
 
 module DwCR

@@ -11,9 +11,9 @@ module DwCR
   class FileContents
     attr_reader :columns
 
-    def initialize(file, col_attrs = %i[col_type col_length])
+    def initialize(file, detectors = %i[col_type col_length])
       @file = file
-      @col_attrs = col_attrs
+      @detectors = detectors
       @columns = analyze
     end
 
@@ -24,7 +24,7 @@ module DwCR
       table.by_col!.map do |col|
         header = col[0]
         contents = col[1]
-        Column.new(header, contents, calculate: @col_attrs)
+        Column.new(header, contents, @detectors)
       end
     end
 

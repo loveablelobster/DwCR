@@ -7,20 +7,22 @@ module DwCR
     attr_accessor :header
     attr_reader :type, :length
 
-    def initialize(header, contents, calculate: %i[col_type col_length])
+    def initialize(header, contents, detectors = %i[col_type col_length])
+      detectors = [] if detectors == :none
+      detectors = [detectors] if detectors.is_a? Symbol
       @header = header
       @type = nil
       @length = nil
-      analyze(contents, calculate: calculate)
-    end
-
-    def analyze(contents, calculate: [])
-      return if calculate.empty?
-      cells = contents.compact
-      calculate.each { |attr| send(attr, cells) }
+      analyze(contents, detectors)
     end
 
     private
+
+    def analyze(contents, detectors)
+      return if detectors.empty?
+      cells = contents.compact
+      detectors.each { |detector| send(detector, cells) }
+    end
 
     # collapses all types encountered in a file's column into a single type
     def collapse(types)
