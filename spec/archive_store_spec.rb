@@ -2,8 +2,8 @@
 
 require 'pry'
 
-require_relative '../lib/archive_store'
 require_relative '../lib/meta_parser'
+require_relative '../lib/store/archive_store'
 
 #
 module DwCR

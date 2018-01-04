@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib/archive_store'
+require_relative '../lib/store/archive_store'
 require_relative '../lib/meta_parser'
 #
 module DwCR

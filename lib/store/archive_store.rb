@@ -6,13 +6,13 @@ require 'singleton'
 require 'sequel'
 require 'sqlite3'
 
-require_relative 'content_analyzer/file_set'
-require_relative 'models/dynamic_models'
+require_relative '../content_analyzer/file_set'
+require_relative '../models/dynamic_models'
 
 #
 module DwCR
   Sequel.extension :inflector
-  require_relative 'inflections'
+  require_relative '../inflections'
 
   #
   class ArchiveStore
@@ -46,16 +46,16 @@ module DwCR
 
     def create_meta_schema
       connect unless @db
-      table_defs = Psych.load_file('lib/metaschema.yml')
+      table_defs = Psych.load_file('lib/store/metaschema.yml')
       table_defs.each do |td|
         @db.create_table? td.first do
           primary_key :id
           td.last.each { |c| column(*c) }
         end
       end
-      require_relative 'models/schema_entity'
-      require_relative 'models/schema_attribute'
-      require_relative 'models/content_file'
+      require_relative '../models/schema_entity'
+      require_relative '../models/schema_attribute'
+      require_relative '../models/content_file'
     end
 
     # schema option:
