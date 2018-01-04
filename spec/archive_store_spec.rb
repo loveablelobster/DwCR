@@ -67,6 +67,8 @@ module DwCR
                                                                          :class)
       end
 
+      # FIXME: needs tests for type and length
+
       it 'creates a table for `multimedia` (`extension`)' do
         expect(@db.table_exists?(:multimedia)).to be_truthy
         expect(@db.schema(:multimedia).map(&:first)).to contain_exactly(:id,

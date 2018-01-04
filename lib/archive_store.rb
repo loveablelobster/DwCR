@@ -84,10 +84,9 @@ module DwCR
         col_params = FileSet.new(files, detectors).columns
         col_params.each do |cp|
           column = entity.schema_attributes_dataset.first(index: cp[:index])
-          column[:type] = cp[:type] if cp[:type] && schema_options[:col_type]
+          column[:type] = cp[:type].to_s.underscore if cp[:type] && schema_options[:col_type]
           column[:max_content_length] = cp[:length] if schema_options[:col_length]
           column.save
-          p column
         end
       end
     end
