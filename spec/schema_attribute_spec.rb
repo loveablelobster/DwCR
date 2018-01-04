@@ -14,11 +14,11 @@ module DwCR
       xml = <<~HEREDOC
         <?xml version="1.0" ?>
         <archive>
-          <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+          <core rowType="http://example.org/terms/Core">
             <id index="0"/>
             <field index="0" term="http://example.org/terms/theID"/>
           </core>
-          <extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
+          <extension rowType="http://example.org/ac/terms/Extension">
             <coreid index="0"/>
             <field index="1" term="http://example.org/terms/aTerm"/>
             <field index="2" term="http://example.org/terms/bTerm"/>
