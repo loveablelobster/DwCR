@@ -12,6 +12,9 @@ module DwCR
   class Schema
     def initialize
       DwCR.create_metaschema
+      require_relative '../models/schema_entity'
+      require_relative '../models/schema_attribute'
+      require_relative '../models/content_file'
     end
 
     def core

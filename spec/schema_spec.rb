@@ -14,7 +14,6 @@ module DwCR
 
   RSpec.describe Schema do
     before(:all) do
-      @db = DwCR.connect#(path: 'spec/files/test.db')
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       @dwcr = Schema.new
       DwCR.parse_meta(doc).each { |e| DwCR.create_schema_entity(e) }

@@ -28,8 +28,6 @@ module DwCR
         </archive>
 HEREDOC
 
-      @db = DwCR.connect
-      DwCR.create_metaschema
       DwCR.parse_meta(Nokogiri::XML(xml))
           .each do |node|
             node[:schema_attributes].map { |s| SchemaAttribute.create(s) }
@@ -109,7 +107,6 @@ HEREDOC
 
     after(:all) do
       SchemaAttribute.dataset.destroy
-      Sequel::Model.db.disconnect
     end
   end
 end

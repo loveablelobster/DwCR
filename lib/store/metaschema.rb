@@ -13,8 +13,5 @@ module DwCR
         td.last.each { |c| column(*c) }
       end
     end
-    require_relative '../models/schema_entity'
-    require_relative '../models/schema_attribute'
-    require_relative '../models/content_file'
   end
 end
