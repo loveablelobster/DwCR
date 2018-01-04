@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/db/connection'
-require_relative '../lib/store/archive_store'
+require_relative '../lib/store/metaschema'
 require_relative '../lib/meta_parser'
 #
 module DwCR
@@ -29,7 +29,7 @@ module DwCR
 HEREDOC
 
       @db = DwCR.connect
-      ArchiveStore.new # required to get the metaschema
+      DwCR.create_metaschema
       DwCR.parse_meta(Nokogiri::XML(xml))
           .each do |node|
             node[:schema_attributes].map { |s| SchemaAttribute.create(s) }

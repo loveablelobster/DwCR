@@ -4,7 +4,7 @@ require 'pry'
 
 require_relative '../lib/db/connection'
 require_relative '../lib/meta_parser'
-require_relative '../lib/store/archive_store'
+require_relative '../lib/store/schema'
 
 #
 module DwCR
@@ -12,11 +12,11 @@ module DwCR
     config.warnings = false
   end
 
-  RSpec.describe DwCR do
+  RSpec.describe Schema do
     before(:all) do
       @db = DwCR.connect#(path: 'spec/files/test.db')
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
-      @dwcr = ArchiveStore.new
+      @dwcr = Schema.new
       DwCR.parse_meta(doc).each { |e| DwCR.create_schema_entity(e) }
       @dwcr.create_schema(col_type: true, col_length: true)
     end
@@ -119,9 +119,5 @@ module DwCR
 #         binding.pry
       end
     end
-
-#     after(:all) do
-#       ArchiveStore.instance.reset
-#     end
   end
 end

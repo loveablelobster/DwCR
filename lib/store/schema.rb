@@ -1,24 +1,17 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'psych'
-# require 'singleton'
-# require 'sequel'
-# require 'sqlite3'
 
 require_relative '../content_analyzer/file_set'
-require_relative '../db/connection'
 require_relative '../models/dynamic_models'
+require_relative 'metaschema'
 
 #
 module DwCR
-#   Sequel.extension :inflector
-#   require_relative '../inflections'
-
   #
-  class ArchiveStore
+  class Schema
     def initialize
-      create_meta_schema
+      DwCR.create_metaschema
     end
 
     def core
@@ -32,20 +25,6 @@ module DwCR
     # gets the name of the foreign key from the core entity
     def foreign_key
       core.class_name.foreign_key
-    end
-
-    def create_meta_schema
-      connect unless Sequel::Model.db
-      table_defs = Psych.load_file('lib/store/metaschema.yml')
-      table_defs.each do |td|
-        Sequel::Model.db.create_table? td.first do
-          primary_key :id
-          td.last.each { |c| column(*c) }
-        end
-      end
-      require_relative '../models/schema_entity'
-      require_relative '../models/schema_attribute'
-      require_relative '../models/content_file'
     end
 
     # schema option:
