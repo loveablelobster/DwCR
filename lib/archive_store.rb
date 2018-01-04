@@ -80,7 +80,7 @@ module DwCR
       detectors = schema_options.keys
 
       SchemaEntity.each do |entity|
-        files = entity.content_files.map { |file| Dir.pwd + '/spec/files/' + file.name }  # FIXME: path!
+        files = entity.content_files.map { |file| Dir.pwd + '/spec/files/' + file.name } # FIXME: path!
         col_params = FileSet.new(files, detectors).columns
         col_params.each do |cp|
           column = entity.schema_attributes_dataset.first(index: cp[:index])
@@ -135,7 +135,7 @@ module DwCR
       headers = core.content_headers
       path = Dir.pwd
       files.each do |file|
-        filename = path + '/spec/files/' + file.name  # FIXME: path!
+        filename = path + '/spec/files/' + file.name # FIXME: path!
         CSV.open(filename).each do |row|
           core.get_model.create(headers.zip(row).to_h)
         end
@@ -148,10 +148,11 @@ module DwCR
         headers = extension.content_headers
         path = Dir.pwd
         extension.content_files.each do |file|
-          filename = path + '/spec/files/' + file.name  # FIXME: path!
+          filename = path + '/spec/files/' + file.name # FIXME: path!
           CSV.open(filename).each do |row|
             data_row = headers.zip(row).to_h
-            core_instance = core.get_model.first(core.key => row[extension.key_column])
+            core_instance = core.get_model
+                                .first(core.key => row[extension.key_column])
             method_name = 'add_' + extension.name.singularize
             core_instance.send(method_name, data_row)
           end
