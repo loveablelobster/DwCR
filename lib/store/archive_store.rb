@@ -2,33 +2,23 @@
 
 require 'csv'
 require 'psych'
-require 'singleton'
-require 'sequel'
-require 'sqlite3'
+# require 'singleton'
+# require 'sequel'
+# require 'sqlite3'
 
 require_relative '../content_analyzer/file_set'
+require_relative '../db/connection'
 require_relative '../models/dynamic_models'
 
 #
 module DwCR
-  Sequel.extension :inflector
-  require_relative '../inflections'
+#   Sequel.extension :inflector
+#   require_relative '../inflections'
 
   #
   class ArchiveStore
-    include Singleton
-
-    attr_reader :db
-
-    # path: path to the SQLite `.db` file, will store in memory if none given
-    def connect(path: nil)
-      @db = Sequel.sqlite(path)
+    def initialize
       create_meta_schema
-      @db
-    end
-
-    def reset
-      @db.disconnect
     end
 
     def core
@@ -45,10 +35,10 @@ module DwCR
     end
 
     def create_meta_schema
-      connect unless @db
+      connect unless Sequel::Model.db
       table_defs = Psych.load_file('lib/store/metaschema.yml')
       table_defs.each do |td|
-        @db.create_table? td.first do
+        Sequel::Model.db.create_table? td.first do
           primary_key :id
           td.last.each { |c| column(*c) }
         end
@@ -95,7 +85,7 @@ module DwCR
 
     # Create the tables for the DwCA Schema
     def create_schema_table(entity, foreign_key)
-      @db.create_table? entity.table_name do
+      Sequel::Model.db.create_table? entity.table_name do
         primary_key :id
         entity.schema_attributes.each { |a| column(*a.column_params) }
         next if entity.is_core

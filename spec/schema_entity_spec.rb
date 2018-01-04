@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../lib/db/connection'
 require_relative '../lib/store/archive_store'
 require_relative '../lib/meta_parser'
 
@@ -11,7 +12,8 @@ module DwCR
 
   RSpec.describe 'SchemaEntity' do
     before(:all) do
-      @db = ArchiveStore.instance.connect
+      @db = DwCR.connect
+      ArchiveStore.new # required to get the metaschema
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       parsed_meta = DwCR.parse_meta(doc)
       @core = DwCR.create_schema_entity(parsed_meta.first)

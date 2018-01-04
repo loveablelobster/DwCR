@@ -5,7 +5,7 @@ require 'date'
 require_relative '../lib/content_analyzer/column'
 
 module DwCR
-  RSpec.describe DwCR::Column, 'analyzes the contents of a CSV column' do
+  RSpec.describe Column, 'analyzes the contents of a CSV column' do
     context 'is intitialized with a `index`, `contents` and `detectors`' do
       it '`index` is required' do
         c = Column.new(1, [], :none)

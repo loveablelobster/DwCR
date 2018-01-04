@@ -3,7 +3,7 @@
 require_relative '../lib/content_analyzer/file_contents'
 
 module DwCR
-  RSpec.describe DwCR::FileContents do
+  RSpec.describe FileContents do
     let(:core) { FileContents.new('spec/files/occurrence.csv').columns }
 
     it 'detremines the indices as headers for each column in a CSV file' do

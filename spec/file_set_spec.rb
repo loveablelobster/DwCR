@@ -5,7 +5,7 @@ require 'psych'
 require_relative '../lib/content_analyzer/file_set'
 
 module DwCR
-  RSpec.describe DwCR::FileSet do
+  RSpec.describe FileSet do
     let(:core_files) { ['spec/files/occurrence.csv'] }
     let(:extn_files) { ['spec/files/media.csv'] }
 

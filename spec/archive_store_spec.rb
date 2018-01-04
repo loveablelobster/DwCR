@@ -2,6 +2,7 @@
 
 require 'pry'
 
+require_relative '../lib/db/connection'
 require_relative '../lib/meta_parser'
 require_relative '../lib/store/archive_store'
 
@@ -11,12 +12,13 @@ module DwCR
     config.warnings = false
   end
 
-  RSpec.describe ArchiveStore do
+  RSpec.describe DwCR do
     before(:all) do
-      @db = ArchiveStore.instance.connect#(path: 'spec/files/test.db')
+      @db = DwCR.connect#(path: 'spec/files/test.db')
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
+      @dwcr = ArchiveStore.new
       DwCR.parse_meta(doc).each { |e| DwCR.create_schema_entity(e) }
-      ArchiveStore.instance.create_schema(col_type: true, col_length: true)
+      @dwcr.create_schema(col_type: true, col_length: true)
     end
 
     context 'creates the schema' do
@@ -87,11 +89,11 @@ module DwCR
     end
 
     it 'fetches the core' do
-      expect(ArchiveStore.instance.core.class_name).to eq 'Occurrence'
+      expect(@dwcr.core.class_name).to eq 'Occurrence'
     end
 
     it 'fetches the extensions' do
-      extensions = ArchiveStore.instance.extensions
+      extensions = @dwcr.extensions
       expect(extensions).to be_a Sequel::Dataset
       expect(extensions.map(&:class_name)).to include 'Multimedia'
     end
@@ -110,7 +112,7 @@ module DwCR
 
     context 'loads the data' do
       it 'loads the core' do
-        ArchiveStore.instance.load_contents
+        @dwcr.load_contents
         obs = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
         expect(obs.catalog_number).to be 138618
         expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
