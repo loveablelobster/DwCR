@@ -23,7 +23,6 @@ module DwCR
 
     context 'creates the schema' do
       it 'creates a table for `occurrences` (`core`)' do
-        expect(@db.table_exists?(:occurrences)).to be_truthy
         expect(@db.schema(:occurrences).map(&:first)).to contain_exactly(:id,
                                                                          :occurrence_id,
                                                                          :catalog_number,
@@ -72,7 +71,6 @@ module DwCR
       # FIXME: needs tests for type and length
 
       it 'creates a table for `multimedia` (`extension`)' do
-        expect(@db.table_exists?(:multimedia)).to be_truthy
         expect(@db.schema(:multimedia).map(&:first)).to contain_exactly(:id,
                                                                         :coreid,
                                                                         :identifier,
@@ -99,7 +97,7 @@ module DwCR
     end
 
     context 'creates the models' do
-      it 'creates associatiions' do
+      it 'creates associations' do
         expect(Occurrence.associations).to include(:multimedia)
         expect(Multimedia.associations).to include(:occurrence)
         obs = Occurrence.create(catalog_number: '#1')
@@ -111,7 +109,7 @@ module DwCR
     end
 
     context 'loads the data' do
-      it 'loads the core' do
+      it 'loads the core with associated extension records' do
         @dwcr.load_contents
         obs = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
         expect(obs.catalog_number).to be 138618

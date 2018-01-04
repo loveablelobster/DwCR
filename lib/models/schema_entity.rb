@@ -39,11 +39,5 @@ module DwCR
     def table_name
       name.to_sym
     end
-
-#     def update(attribute_lengths)
-#       attribute_lengths.each do |name, length|
-#         attribute(name).max_content_length = length
-#       end
-#     end
   end
 end

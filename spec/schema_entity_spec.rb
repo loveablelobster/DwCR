@@ -34,7 +34,7 @@ module DwCR
           </extension>
         </archive>
 HEREDOC
-      @db = DwCR.connect
+      DwCR.connect
       DwCR.create_metaschema
       parsed_meta = DwCR.parse_meta(Nokogiri::XML(xml))
       @core = DwCR.create_schema_entity(parsed_meta.first)
@@ -103,6 +103,7 @@ HEREDOC
     after(:all) do
       @core.destroy
       @extension.destroy
+      Sequel::Model.db.disconnect
     end
   end
 end

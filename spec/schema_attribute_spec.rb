@@ -106,5 +106,10 @@ HEREDOC
         expect(SchemaAttribute.first(name: 'a_term').length).to be_nil
       end
     end
+
+    after(:all) do
+      SchemaAttribute.dataset.destroy
+      Sequel::Model.db.disconnect
+    end
   end
 end
