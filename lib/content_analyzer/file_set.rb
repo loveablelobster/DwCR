@@ -16,14 +16,14 @@ module DwCR
     private
 
     def analyze(files)
-      consolidate(files.map { |file| columns_for file }.flatten).to_h
+      consolidate(files.map { |file| columns_for file }.flatten)
     end
 
     def consolidate(files)
       files.group_by(&:index).map do |index, column|
         length = column.map(&:length).max
         types = column.map(&:type).uniq
-        [index, { length: length, type: common_type(types) }]
+        { index: index, length: length, type: common_type(types) }
       end
     end
 

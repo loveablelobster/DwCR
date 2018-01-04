@@ -6,6 +6,7 @@ require 'singleton'
 require 'sequel'
 require 'sqlite3'
 
+require_relative 'content_analyzer/file_set'
 require_relative 'models/dynamic_models'
 
 #
@@ -19,8 +20,9 @@ module DwCR
 
     attr_reader :db
 
-    def connect(archive_path = nil)
-      @db = Sequel.sqlite(archive_path)
+    # path: path to the SQLite `.db` file, will store in memory if none given
+    def connect(path: nil)
+      @db = Sequel.sqlite(path)
       create_meta_schema
       @db
     end
@@ -43,6 +45,7 @@ module DwCR
     end
 
     def create_meta_schema
+      connect unless @db
       table_defs = Psych.load_file('lib/metaschema.yml')
       table_defs.each do |td|
         @db.create_table? td.first do
@@ -55,7 +58,11 @@ module DwCR
       require_relative 'models/content_file'
     end
 
-    def create_schema
+    # schema option:
+    # - :col_type => true   # will set column types other than string
+    # - :col_length => true # will set lengths for (string) columns
+    def create_schema(**schema_options)
+      update_schema(schema_options)
       SchemaEntity.each do |entity|
         create_schema_table(entity, foreign_key)
       end
@@ -65,6 +72,24 @@ module DwCR
     def load_contents
       load_core
       load_extensions
+    end
+
+    def update_schema(schema_options)
+      return unless schema_options
+
+      detectors = schema_options.keys
+
+      SchemaEntity.each do |entity|
+        files = entity.content_files.map { |file| Dir.pwd + '/spec/files/' + file.name }  # FIXME: path!
+        col_params = FileSet.new(files, detectors).columns
+        col_params.each do |cp|
+          column = entity.schema_attributes_dataset.first(index: cp[:index])
+          column[:type] = cp[:type] if cp[:type] && schema_options[:col_type]
+          column[:max_content_length] = cp[:length] if schema_options[:col_length]
+          column.save
+          p column
+        end
+      end
     end
 
     private
@@ -80,7 +105,6 @@ module DwCR
     end
 
     # Create the Dynamic Models
-
     def association(left_entity, right_entity)
       options = { class: right_entity.class_name, class_namespace: 'DwCR' }
       if left_entity.is_core
@@ -106,14 +130,13 @@ module DwCR
     end
 
     # Load Table Contents
-
     def load_core
       return unless core.get_model.empty?
       files = core.content_files
       headers = core.content_headers
       path = Dir.pwd
       files.each do |file|
-        filename = path + '/spec/files/' + file.name
+        filename = path + '/spec/files/' + file.name  # FIXME: path!
         CSV.open(filename).each do |row|
           core.get_model.create(headers.zip(row).to_h)
         end
@@ -126,7 +149,7 @@ module DwCR
         headers = extension.content_headers
         path = Dir.pwd
         extension.content_files.each do |file|
-          filename = path + '/spec/files/' + file.name
+          filename = path + '/spec/files/' + file.name  # FIXME: path!
           CSV.open(filename).each do |row|
             data_row = headers.zip(row).to_h
             core_instance = core.get_model.first(core.key => row[extension.key_column])

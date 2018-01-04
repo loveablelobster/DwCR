@@ -13,10 +13,10 @@ module DwCR
 
   RSpec.describe ArchiveStore do
     before(:all) do
-      @db = ArchiveStore.instance.connect#('spec/files/test.db')
+      @db = ArchiveStore.instance.connect#(path: 'spec/files/test.db')
       doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
       DwCR.parse_meta(doc).each { |e| DwCR.create_schema_entity(e) }
-      ArchiveStore.instance.create_schema
+      ArchiveStore.instance.create_schema(col_type: true, col_length: true)
     end
 
     context 'creates the schema' do

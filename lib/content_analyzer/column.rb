@@ -6,9 +6,10 @@ module DwCR
   class Column
     attr_reader :index, :type, :length
 
-    def initialize(index, contents, detectors = %i[col_type col_length])
+    def initialize(index, contents, detectors = :all)
       raise ArgumentError unless index.is_a? Integer
       detectors = [] if detectors == :none
+      detectors = %i[col_type col_length] if detectors == :all
       detectors = [detectors] if detectors.is_a? Symbol
       @index = index
       @type = nil
