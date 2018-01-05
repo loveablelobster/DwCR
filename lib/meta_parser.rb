@@ -14,8 +14,6 @@ module DwCR
     entities.concat parse_extensions(meta_xml.css('extension'))
   end
 
-  private
-
   def self.entity_hash(node, is_core:)
     tag = is_core ? 'id' : 'coreid'
     hash = name_term_hash(node)

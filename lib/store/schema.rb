@@ -3,6 +3,8 @@
 require 'csv'
 
 require_relative '../content_analyzer/file_set'
+require_relative '../loadable'
+require_relative '../meta_parser'
 require_relative '../models/dynamic_models'
 require_relative 'metaschema'
 
@@ -10,6 +12,9 @@ require_relative 'metaschema'
 module DwCR
   #
   class Schema
+
+    include Loadable
+
     def initialize
       DwCR.create_metaschema
       require_relative '../models/schema_entity'
@@ -30,6 +35,17 @@ module DwCR
       core.class_name.foreign_key
     end
 
+    def load_schema(meta)
+      xml = File.open(meta) { |f| Nokogiri::XML(f) }
+      DwCR.parse_meta(xml).each do |entity_hash|
+        attributes = entity_hash.delete(:schema_attributes)
+        files = entity_hash.delete(:content_files)
+        entity = SchemaEntity.create(entity_hash)
+        attributes.each { |a| entity.add_schema_attribute(a) }
+        files.each { |f| entity.add_content_file(f) }
+      end
+    end
+
     # schema option:
     # - :col_type => true   # will set column types other than string
     # - :col_length => true # will set lengths for (string) columns
@@ -39,11 +55,6 @@ module DwCR
         create_schema_table(entity, foreign_key)
       end
       load_models
-    end
-
-    def load_contents
-      load_core
-      load_extensions
     end
 
     def update_schema(schema_options)
@@ -97,38 +108,6 @@ module DwCR
                    [association(entity, core)]
                  end
         DwCR.create_model(entity.class_name, entity.table_name, *assocs)
-      end
-    end
-
-    # Load Table Contents
-    def load_core
-      return unless core.get_model.empty?
-      files = core.content_files
-      headers = core.content_headers
-      path = Dir.pwd
-      files.each do |file|
-        filename = path + '/spec/files/' + file.name # FIXME: path!
-        CSV.open(filename).each do |row|
-          core.get_model.create(headers.zip(row).to_h)
-        end
-      end
-    end
-
-    def load_extensions
-      extensions.each do |extension|
-        next unless extension.get_model.empty?
-        headers = extension.content_headers
-        path = Dir.pwd
-        extension.content_files.each do |file|
-          filename = path + '/spec/files/' + file.name # FIXME: path!
-          CSV.open(filename).each do |row|
-            data_row = headers.zip(row).to_h
-            core_instance = core.get_model
-                                .first(core.key => row[extension.key_column])
-            method_name = 'add_' + extension.name.singularize
-            core_instance.send(method_name, data_row)
-          end
-        end
       end
     end
   end

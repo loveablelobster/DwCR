@@ -4,14 +4,6 @@ require_relative 'schema_attribute'
 
 #
 module DwCR
-  def self.create_schema_entity(entity_hash)
-    attributes = entity_hash.delete(:schema_attributes)
-    files = entity_hash.delete(:content_files)
-    entity = SchemaEntity.create(entity_hash)
-    attributes.each { |a| entity.add_schema_attribute(a) }
-    files.each { |f| entity.add_content_file(f) }
-    entity
-  end
   #
   class SchemaEntity < Sequel::Model
     one_to_many :schema_attributes

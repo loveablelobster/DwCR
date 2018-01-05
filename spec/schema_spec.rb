@@ -3,7 +3,6 @@
 require 'pry'
 
 require_relative '../lib/db/connection'
-require_relative '../lib/meta_parser'
 require_relative '../lib/store/schema'
 
 #
@@ -14,15 +13,14 @@ module DwCR
 
   RSpec.describe Schema do
     before(:all) do
-      doc = File.open('spec/files/meta.xml') { |f| Nokogiri::XML(f) }
-      @dwcr = Schema.new
-      DwCR.parse_meta(doc).each { |e| DwCR.create_schema_entity(e) }
-      @dwcr.create_schema(col_type: true, col_length: true)
+      @schema = Schema.new
+      @schema.load_schema('spec/files/meta.xml')
+      @schema.create_schema(col_type: true, col_length: true)
     end
 
     context 'creates the schema' do
       it 'creates a table for `occurrences` (`core`)' do
-        expect(@db.schema(:occurrences).map(&:first)).to contain_exactly(:id,
+        expect(Sequel::Model.db.schema(:occurrences).map(&:first)).to contain_exactly(:id,
                                                                          :occurrence_id,
                                                                          :catalog_number,
                                                                          :other_catalog_numbers,
@@ -70,7 +68,7 @@ module DwCR
       # FIXME: needs tests for type and length
 
       it 'creates a table for `multimedia` (`extension`)' do
-        expect(@db.schema(:multimedia).map(&:first)).to contain_exactly(:id,
+        expect(Sequel::Model.db.schema(:multimedia).map(&:first)).to contain_exactly(:id,
                                                                         :coreid,
                                                                         :identifier,
                                                                         :access_uri,
@@ -86,11 +84,11 @@ module DwCR
     end
 
     it 'fetches the core' do
-      expect(@dwcr.core.class_name).to eq 'Occurrence'
+      expect(@schema.core.class_name).to eq 'Occurrence'
     end
 
     it 'fetches the extensions' do
-      extensions = @dwcr.extensions
+      extensions = @schema.extensions
       expect(extensions).to be_a Sequel::Dataset
       expect(extensions.map(&:class_name)).to include 'Multimedia'
     end
@@ -109,7 +107,7 @@ module DwCR
 
     context 'loads the data' do
       it 'loads the core with associated extension records' do
-        @dwcr.load_contents
+        @schema.load_contents
         obs = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
         expect(obs.catalog_number).to be 138618
         expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
