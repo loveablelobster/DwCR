@@ -8,8 +8,8 @@ module DwCR
 
     def initialize(index, contents, *detectors)
       raise ArgumentError unless index.is_a? Integer
-      detectors = [] if detectors.size == 1 && detectors.first == :none
-      detectors = %i[type= length=] if detectors.size == 1 && detectors.first == :all
+      detectors = [] if detectors.include? :none
+      detectors = %i[type= length=] if detectors.include? :all
       detectors.map! { |d| (d.id2name + '=').to_sym }
       @index = index
       @type = nil
