@@ -20,9 +20,10 @@ module DwCR
     end
 
     def core
-      SchemaEntity.first(is_core: true)
+      SchemaEntity.first(core_id: nil)
     end
 
+    # FIXME: rewrite to find core_id != nil
     def extensions
       SchemaEntity.where(is_core: false)
     end
@@ -34,10 +35,24 @@ module DwCR
 
     def load_schema(meta = File.join(@path, 'meta.xml'))
       xml = File.open(meta) { |f| Nokogiri::XML(f) }
-      DwCR.parse_meta(xml).each do |entity_hash|
+
+      # FIXME: change this to use self referential relation
+      #        parse_meta returns array
+      #
+
+      parsed_meta = DwCR.parse_meta(xml)
+      core_hash = parsed_meta.find { |n| n[:is_core] == true }
+      extensions_hashes = parsed_meta.select { |n| n[:is_core] == false }
+      core_attributes = core_hash.delete(:schema_attributes)
+      core_files = core_hash.delete(:content_files)
+      core_entity = SchemaEntity.create(core_hash)
+      core_attributes.each { |a| core_entity.add_schema_attribute(a) }
+      core_files.each { |f| core_entity.add_content_file(f) }
+
+      extensions_hashes.each do |entity_hash|
         attributes = entity_hash.delete(:schema_attributes)
         files = entity_hash.delete(:content_files)
-        entity = SchemaEntity.create(entity_hash)
+        entity = core_entity.add_extension(entity_hash)
         attributes.each { |a| entity.add_schema_attribute(a) }
         files.each { |f| entity.add_content_file(f) }
       end
@@ -72,8 +87,9 @@ module DwCR
     end
 
     def load_contents
-      load_core
-      load_extensions
+#       load_core(@path)
+#       load_extensions(@path)
+      load_files(@path)
     end
 
     private
@@ -114,32 +130,23 @@ module DwCR
     end
 
     # Load Table Contents
-    def load_core
-      return unless core.get_model.empty?
-      files = core.content_files
-      headers = core.content_headers
-      path = Dir.pwd
-      files.each do |file|
-        filename = path + '/spec/files/' + file.name # FIXME: path!
-        CSV.open(filename).each do |row|
-          core.get_model.create(headers.zip(row).to_h)
-        end
-      end
-    end
-
-    def load_extensions
-      extensions.each do |extension|
-        next unless extension.get_model.empty?
-        headers = extension.content_headers
-        path = Dir.pwd
-        extension.content_files.each do |file|
-          filename = path + '/spec/files/' + file.name # FIXME: path!
-          CSV.open(filename).each do |row|
+    def load_files(path)
+      SchemaEntity.dataset.order(Sequel.desc(:is_core)).to_a.each do |entity|
+        headers = entity.content_headers
+        entity.content_files.each do |file|
+          CSV.open(File.join(path, file.name)).each do |row|
             data_row = headers.zip(row).to_h
-            core_instance = core.get_model
-                                .first(core.key => row[extension.key_column])
-            method_name = 'add_' + extension.name.singularize
-            core_instance.send(method_name, data_row)
+
+            # FIXME: SchemaEntity#load_row should handle below if clause
+
+            if entity.is_core
+              entity.get_model.create(data_row)
+            else
+              core_instance = core.get_model
+                                  .first(core.key => row[entity.key_column])
+              method_name = 'add_' + entity.name.singularize
+              core_instance.send(method_name, data_row)
+            end
           end
         end
       end

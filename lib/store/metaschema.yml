@@ -47,6 +47,11 @@
   -
     - !ruby/sym key_column
     - !ruby/sym integer
+  -
+    - !ruby/sym core_id
+    - !ryby/sym integer
+    - !ruby/sym index:
+        true
 
 !ruby/sym content_files:
   -

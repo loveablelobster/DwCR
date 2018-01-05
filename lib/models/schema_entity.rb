@@ -8,6 +8,10 @@ module DwCR
   class SchemaEntity < Sequel::Model
     one_to_many :schema_attributes
     one_to_many :content_files
+    many_to_one :core, class: self
+    one_to_many :extensions, key: :core_id, class: self
+
+    # FIXME: relation to self for core, extensions
 
     def class_name
       name.classify
