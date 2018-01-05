@@ -29,6 +29,10 @@ module DwCR
       [default&.length, max_content_length].compact.max
     end
 
+    def length=(new_length)
+      max_content_length = new_length
+    end
+
     private
 
     # Returns the index options for the column

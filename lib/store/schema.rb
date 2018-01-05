@@ -65,8 +65,8 @@ module DwCR
         col_params = FileSet.new(files, modifiers).columns
         col_params.each do |cp|
           column = entity.schema_attributes_dataset.first(index: cp[:index])
-          column[:type] = cp[:type].to_s.underscore if cp[:type] && schema_options[:col_type]
-          column[:max_content_length] = cp[:length] if schema_options[:col_length]
+          cp[:type] = cp[:type]&.to_s&.underscore
+          modifiers.each { |m| column.send((m.id2name + '=').to_sym, cp[m]) if cp[m] }
           column.save
         end
       end
