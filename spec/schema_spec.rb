@@ -13,8 +13,8 @@ module DwCR
 
   RSpec.describe Schema do
     before(:all) do
-      @schema = Schema.new
-      @schema.load_schema('spec/files/meta.xml')
+      @schema = Schema.new(path: 'spec/files')
+      @schema.load_schema
       @schema.create_schema(type: true, length: true)
     end
 
