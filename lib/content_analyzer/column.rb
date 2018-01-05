@@ -6,11 +6,11 @@ module DwCR
   class Column
     attr_reader :index, :type, :length
 
-    def initialize(index, contents, detectors = :all)
+    def initialize(index, contents, *detectors)
       raise ArgumentError unless index.is_a? Integer
-      detectors = [] if detectors == :none
-      detectors = %i[col_type col_length] if detectors == :all
-      detectors = [detectors] if detectors.is_a? Symbol
+      detectors = [] if detectors.size == 1 && detectors.first == :none
+      detectors = %i[type= length=] if detectors.size == 1 && detectors.first == :all
+      detectors.map! { |d| (d.id2name + '=').to_sym }
       @index = index
       @type = nil
       @length = nil
@@ -34,11 +34,11 @@ module DwCR
       String
     end
 
-    def col_length(cells)
+    def length=(cells)
       @length = cells.map(&:to_s).map(&:length).max || 0
     end
 
-    def col_type(cells)
+    def type=(cells)
       @type = collapse(cells.map(&:class).uniq)
     end
 

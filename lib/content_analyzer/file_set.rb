@@ -8,7 +8,7 @@ module DwCR
   class FileSet
     attr_reader :columns
 
-    def initialize(files, detectors = %i[col_type col_length])
+    def initialize(files, detectors = %i[type length])
       @detectors = detectors
       @columns = analyze files
     end

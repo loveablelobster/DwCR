@@ -21,6 +21,16 @@ module DwCR
       [column_name, type.to_sym, { index: index_options, default: default }]
     end
 
+    # Returns the maximum length for values in the column
+    # which is the greater of either the length of the `default`
+    # or the `max_content_length`
+    # returns `nil` if neither is set
+    def length
+      [default&.length, max_content_length].compact.max
+    end
+
+    private
+
     # Returns the index options for the column
     def index_options
       if has_index && is_unique
@@ -30,14 +40,6 @@ module DwCR
       else
         false
       end
-    end
-
-    # Returns the maximum length for values in the column
-    # which is the greater of either the length of the `default`
-    # or the `max_content_length`
-    # returns `nil` if neither is set
-    def length
-      [default&.length, max_content_length].compact.max
     end
   end
 end

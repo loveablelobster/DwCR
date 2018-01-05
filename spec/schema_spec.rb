@@ -15,7 +15,7 @@ module DwCR
     before(:all) do
       @schema = Schema.new
       @schema.load_schema('spec/files/meta.xml')
-      @schema.create_schema(col_type: true, col_length: true)
+      @schema.create_schema(type: true, length: true)
     end
 
     context 'creates the schema' do

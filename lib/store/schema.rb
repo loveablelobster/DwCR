@@ -1,18 +1,15 @@
 # frozen_string_literal: true
 
-require 'csv'
-
 require_relative '../content_analyzer/file_set'
-require_relative '../loadable'
 require_relative '../meta_parser'
 require_relative '../models/dynamic_models'
+require_relative 'loadable'
 require_relative 'metaschema'
 
 #
 module DwCR
   #
   class Schema
-
     include Loadable
 
     def initialize
@@ -59,12 +56,13 @@ module DwCR
 
     def update_schema(schema_options)
       return unless schema_options
-
-      detectors = schema_options.keys
-
+      schema_options.select! { |_k, v| v == true }
+      modifiers = schema_options.keys
       SchemaEntity.each do |entity|
-        files = entity.content_files.map { |file| Dir.pwd + '/spec/files/' + file.name } # FIXME: path!
-        col_params = FileSet.new(files, detectors).columns
+        # FIXME: path!
+        files = entity.content_files
+                      .map { |file| Dir.pwd + '/spec/files/' + file.name }
+        col_params = FileSet.new(files, modifiers).columns
         col_params.each do |cp|
           column = entity.schema_attributes_dataset.first(index: cp[:index])
           column[:type] = cp[:type].to_s.underscore if cp[:type] && schema_options[:col_type]
@@ -84,6 +82,10 @@ module DwCR
         next if entity.is_core
         column foreign_key, :integer
       end
+    end
+
+    def update_schema_entity()
+
     end
 
     # Create the Dynamic Models
