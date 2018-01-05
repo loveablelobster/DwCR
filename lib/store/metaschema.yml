@@ -13,6 +13,8 @@
   -
     - !ruby/sym alt_name
     - !ruby/sym string
+    - !ruby/sym index:
+        !ruby/sym unique: true
   -
     - !ruby/sym term
     - !ruby/sym string
