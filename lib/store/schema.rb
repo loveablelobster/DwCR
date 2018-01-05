@@ -20,10 +20,9 @@ module DwCR
     end
 
     def core
-      SchemaEntity.first(core_id: nil)
+      SchemaEntity.first(is_core: true)
     end
 
-    # FIXME: rewrite to find core_id != nil
     def extensions
       SchemaEntity.where(is_core: false)
     end
