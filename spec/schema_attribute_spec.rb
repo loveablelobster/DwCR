@@ -14,9 +14,17 @@ module DwCR
   end
 
   RSpec.describe 'SchemaAttribute' do
-    it 'upon initialization the `type` attribute defaults to `string`' do
-      schema_attribute = SchemaAttribute.create(term: 'example.org/term')
-      expect(schema_attribute.type).to eq 'string'
+    context 'upon initialization' do
+      it 'the `type` attribute defaults to `string`' do
+        schema_attribute = SchemaAttribute.create(term: 'example.org/term')
+        expect(schema_attribute.type).to eq 'string'
+      end
+
+      it 'ensures the `alt_name` is unique' do
+        SchemaAttribute.create(alt_name: 'term')
+        expect { SchemaAttribute.create(alt_name: 'term') }
+          .to raise_error Sequel::UniqueConstraintViolation
+      end
     end
 
     it 'returns the column name for the schema as symbol' do
