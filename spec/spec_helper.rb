@@ -97,12 +97,12 @@ RSpec.configure do |config|
   # Setting this allows you to use `--seed` to deterministically reproduce
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
-  Kernel.srand config.seed
+#   Kernel.srand config.seed
 
   config.before(:all) do
     require_relative '../lib/db/connection'
     require_relative '../lib/store/metaschema'
-    DB = DwCR.connect#(path: 'spec/files/test.db')
+    DwCR.connect#(path: 'spec/files/test.db')
     DwCR.create_metaschema
     require_relative '../lib/models/schema_entity'
     require_relative '../lib/models/schema_attribute'

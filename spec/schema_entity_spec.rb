@@ -8,99 +8,58 @@ require_relative '../lib/meta_parser'
 module DwCR
   RSpec.configure do |config|
     config.warnings = false
+
+    config.around(:each) do |example|
+      Sequel::Model.db
+                    .transaction(rollback: :always,
+                                 auto_savepoint: true) {example.run}
+    end
   end
 
   RSpec.describe 'SchemaEntity' do
-    before(:all) do
-      xml = <<~HEREDOC
-        <?xml version="1.0" ?>
-        <archive>
-          <core rowType="http://example.org/terms/CoreItem">
-          	<files>
-			        <location>core_file.csv</location>
-		        </files>
-            <id index="0"/>
-            <field index="0" term="http://example.org/terms/theID"/>
-          </core>
-          <extension rowType="http://example.org/ac/terms/ExtensionItem">
-            <files>
-			        <location>extension_file.csv</location>
-		        </files>
-            <coreid index="0"/>
-            <field index="1" term="http://example.org/terms/aTerm"/>
-            <field index="2" term="http://example.org/terms/bTerm"/>
-            <field default="b default" term="http://example.org/terms/bTerm"/>
-            <field default="c default" term="http://example.org/terms/cTerm"/>
-          </extension>
-        </archive>
-HEREDOC
-      parsed_meta = DwCR.parse_meta(Nokogiri::XML(xml))
-      @core = DwCR.create_schema_entity(parsed_meta.first)
-      @extension = DwCR.create_schema_entity(parsed_meta.last)
-    end
-
-    context 'determines the kind' do
-      it 'determines the kind' do
-        expect(@core[:is_core]).to be true
-        expect(@extension[:is_core]).to be false
-      end
-    end
-
-    it 'has a URL as string for the `term`' do
-      expect(@core.term).to eq 'http://example.org/terms/CoreItem'
-      expect(@extension.term).to eq 'http://example.org/ac/terms/ExtensionItem'
-    end
-
-    it 'derives pluralized extension name as symbol from the term' do
-      expect(@core.name).to eq 'core_items'
-      expect(@extension.name).to eq 'extension_items'
-    end
-
     it 'has a symbol for the `table_name`' do
-      expect(@core.table_name).to eq :core_items
-      expect(@extension.table_name).to eq :extension_items
+      schema_entity = SchemaEntity.create(name: 'items')
+      expect(schema_entity.table_name).to be :items
     end
 
-    context 'gets the columns' do
+    context 'has one or many columns' do
       it 'gets the columns' do
-        cc = @core.schema_attributes[0].values
-        expect(cc).to include(term: 'http://example.org/terms/theID',
-                              name: 'the_id', alt_name: 'the_id',
-                              index: 0, has_index: true, is_unique: true)
+        schema_entity = SchemaEntity.create(name: 'item')
+        schema_entity.add_schema_attribute(term: 'example.org/termA')
+        schema_entity.add_schema_attribute(term: 'example.org/termB')
+        expect(schema_entity.schema_attributes.size).to be 2
       end
 
-      it 'has unique column names' do
-        alt_names = @extension.schema_attributes
-                          .map(&:values)
-                          .map { |v| v[:alt_name] }
-        expect(alt_names.size).to eq(alt_names.uniq.size)
+      it 'returns the key for the core' do
+        schema_entity = SchemaEntity.create(name: 'item',
+                                            is_core: true,
+                                            key_column: 0)
+        schema_entity.add_schema_attribute(alt_name: 'term', index: 0)
+        expect(schema_entity.key).to be :term
       end
 
-      it 'has the key for the core' do
-        expect(@core.key_column).to be 0
-        expect(@core.key).to be :the_id
-      end
-
-      it 'has the key extensions' do
-        expect(@extension.key_column).to be 0
-        expect(@extension.key).to be :coreid
+      it 'returns the key for extensions' do
+        schema_entity = SchemaEntity.create(name: 'item',
+                                            is_core: false,
+                                            key_column: 1)
+        schema_entity.add_schema_attribute(alt_name: 'foreign_key', index: 1)
+        expect(schema_entity.key).to be :foreign_key
       end
     end
 
     it 'gets the names of the contents files' do
-      expect(@core.content_files.first.name).to eq 'core_file.csv'
-      expect(@extension.content_files.first.name).to eq 'extension_file.csv'
+      schema_entity = SchemaEntity.create(name: 'item')
+      schema_entity.add_content_file(name: 'file_a.csv')
+      schema_entity.add_content_file(name: 'file_b.csv')
+      file_names = schema_entity.content_files.map(&:name)
+      expect(file_names).to include('file_a.csv', 'file_b.csv')
     end
 
     it 'returns a list of alt_names as content headers, sorted by index' do
-      expect(@extension.content_headers).to contain_exactly(:coreid,
-                                                        :a_term,
-                                                        :b_term)
-    end
-
-    after(:all) do
-      SchemaAttribute.dataset.destroy
-      SchemaEntity.dataset.destroy
+      schema_entity = SchemaEntity.create(name: 'item')
+      schema_entity.add_schema_attribute(alt_name: 'term_b', index: 2)
+      schema_entity.add_schema_attribute(alt_name: 'term_a', index: 1)
+      expect(schema_entity.content_headers).to contain_exactly(:term_a, :term_b)
     end
   end
 end
