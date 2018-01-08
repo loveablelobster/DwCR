@@ -69,7 +69,6 @@ module DwCR
 
       it 'creates a table for `multimedia` (`extension`)' do
         expect(Sequel::Model.db.schema(:multimedia).map(&:first)).to contain_exactly(:id,
-                                                                        :coreid,
                                                                         :identifier,
                                                                         :access_uri,
                                                                         :title,

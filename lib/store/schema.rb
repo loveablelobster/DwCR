@@ -97,9 +97,14 @@ module DwCR
     def create_schema_table(entity, foreign_key)
       Sequel::Model.db.create_table? entity.table_name do
         primary_key :id
-        entity.schema_attributes.each { |a| column(*a.column_params) }
+        entity.schema_attributes.each do |a|
+          # skip the foreign_key of the extension
+          next if a.column_name == entity.key && !entity.is_core
+
+          column(*a.column_params)
+        end
         next if entity.is_core
-        column foreign_key, :integer
+        column foreign_key, :integer, index: true
       end
     end
 
@@ -141,8 +146,9 @@ module DwCR
             if entity.is_core
               entity.get_model.create(data_row)
             else
+              key = data_row.delete(entity.key) # get the 'coreid' and remove it
               core_instance = core.get_model
-                                  .first(core.key => row[entity.key_column])
+                                  .first(core.key => key)
               method_name = 'add_' + entity.name.singularize
               core_instance.send(method_name, data_row)
             end
