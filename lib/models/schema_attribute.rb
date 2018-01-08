@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 require 'nokogiri'
+require_relative '../helpers/xml_parsable'
 
 #
 module DwCR
   #
   class SchemaAttribute < Sequel::Model
+    include XMLParsable
 
     many_to_one :schema_entity
 
@@ -21,6 +23,10 @@ module DwCR
       [column_name, type.to_sym, { index: index_options, default: default }]
     end
 
+    def is_index?
+      schema_entity.is_core && index == schema_entity.key_column
+    end
+
     # Returns the maximum length for values in the column
     # which is the greater of either the length of the `default`
     # or the `max_content_length`
@@ -33,13 +39,19 @@ module DwCR
       max_content_length = new_length
     end
 
+    def update_from_xml(xml)
+      index ||= index_for xml
+      default ||= default_for xml
+      save
+    end
+
     private
 
     # Returns the index options for the column
     def index_options
-      if has_index && is_unique
+      if schema_entity.is_core && index == schema_entity.key_column
         { unique: true }
-      elsif has_index
+      elsif index == schema_entity.key_column
         true
       else
         false

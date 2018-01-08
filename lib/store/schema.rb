@@ -3,7 +3,6 @@
 require 'csv'
 
 require_relative '../content_analyzer/file_set'
-require_relative '../meta_parser'
 require_relative '../models/dynamic_models'
 require_relative 'metaschema'
 
@@ -34,25 +33,7 @@ module DwCR
 
     def load_schema(meta = File.join(@path, 'meta.xml'))
       xml = File.open(meta) { |f| Nokogiri::XML(f) }
-
-      # FIXME: change this so the parse methods directly create the entities
-      core_hash = DwCR.parse_core(xml)
-      extensions_hashes = DwCR.parse_extensions(xml)
-
-      #
-      core_attributes = core_hash.delete(:schema_attributes)
-      core_files = core_hash.delete(:content_files)
-      core_entity = SchemaEntity.create(core_hash)
-      core_attributes.each { |a| core_entity.add_schema_attribute(a) }
-      core_files.each { |f| core_entity.add_content_file(f) }
-
-      extensions_hashes.each do |entity_hash|
-        attributes = entity_hash.delete(:schema_attributes)
-        files = entity_hash.delete(:content_files)
-        entity = core_entity.add_extension(entity_hash)
-        attributes.each { |a| entity.add_schema_attribute(a) }
-        files.each { |f| entity.add_content_file(f) }
-      end
+      parse_meta(xml)
     end
 
     # schema option:
@@ -88,6 +69,18 @@ module DwCR
     end
 
     private
+
+    def parse_meta(xml)
+      raise ArgumentError 'Multiple Core Stanzas' if xml.css('core').size > 1
+      core = DwCR::SchemaEntity.from_xml(xml.css('core').first)
+      xml.css('extension').each do |node|
+        extn = DwCR::SchemaEntity.from_xml node
+        core.add_extension(extn)
+        key = node.css('coreid').first
+        extn.add_schema_attribute(name: key.name,
+                                  index: key.attributes['index']&.value&.to_i)
+      end
+    end
 
     # Create the tables for the DwCA Schema
     def create_schema_table(entity, foreign_key)
