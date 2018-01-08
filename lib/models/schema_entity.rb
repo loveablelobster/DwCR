@@ -29,7 +29,7 @@ module DwCR
     end
 
     def key
-      schema_attributes_dataset.first(index: key_column).alt_name.to_sym
+      schema_attributes_dataset.first(index: key_column).name.to_sym
     end
 
     def table_name

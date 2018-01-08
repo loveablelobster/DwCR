@@ -81,10 +81,6 @@ HEREDOC
                                                                           'institution_code')
           end
 
-          it 'has an `alt_name` identical to the name' do
-            expect(core[:schema_attributes].map { |f| f[:alt_name] }).to eq(core[:schema_attributes].map { |f| f[:name] })
-          end
-
           context 'has an `index`' do
             it 'with an integer of the column in the source file(s)' do
               expect(core[:schema_attributes][0...2].map { |f| f[:index] }).to eq([0, 1])
@@ -172,22 +168,12 @@ HEREDOC
                                                                                       'http://purl.org/dc/elements/1.1/rights')
           end
 
-          it 'has a `name`' do
+          it 'has a `name` that is suffixed with `!` where equivocal' do
             expect(media[:schema_attributes].map { |f| f[:name] }).to contain_exactly('coreid',
                                                                                       'identifier',
                                                                                       'access_uri',
                                                                                       'rights',
-                                                                                      'rights')
-          end
-
-          context 'has an `alt_name`' do
-            it 'that is identical to the name where unequivocal' do
-              expect(media[:schema_attributes][0...4].map { |f| f[:alt_name] }).to eq(media[:schema_attributes][0...4].map { |f| f[:name] })
-            end
-
-            it 'that is suffixed with `!` where equivocal' do
-              expect(media[:schema_attributes].last[:alt_name]).to eq('rights!')
-            end
+                                                                                      'rights!')
           end
 
           context 'has an `index`' do

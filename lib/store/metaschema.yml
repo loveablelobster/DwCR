@@ -10,9 +10,6 @@
   -
     - !ruby/sym name
     - !ruby/sym string
-  -
-    - !ruby/sym alt_name
-    - !ruby/sym string
     - !ruby/sym index:
         !ruby/sym unique: true
   -

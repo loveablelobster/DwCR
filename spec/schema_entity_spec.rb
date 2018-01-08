@@ -34,7 +34,7 @@ module DwCR
         schema_entity = SchemaEntity.create(name: 'item',
                                             is_core: true,
                                             key_column: 0)
-        schema_entity.add_schema_attribute(alt_name: 'term', index: 0)
+        schema_entity.add_schema_attribute(name: 'term', index: 0)
         expect(schema_entity.key).to be :term
       end
 
@@ -42,7 +42,7 @@ module DwCR
         schema_entity = SchemaEntity.create(name: 'item',
                                             is_core: false,
                                             key_column: 1)
-        schema_entity.add_schema_attribute(alt_name: 'foreign_key', index: 1)
+        schema_entity.add_schema_attribute(name: 'foreign_key', index: 1)
         expect(schema_entity.key).to be :foreign_key
       end
     end
@@ -57,8 +57,8 @@ module DwCR
 
     it 'returns a list of alt_names as content headers, sorted by index' do
       schema_entity = SchemaEntity.create(name: 'item')
-      schema_entity.add_schema_attribute(alt_name: 'term_b', index: 2)
-      schema_entity.add_schema_attribute(alt_name: 'term_a', index: 1)
+      schema_entity.add_schema_attribute(name: 'term_b', index: 2)
+      schema_entity.add_schema_attribute(name: 'term_a', index: 1)
       expect(schema_entity.content_headers).to contain_exactly(:term_a, :term_b)
     end
   end

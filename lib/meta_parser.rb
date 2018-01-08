@@ -67,7 +67,6 @@ module DwCR
   def self.parse_field_node(node)
     hash = { term: node.attributes['term']&.value }
     hash[:name] = hash[:term]&.split('/')&.last&.underscore || node.name
-    hash[:alt_name] = hash[:name]
     hash[:index] = node.attributes['index']&.value&.to_i
     hash[:default] = node.attributes['default']&.value
     hash[:has_index] = false
@@ -83,14 +82,10 @@ module DwCR
         existing[:default] ||= field.attributes['default']&.value
       else
         new = parse_field_node(field)
-        new[:alt_name] = new[:name] + '!' if attributes.find { |a| a[:name] == new[:name] }
+        new[:name] = new[:name] + '!' if attributes.find { |a| a[:name] == new[:name] }
         attributes << new
       end
     end
     attributes
-#     return if @kind == :core
-#     attributes.unshift(SchemaAttribute.new(nodeset.css('coreid').first))
   end
 end
-
-#     contents = files(schema_node.css('files'))

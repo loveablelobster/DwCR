@@ -10,7 +10,7 @@ module DwCR
     many_to_one :schema_entity
 
     def column_name
-      alt_name.to_sym
+      name.to_sym
     end
 
     # returns the parameters for column cration as an Array
