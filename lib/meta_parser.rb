@@ -8,8 +8,11 @@ module DwCR
   Sequel.extension :inflector
   require_relative 'inflections'
 
+#   def parse_meta(xml)
+#   end
+
   # deprecate
-  def self.parse_meta(meta_xml, options = { col_lengths: false })
+  def self.parse_meta(meta_xml)
     entities = [parse_core(meta_xml), *parse_extensions(meta_xml)]
   end
 
