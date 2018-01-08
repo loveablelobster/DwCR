@@ -8,10 +8,9 @@ module DwCR
   Sequel.extension :inflector
   require_relative 'inflections'
 
+  # deprecate
   def self.parse_meta(meta_xml, options = { col_lengths: false })
-    entities = []
-    entities << parse_core(meta_xml.css('core'))
-    entities.concat parse_extensions(meta_xml.css('extension'))
+    entities = [parse_core(meta_xml), *parse_extensions(meta_xml)]
   end
 
   def self.entity_hash(node, is_core:)
@@ -51,12 +50,14 @@ module DwCR
     end
   end
 
-  def self.parse_core(node)
+  def self.parse_core(xml)
+    node = xml.css('core')
     raise 'Invalid meta.xml: multiple core files: #{node}' if node.size > 1
     index_options(entity_hash(node.first, is_core: true))
   end
 
-  def self.parse_extensions(nodeset)
+  def self.parse_extensions(xml)
+    nodeset = xml.css('extension')
     nodeset.map do |node|
       hash = entity_hash(node, is_core: false)
       hash[:schema_attributes].unshift(parse_field_node(node.css('coreid').first))

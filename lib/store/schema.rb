@@ -35,13 +35,11 @@ module DwCR
     def load_schema(meta = File.join(@path, 'meta.xml'))
       xml = File.open(meta) { |f| Nokogiri::XML(f) }
 
-      # FIXME: change this to use self referential relation
-      #        parse_meta returns array
-      #
+      # FIXME: change this so the parse methods directly create the entities
+      core_hash = DwCR.parse_core(xml)
+      extensions_hashes = DwCR.parse_extensions(xml)
 
-      parsed_meta = DwCR.parse_meta(xml)
-      core_hash = parsed_meta.find { |n| n[:is_core] == true }
-      extensions_hashes = parsed_meta.select { |n| n[:is_core] == false }
+      #
       core_attributes = core_hash.delete(:schema_attributes)
       core_files = core_hash.delete(:content_files)
       core_entity = SchemaEntity.create(core_hash)
@@ -86,8 +84,6 @@ module DwCR
     end
 
     def load_contents
-#       load_core(@path)
-#       load_extensions(@path)
       load_files(@path)
     end
 
