@@ -2,7 +2,6 @@
 
 require_relative '../lib/db/connection'
 require_relative '../lib/store/metaschema'
-require_relative '../lib/meta_parser'
 
 #
 module DwCR
@@ -44,6 +43,12 @@ module DwCR
                                             key_column: 1)
         schema_entity.add_schema_attribute(name: 'foreign_key', index: 1)
         expect(schema_entity.key).to be :foreign_key
+      end
+
+      it 'ensures the `name` is unique' do pending 'not implemented'
+#         SchemaAttribute.create(name: 'term')
+#         expect { SchemaAttribute.create(name: 'term') }
+#           .to raise_error Sequel::UniqueConstraintViolation
       end
     end
 
