@@ -4,7 +4,11 @@ require 'nokogiri'
 
 #
 module XMLParsable
-  def self.core_node?(xml)
+  def default_for(field_def)
+    field_def.attributes['default']&.value
+  end
+
+  def is_core_for(xml)
     case xml.name
     when 'core'
       true
@@ -15,27 +19,24 @@ module XMLParsable
     end
   end
 
-  def self.key_column(xml)
-    key_tag = core_node?(xml) ? 'id' : 'coreid'
-    xml.css(key_tag).first.attributes['index'].value.to_i
-  end
-
-  def default_for(field_def)
-    field_def.attributes['default']&.value
-  end
-
   def index_for(field_def)
     field_def.attributes['index']&.value&.to_i
   end
 
+  def key_column_for(xml)
+    key_tag = is_core_for(xml) ? 'id' : 'coreid'
+    xml.css(key_tag).first.attributes['index'].value.to_i
+  end
+
   # Parses the name for a file, table, or column
   def name_for(xml)
-    # if the xml is a file definition
-    is_file = xml.css('location')&.first
-    return is_file.text if is_file
-
-    # if the xml is a table or column definition
     term = term_for xml
+    is_file = xml.css('location')&.first
+
+    # the xml is a file definition if no term is found but a location
+    return is_file.text if is_file && !term
+
+    # the xml is a table or column definition
     name = term&.split('/')&.last
     xml.attributes['rowType'] ? name.tableize : name&.underscore || 'coreid'
   end
@@ -52,7 +53,3 @@ module XMLParsable
     save
   end
 end
-
-
-
-

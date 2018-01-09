@@ -24,17 +24,6 @@ module DwCR
     many_to_one :core, class: self
     one_to_many :extensions, key: :core_id, class: self
 
-    def self.from_xml(xml)
-      is_core = XMLParsable.core_node?(xml)
-      key_col = XMLParsable.key_column(xml)
-      term = xml.attributes['rowType'].value
-      name = term.split('/').last.tableize
-      e = create(term: term, name: name, is_core: is_core, key_column: key_col)
-      e.add_attributes_from_xml(xml)
-      e.add_files_from_xml(xml)
-      e
-    end
-
     # xml = node.css('field')
     def add_attributes_from_xml(xml)
       xml.css('field').each do |field|

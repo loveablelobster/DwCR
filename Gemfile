@@ -12,3 +12,4 @@ gem 'sqlite3'
 # testing
 gem 'pry'
 gem 'rspec'
+gem 'rubocop-rspec'

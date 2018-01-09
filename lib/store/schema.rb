@@ -3,6 +3,7 @@
 require 'csv'
 
 require_relative '../content_analyzer/file_set'
+require_relative '../helpers/xml_parsable'
 require_relative '../models/dynamic_models'
 require_relative 'metaschema'
 
@@ -10,6 +11,8 @@ require_relative 'metaschema'
 module DwCR
   #
   class Schema
+    include XMLParsable
+
     def initialize(path: Dir.pwd)
       @path = path
       DwCR.create_metaschema
@@ -72,14 +75,24 @@ module DwCR
 
     def parse_meta(xml)
       raise ArgumentError 'Multiple Core Stanzas' if xml.css('core').size > 1
-      core = DwCR::SchemaEntity.from_xml(xml.css('core').first)
+      core = create_schema_entity_from_xml(xml.css('core').first)
       xml.css('extension').each do |node|
-        extn = DwCR::SchemaEntity.from_xml node
+        extn = create_schema_entity_from_xml node
         core.add_extension(extn)
         key = node.css('coreid').first
         extn.add_schema_attribute(name: key.name,
                                   index: key.attributes['index']&.value&.to_i)
       end
+    end
+
+    def create_schema_entity_from_xml(xml)
+      entity = SchemaEntity.create(term: term_for(xml),
+                                   name: name_for(xml),
+                                   is_core: is_core_for(xml),
+                                   key_column: key_column_for(xml))
+      entity.add_attributes_from_xml(xml)
+      entity.add_files_from_xml(xml)
+      entity
     end
 
     # Create the tables for the DwCA Schema
