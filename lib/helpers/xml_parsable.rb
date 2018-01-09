@@ -12,14 +12,16 @@ module XMLParsable
     field_def.attributes['index']&.value&.to_i
   end
 
+  # Parses the name for a file, table, or column
   def name_for(xml)
+    # if the xml is a file definition
+    is_file = xml.css('location')&.first
+    return is_file.text if is_file
+
+    # if the xml is a table or column definition
     term = term_for xml
     name = term&.split('/')&.last
     xml.attributes['rowType'] ? name.tableize : name&.underscore || 'coreid'
-  end
-
-  def path_for(xml)
-    xml.css('location').first.text
   end
 
   def term_for(xml)

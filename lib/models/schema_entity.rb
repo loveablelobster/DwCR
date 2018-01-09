@@ -50,7 +50,7 @@ module DwCR
 
     def add_files_from_xml(xml)
       xml.css('files').map do |file|
-        add_content_file(name: path_for(file))
+        add_content_file(name: name_for(file))
       end
     end
 
