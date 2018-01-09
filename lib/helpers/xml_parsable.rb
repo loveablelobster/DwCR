@@ -47,9 +47,20 @@ module XMLParsable
   end
 
   def update_from_xml(xml, *fields)
-    values = fields.map { |field| send((field.id2name + '_for').to_sym, xml) }
-    update_hash = fields.zip(values).to_h.compact
-    update update_hash
+    update values(self, fields, xml)
     save
+  end
+
+  def model_from_xml(xml, model, *fields)
+    model.create values(self, fields, xml)
+  end
+
+  def method(field)
+    (field.id2name + '_for').to_sym
+  end
+
+  def values(instance, fields, xml)
+    values = fields.map { |field| instance.send(method(field), xml) }
+    fields.zip(values).to_h.compact
   end
 end

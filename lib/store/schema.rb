@@ -86,10 +86,8 @@ module DwCR
     end
 
     def create_schema_entity_from_xml(xml)
-      entity = SchemaEntity.create(term: term_for(xml),
-                                   name: name_for(xml),
-                                   is_core: is_core_for(xml),
-                                   key_column: key_column_for(xml))
+      entity = model_from_xml(xml, SchemaEntity,
+                              :term, :name, :is_core, :key_column)
       entity.add_attributes_from_xml(xml)
       entity.add_files_from_xml(xml)
       entity
