@@ -56,7 +56,7 @@ module XMLParsable
   end
 
   def method(field)
-    (field.id2name + '_for').to_sym
+    field.id2name + '_for'
   end
 
   def values(instance, fields, xml)

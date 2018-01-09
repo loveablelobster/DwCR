@@ -43,6 +43,15 @@ module DwCR
       end
     end
 
+    # returns the definition for the associations
+    def assocs
+      if is_core
+        extensions.map { |extension| DwCR.association(self, extension) }
+      else
+        [DwCR.association(self, core)]
+      end
+    end
+
     def class_name
       name.classify
     end
@@ -64,6 +73,25 @@ module DwCR
 
     def table_name
       name.to_sym
+    end
+
+    def data_row(row)
+      hash = content_headers.zip(row).to_h
+      return hash if is_core
+      foreign_key = hash.delete key
+      [foreign_key, hash]
+    end
+
+    def load_row(row)
+      if is_core
+        model_get.create(data_row(row))
+      else
+        core = SchemaEntity.first(is_core: true)
+        foreign_key, hash = *data_row(row)
+        method_name = 'add_' + name.singularize
+        parent_row = core.model_get.first(core.key => foreign_key)
+        parent_row.send(method_name, hash)
+      end
     end
 
     private

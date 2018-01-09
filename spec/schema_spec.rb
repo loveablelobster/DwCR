@@ -87,7 +87,7 @@ module DwCR
     end
 
     it 'fetches the extensions' do
-      extensions = @schema.extensions
+      extensions = @schema.core.extensions_dataset
       expect(extensions).to be_a Sequel::Dataset
       expect(extensions.map(&:class_name)).to include 'Multimedia'
     end
