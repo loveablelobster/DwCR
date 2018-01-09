@@ -38,7 +38,7 @@ module DwCR
         term = term_for field
         attribute = schema_attributes_dataset.first(term: term)
         if attribute
-          attribute.update_from_xml field
+          attribute.update_from_xml(field, :index, :default)
         else
           add_schema_attribute(term: term,
                                name: unique_name(name_for(field)),
@@ -50,7 +50,7 @@ module DwCR
 
     def add_files_from_xml(xml)
       xml.css('files').map do |file|
-        add_content_file(name: file.css('location').first.text)
+        add_content_file(name: path_for(file))
       end
     end
 

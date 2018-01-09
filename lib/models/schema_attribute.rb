@@ -39,12 +39,6 @@ module DwCR
       max_content_length = new_length
     end
 
-    def update_from_xml(xml)
-      index ||= index_for xml
-      default ||= default_for xml
-      save
-    end
-
     private
 
     # Returns the index options for the column
