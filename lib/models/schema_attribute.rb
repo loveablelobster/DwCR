@@ -23,10 +23,6 @@ module DwCR
       [column_name, type.to_sym, { index: index_options, default: default }]
     end
 
-    def is_index?
-      schema_entity.is_core && index == schema_entity.key_column
-    end
-
     # Returns the maximum length for values in the column
     # which is the greater of either the length of the `default`
     # or the `max_content_length`
@@ -36,7 +32,7 @@ module DwCR
     end
 
     def length=(new_length)
-      max_content_length = new_length
+      self.max_content_length = new_length
     end
 
     private

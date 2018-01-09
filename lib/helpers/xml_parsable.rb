@@ -4,6 +4,22 @@ require 'nokogiri'
 
 #
 module XMLParsable
+  def self.core_node?(xml)
+    case xml.name
+    when 'core'
+      true
+    when 'extension'
+      false
+    else
+      Raise
+    end
+  end
+
+  def self.key_column(xml)
+    key_tag = core_node?(xml) ? 'id' : 'coreid'
+    xml.css(key_tag).first.attributes['index'].value.to_i
+  end
+
   def default_for(field_def)
     field_def.attributes['default']&.value
   end
@@ -36,3 +52,7 @@ module XMLParsable
     save
   end
 end
+
+
+
+

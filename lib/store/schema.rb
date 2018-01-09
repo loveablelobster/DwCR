@@ -133,10 +133,10 @@ module DwCR
             # FIXME: SchemaEntity#load_row should handle below if clause
 
             if entity.is_core
-              entity.get_model.create(data_row)
+              entity.model_get.create(data_row)
             else
               key = data_row.delete(entity.key) # get the 'coreid' and remove it
-              core_instance = core.get_model
+              core_instance = core.model_get
                                   .first(core.key => key)
               method_name = 'add_' + entity.name.singularize
               core_instance.send(method_name, data_row)

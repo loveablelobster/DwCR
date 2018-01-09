@@ -2,28 +2,31 @@
 
 require_relative '../helpers/xml_parsable'
 require_relative 'schema_attribute'
+
+#
+module FindOrCreate
+  def find_or_create(vals)
+    create_vals = vals.merge(association_reflection[:key] => model_object.id)
+    instance = first(vals) || model.create(create_vals)
+    yield instance if block_given?
+    instance.save
+  end
+end
+
 #
 module DwCR
   #
   class SchemaEntity < Sequel::Model
     include XMLParsable
 
-    one_to_many :schema_attributes
+    one_to_many :schema_attributes, extend: FindOrCreate
     one_to_many :content_files
     many_to_one :core, class: self
     one_to_many :extensions, key: :core_id, class: self
 
     def self.from_xml(xml)
-      is_core = case xml.name # should be in mixin
-                when 'core'
-                  true
-                when 'extension'
-                  false
-                else
-                  Raise
-                end
-      key_tag = is_core ? 'id' : 'coreid' # should be in mixin
-      key_col = xml.css(key_tag).first.attributes['index'].value.to_i
+      is_core = XMLParsable.core_node?(xml)
+      key_col = XMLParsable.key_column(xml)
       term = xml.attributes['rowType'].value
       name = term.split('/').last.tableize
       e = create(term: term, name: name, is_core: is_core, key_column: key_col)
@@ -36,15 +39,12 @@ module DwCR
     def add_attributes_from_xml(xml)
       xml.css('field').each do |field|
         term = term_for field
-        attribute = schema_attributes_dataset.first(term: term)
-        if attribute
-          attribute.update_from_xml(field, :index, :default)
-        else
-          add_schema_attribute(term: term,
-                               name: unique_name(name_for(field)),
-                               index: index_for(field),
-                               default: default_for(field))
+        attribute = schema_attributes_dataset.find_or_create(term: term) do |a|
+          a.name ||= unique_name(name_for(field))
+          a.index ||= index_for field
+          a.default ||= default_for field
         end
+        attribute.update_from_xml(field, :index, :default)
       end
     end
 
@@ -64,7 +64,7 @@ module DwCR
                                .map(&:column_name)
     end
 
-    def get_model
+    def model_get
       modelname = 'DwCR::' + class_name
       modelname.constantize
     end
