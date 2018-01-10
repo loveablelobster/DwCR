@@ -31,32 +31,34 @@ module DwCR
 
     context 'returns an array with `column_params` to create the column' do
       it 'with name and type' do
-        schema_entity = SchemaEntity.create(name: 'item')
+        entity = SchemaEntity.create(name: 'item')
         params = [:term, :string, { index: false, default: nil }]
-        schema_attribute = schema_entity.add_schema_attribute(name: 'term')
-        expect(schema_attribute.column_params).to eq(params)
+        attribute = entity.add_schema_attribute(name: 'term')
+        expect(attribute.column_params).to eq(params)
       end
 
-      it 'with name, type and default' do pending 'requires context of SchemaEntity'
-#         params = [:term, :string, { index: false, default: 'default' }]
-#         schema_attribute = SchemaAttribute.create(name: 'term',
-#                                                   default: 'default')
-#         expect(schema_attribute.column_params).to eq(params)
+      it 'with name, type and default' do
+        entity = SchemaEntity.create(name: 'item')
+        params = [:term, :string, { index: false, default: 'default' }]
+        attribute = entity.add_schema_attribute(name: 'term',
+                                                default: 'default')
+        expect(attribute.column_params).to eq(params)
       end
 
-      it 'with name, type and index' do pending 'requires context of SchemaEntity'
-#         params = [:term, :string, { index: true, default: nil }]
-#         schema_attribute = SchemaAttribute.create(name: 'term',
-#                                                   has_index: true)
-#         expect(schema_attribute.column_params).to eq(params)
+      it 'with name, type and index' do
+        entity = SchemaEntity.create(name: 'item', key_column: 0)
+        params = [:term, :string, { index: true, default: nil }]
+        attribute = entity.add_schema_attribute(name: 'term',
+                                                index: 0)
+        expect(attribute.column_params).to eq(params)
       end
 
-      it 'with name, type and unique index' do pending 'requires context of SchemaEntity'
-#         params = [:term, :string, { index: { unique: true }, default: nil }]
-#         schema_attribute = SchemaAttribute.create(name: 'term',
-#                                                   has_index: true,
-#                                                   is_unique: true)
-#         expect(schema_attribute.column_params).to eq(params)
+      it 'with name, type and unique index' do
+        entity = SchemaEntity.create(name: 'item', key_column: 0, is_core: true)
+        params = [:term, :string, { index: { unique: true }, default: nil }]
+        attribute = entity.add_schema_attribute(name: 'term',
+                                                index: 0)
+        expect(attribute.column_params).to eq(params)
       end
     end
 
