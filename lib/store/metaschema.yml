@@ -30,6 +30,7 @@
   -
     - !ruby/sym name
     - !ruby/sym string
+    - !ruby/sym null: false
   -
     - !ruby/sym term
     - !ruby/sym string
