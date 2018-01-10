@@ -26,8 +26,8 @@ module DwCR
     end
 
     # gets the name of the foreign key from the core entity
-    def foreign_key
-      core.class_name.foreign_key
+    def foreign_key_def
+      [core.class_name.foreign_key, core.table_name]
     end
 
     def load_schema(meta = File.join(@path, 'meta.xml'))
@@ -41,7 +41,7 @@ module DwCR
     def create_schema(**schema_options)
       update_schema(schema_options)
       SchemaEntity.each do |entity|
-        create_schema_table(entity, foreign_key)
+        create_schema_table(entity)
       end
       load_models
     end
@@ -89,17 +89,17 @@ module DwCR
     end
 
     # Create the tables for the DwCA Schema
-    def create_schema_table(entity, foreign_key)
+    def create_schema_table(entity)
+      core_table = foreign_key_def
       Sequel::Model.db.create_table? entity.table_name do
         primary_key :id
+        foreign_key :schema_entity_id, :schema_entities
+        foreign_key *core_table unless entity.is_core
         entity.schema_attributes.each do |a|
           # skip the foreign_key of the extension
           next if a.column_name == entity.key && !entity.is_core
-
           column(*a.column_params)
         end
-        next if entity.is_core
-        column foreign_key, :integer, index: true
       end
     end
 

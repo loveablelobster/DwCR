@@ -11,6 +11,7 @@ module DwCR
       options[:key] = "#{right_entity.name.singularize}_id".to_sym
       [:many_to_one, right_entity.name.singularize.to_sym, options]
     end
+    # add the assoc to SchemaEntity here
   end
 
   def self.create_model(model_name, source, *associations)
