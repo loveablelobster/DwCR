@@ -10,7 +10,9 @@
   -
     - !ruby/sym name
     - !ruby/sym string
-    - !ruby/sym index: true
+    - 
+      !ruby/sym index: true
+      !ruby/sym null: false
   -
     - !ruby/sym term
     - !ruby/sym string
@@ -39,7 +41,7 @@
     - !ruby/sym integer
   -
     - !ruby/sym core_id
-    - !ryby/sym integer
+    - !ruby/sym integer
     - !ruby/sym index:
         true
 

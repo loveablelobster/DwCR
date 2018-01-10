@@ -4,11 +4,11 @@ require 'nokogiri'
 
 #
 module XMLParsable
-  def default_for(field_def)
+  def default_from(field_def)
     field_def.attributes['default']&.value
   end
 
-  def is_core_for(xml)
+  def is_core_from(xml)
     case xml.name
     when 'core'
       true
@@ -19,18 +19,18 @@ module XMLParsable
     end
   end
 
-  def index_for(field_def)
+  def index_from(field_def)
     field_def.attributes['index']&.value&.to_i
   end
 
-  def key_column_for(xml)
-    key_tag = is_core_for(xml) ? 'id' : 'coreid'
+  def key_column_from(xml)
+    key_tag = is_core_from(xml) ? 'id' : 'coreid'
     xml.css(key_tag).first.attributes['index'].value.to_i
   end
 
   # Parses the name for a file, table, or column
-  def name_for(xml)
-    term = term_for xml
+  def name_from(xml)
+    term = term_from xml
     is_file = xml.css('location')&.first
 
     # the xml is a file definition if no term is found but a location
@@ -41,7 +41,7 @@ module XMLParsable
     xml.attributes['rowType'] ? name.tableize : name&.underscore || 'coreid'
   end
 
-  def term_for(xml)
+  def term_from(xml)
     term = xml.attributes['rowType'] || xml.attributes['term']
     term&.value
   end
@@ -56,7 +56,7 @@ module XMLParsable
   end
 
   def method(field)
-    field.id2name + '_for'
+    field.id2name + '_from'
   end
 
   def value_hash(instance, fields, xml)

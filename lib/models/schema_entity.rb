@@ -22,12 +22,12 @@ module DwCR
     # xml = node.css('field')
     def add_attributes_from_xml(xml)
       xml.css('field').each do |field|
-        term = term_for field
+        term = term_from field
         attribute = schema_attributes_dataset.first(term: term)
         vals = { term: term,
-                 name: name_for(field),
-                 index: index_for(field),
-                 default: default_for(field) }
+                 name: name_from(field),
+                 index: index_from(field),
+                 default: default_from(field) }
         attribute ||= add_schema_attribute(vals)
         attribute.update_from_xml(field, :index, :default)
       end
@@ -35,7 +35,7 @@ module DwCR
 
     def add_files_from_xml(xml)
       xml.css('files').map do |file|
-        add_content_file(name: name_for(file))
+        add_content_file(name: name_from(file))
       end
     end
 

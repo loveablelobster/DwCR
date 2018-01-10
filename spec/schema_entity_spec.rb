@@ -24,8 +24,10 @@ module DwCR
     context 'has one or many columns' do
       it 'gets the columns' do
         schema_entity = SchemaEntity.create(name: 'item')
-        schema_entity.add_schema_attribute(term: 'example.org/termA')
-        schema_entity.add_schema_attribute(term: 'example.org/termB')
+        schema_entity.add_schema_attribute(term: 'example.org/termA',
+                                           name: 'term_a')
+        schema_entity.add_schema_attribute(term: 'example.org/termB',
+                                           name: 'term_b')
         expect(schema_entity.schema_attributes.size).to be 2
       end
 
@@ -45,10 +47,13 @@ module DwCR
         expect(schema_entity.key).to be :foreign_key
       end
 
-      it 'ensures the `name` is unique' do pending 'not implemented'
-#         SchemaAttribute.create(name: 'term')
-#         expect { SchemaAttribute.create(name: 'term') }
-#           .to raise_error Sequel::UniqueConstraintViolation
+      it 'ensures the `name` is unique' do
+        schema_entity = SchemaEntity.create(name: 'item')
+        a = schema_entity.add_schema_attribute(name: 'term')
+        b = schema_entity.add_schema_attribute(name: 'term')
+        expect(a.name == b.name).to be_falsey
+        expect(a.name).to eq 'term'
+        expect(b.name).to eq 'term!'
       end
     end
 

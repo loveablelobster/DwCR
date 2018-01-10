@@ -75,8 +75,8 @@ module DwCR
       xml.css('extension').each do |node|
         extn = create_schema_entity_from_xml node
         core.add_extension(extn)
-        extn.add_schema_attribute(name: name_for(node),
-                                  index: key_column_for(node))
+        extn.add_schema_attribute(name: name_from(node),
+                                  index: key_column_from(node))
       end
     end
 

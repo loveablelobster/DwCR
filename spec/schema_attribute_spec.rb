@@ -18,7 +18,8 @@ module DwCR
   RSpec.describe 'SchemaAttribute' do
     context 'upon initialization' do
       it 'the `type` attribute defaults to `string`' do
-        schema_attribute = SchemaAttribute.create(term: 'example.org/term')
+        schema_attribute = SchemaAttribute.create(term: 'example.org/term',
+                                                  name: 'term')
         expect(schema_attribute.type).to eq 'string'
       end
     end
