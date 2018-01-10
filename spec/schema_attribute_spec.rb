@@ -30,10 +30,11 @@ module DwCR
     end
 
     context 'returns an array with `column_params` to create the column' do
-      it 'with name and type' do pending 'requires context of SchemaEntity'
-#         params = [:term, :string, { index: false, default: nil }]
-#         schema_attribute = SchemaAttribute.create(name: 'term')
-#         expect(schema_attribute.column_params).to eq(params)
+      it 'with name and type' do
+        schema_entity = SchemaEntity.create(name: 'item')
+        params = [:term, :string, { index: false, default: nil }]
+        schema_attribute = schema_entity.add_schema_attribute(name: 'term')
+        expect(schema_attribute.column_params).to eq(params)
       end
 
       it 'with name, type and default' do pending 'requires context of SchemaEntity'

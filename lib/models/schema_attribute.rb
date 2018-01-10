@@ -39,6 +39,7 @@ module DwCR
 
     # Returns the index options for the column
     def index_options
+      return false unless index || schema_entity.key_column
       if schema_entity.is_core && index == schema_entity.key_column
         { unique: true }
       elsif index == schema_entity.key_column
