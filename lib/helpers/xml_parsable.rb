@@ -47,19 +47,19 @@ module XMLParsable
   end
 
   def update_from_xml(xml, *fields)
-    update values(self, fields, xml)
+    update value_hash(self, fields, xml)
     save
   end
 
   def model_from_xml(xml, model, *fields)
-    model.create values(self, fields, xml)
+    model.create value_hash(self, fields, xml)
   end
 
   def method(field)
     field.id2name + '_for'
   end
 
-  def values(instance, fields, xml)
+  def value_hash(instance, fields, xml)
     values = fields.map { |field| instance.send(method(field), xml) }
     fields.zip(values).to_h.compact
   end
