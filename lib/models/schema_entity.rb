@@ -42,7 +42,7 @@ module DwCR
     # returns the definition for the associations
     def assocs
       # add the assoc to SchemaEntity here
-      meta_assoc = [:many_to_one, :schema_entities, { class: SchemaEntity }]
+      meta_assoc = [:many_to_one, :schema_entity, { class: SchemaEntity }]
       if is_core
         a = extensions.map { |extension| DwCR.association(self, extension) }
         a.unshift meta_assoc
@@ -82,15 +82,16 @@ module DwCR
     end
 
     def load_row(row)
+        method_name = 'add_' + name.singularize
       if is_core
-        model_get.create(data_row(row))
+        instance = model_get.create(data_row(row))
       else
         core = SchemaEntity.first(is_core: true)
         foreign_key, hash = *data_row(row)
-        method_name = 'add_' + name.singularize
         parent_row = core.model_get.first(core.key => foreign_key)
-        parent_row.send(method_name, hash)
+        instance = parent_row.send(method_name, hash)
       end
+      self.send(method_name, instance)
     end
   end
 end
