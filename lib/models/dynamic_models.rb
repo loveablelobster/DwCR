@@ -2,6 +2,7 @@
 
 #
 module DwCR
+  #
   def self.association(left_entity, right_entity)
     options = { class: right_entity.class_name, class_namespace: 'DwCR' }
     if left_entity.is_core
@@ -13,6 +14,7 @@ module DwCR
     end
   end
 
+  #
   def self.create_model(model_name, source, *associations)
     model_class = Class.new(Sequel::Model(source)) do
       associations.each do |association|
@@ -24,5 +26,17 @@ module DwCR
     end
     const_set model_name, model_class
     model_class
+  end
+
+  #
+  def self.load_models
+    SchemaEntity.each do |entity|
+      entity_model = DwCR.create_model(entity.class_name,
+                                       entity.table_name,
+                                       *entity.assocs)
+      SchemaEntity.associate(:one_to_many,
+                             entity.table_name,
+                             class: entity_model)
+    end
   end
 end

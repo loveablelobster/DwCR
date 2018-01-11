@@ -16,9 +16,6 @@ module DwCR
     def initialize(path: Dir.pwd)
       @path = path
       DwCR.create_metaschema
-      require_relative '../models/schema_entity'
-      require_relative '../models/schema_attribute'
-      require_relative '../models/content_file'
     end
 
     def core
@@ -43,7 +40,7 @@ module DwCR
       SchemaEntity.each do |entity|
         create_schema_table(entity)
       end
-      load_models
+      DwCR.load_models
     end
 
     def update_schema(schema_options)
@@ -100,19 +97,6 @@ module DwCR
           next if a.column_name == entity.key && !entity.is_core
           column(*a.column_params)
         end
-      end
-    end
-
-    # Create the Dynamic Models
-    def load_models
-      SchemaEntity.each do |entity|
-        entity_model = DwCR.create_model(entity.class_name,
-                                         entity.table_name,
-                                         *entity.assocs)
-        # associate here
-        SchemaEntity.associate(:one_to_many,
-                               entity.table_name,
-                               class: entity_model)
       end
     end
 
