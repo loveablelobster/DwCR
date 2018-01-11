@@ -106,7 +106,13 @@ module DwCR
     # Create the Dynamic Models
     def load_models
       SchemaEntity.each do |entity|
-        DwCR.create_model(entity.class_name, entity.table_name, *entity.assocs)
+        entity_model = DwCR.create_model(entity.class_name,
+                                         entity.table_name,
+                                         *entity.assocs)
+        # associate here
+        SchemaEntity.associate(:one_to_many,
+                               entity.table_name,
+                               { class: entity_model })
       end
     end
 

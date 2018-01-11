@@ -5,13 +5,12 @@ module DwCR
   def self.association(left_entity, right_entity)
     options = { class: right_entity.class_name, class_namespace: 'DwCR' }
     if left_entity.is_core
-      options[:key] = "#{left_entity.name.singularize}_id".to_sym
+      options[:key] = left_entity.class_name.foreign_key.to_sym
       [:one_to_many, right_entity.table_name, options]
     else
-      options[:key] = "#{right_entity.name.singularize}_id".to_sym
+      options[:key] = right_entity.class_name.foreign_key.to_sym
       [:many_to_one, right_entity.name.singularize.to_sym, options]
     end
-    # add the assoc to SchemaEntity here
   end
 
   def self.create_model(model_name, source, *associations)
@@ -24,5 +23,6 @@ module DwCR
       end
     end
     const_set model_name, model_class
+    model_class
   end
 end

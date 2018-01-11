@@ -41,10 +41,13 @@ module DwCR
 
     # returns the definition for the associations
     def assocs
+      # add the assoc to SchemaEntity here
+      meta_assoc = [:many_to_one, :schema_entities, { class: SchemaEntity }]
       if is_core
-        extensions.map { |extension| DwCR.association(self, extension) }
+        a = extensions.map { |extension| DwCR.association(self, extension) }
+        a.unshift meta_assoc
       else
-        [DwCR.association(self, core)]
+        [meta_assoc, DwCR.association(self, core)]
       end
     end
 
