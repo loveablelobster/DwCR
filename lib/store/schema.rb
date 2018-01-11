@@ -112,7 +112,7 @@ module DwCR
         # associate here
         SchemaEntity.associate(:one_to_many,
                                entity.table_name,
-                               { class: entity_model })
+                               class: entity_model)
       end
     end
 

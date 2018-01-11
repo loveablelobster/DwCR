@@ -110,10 +110,9 @@ module DwCR
       it 'loads the core with associated extension records' do
         @schema.load_contents
         obs = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
-#         p obs.schema_entity
         expect(obs.catalog_number).to be 138618
         expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
-        binding.pry
+        expect(obs.schema_entity.term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
       end
     end
   end
