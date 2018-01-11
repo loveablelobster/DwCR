@@ -94,7 +94,7 @@ module DwCR
       Sequel::Model.db.create_table? entity.table_name do
         primary_key :id
         foreign_key :schema_entity_id, :schema_entities
-        foreign_key *core_table unless entity.is_core
+        foreign_key(*core_table) unless entity.is_core
         entity.schema_attributes.each do |a|
           # skip the foreign_key of the extension
           next if a.column_name == entity.key && !entity.is_core
