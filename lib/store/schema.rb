@@ -80,19 +80,6 @@ module DwCR
       entity
     end
 
-    # Create the tables for the DwCA Schema
-    def create_schema_table(entity)
-      core_table = foreign_key_def
-      Sequel::Model.db.create_table? entity.table_name do
-        primary_key :id
-        foreign_key :schema_entity_id, :schema_entities
-        foreign_key(*core_table) unless entity.is_core
-        entity.schema_attributes.each do |a|
-          column(*a.column_params) unless a.foreign_key?
-        end
-      end
-    end
-
     # Load Table Contents
     def load_files(path)
       core.content_files.each { |file| file.load_file(path) }
