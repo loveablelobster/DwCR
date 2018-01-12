@@ -5,21 +5,22 @@ require 'csv'
 require_relative '../helpers/xml_parsable'
 require_relative '../models/dynamic_models'
 
-#
+# This module provides functionality to create a
+# SQLite database from a DarwinCoreArchive
+# and provides an ORM layer using http://sequel.jeremyevans.net
+# Sequel::Model instances are created from the DwCA's meta.xml file
 module DwCR
-  #
+  # This class
   class Schema
     include XMLParsable
+
+    attr_reader :core
 
     # +path+ is the directory of the DwCA file
     def initialize(path: Dir.pwd)
       @path = path
+      @core = nil
       DwCR.create_metaschema
-    end
-
-    # Returns the SchemaEntity for the _core_ stanza of the DwCA
-    def core
-      SchemaEntity.first(is_core: true)
     end
 
     # Loads the _meta.xml_ file in _@path_
@@ -58,8 +59,8 @@ module DwCR
 
     # Loads the contents of all associated CSV files into the shema tables
     def load_contents
-      core.content_files.each(&:load)
-      core.extensions.each do |extension|
+      @core.content_files.each(&:load)
+      @core.extensions.each do |extension|
         extension.content_files.each(&:load)
       end
     end
@@ -87,10 +88,10 @@ module DwCR
     # gets the stanzas for the _core_ and _extensions_
     def parse_meta(xml)
       validate_meta xml
-      core = create_schema_entity_from_xml(xml.css('core').first)
+      @core = create_schema_entity_from_xml(xml.css('core').first)
       xml.css('extension').each do |node|
         extn = create_schema_entity_from_xml node
-        core.add_extension(extn)
+        @core.add_extension(extn)
       end
     end
 
