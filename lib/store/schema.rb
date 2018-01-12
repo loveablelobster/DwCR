@@ -5,7 +5,7 @@ require 'csv'
 require_relative '../content_analyzer/file_set'
 require_relative '../helpers/xml_parsable'
 require_relative '../models/dynamic_models'
-require_relative 'metaschema'
+require_relative 'schematables'
 
 #
 module DwCR
@@ -22,11 +22,6 @@ module DwCR
       SchemaEntity.first(is_core: true)
     end
 
-    # gets the name of the foreign key from the core entity
-    def foreign_key_def
-      [core.class_name.foreign_key, core.table_name]
-    end
-
     def load_schema(meta = File.join(@path, 'meta.xml'))
       xml = File.open(meta) { |f| Nokogiri::XML(f) }
       parse_meta(xml)
@@ -38,7 +33,7 @@ module DwCR
     def create_schema(**schema_options)
       update_schema(schema_options)
       SchemaEntity.each do |entity|
-        create_schema_table(entity)
+        DwCR.create_schema_table(entity)
       end
       DwCR.load_models
     end

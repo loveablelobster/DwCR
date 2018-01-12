@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../lib/db/connection'
-require_relative '../lib/store/metaschema'
-
 #
 module DwCR
   RSpec.configure do |config|

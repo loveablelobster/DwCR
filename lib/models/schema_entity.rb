@@ -61,6 +61,10 @@ module DwCR
                                .map(&:column_name)
     end
 
+    def foreign_key
+      class_name.foreign_key
+    end
+
     def model_get
       modelname = 'DwCR::' + class_name
       modelname.constantize

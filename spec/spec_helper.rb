@@ -101,7 +101,7 @@ RSpec.configure do |config|
 
   config.before(:all) do
     require_relative '../lib/db/connection'
-    require_relative '../lib/store/metaschema'
+    require_relative '../lib/store/schematables'
     DwCR.connect#(path: 'spec/files/test.db')
     DwCR.create_metaschema
     require_relative '../lib/models/schema_entity'
