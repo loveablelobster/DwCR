@@ -56,13 +56,20 @@ module DwCR
     end
 
     def load_contents
-      load_files(@path)
+      core.content_files.each { |file| file.load_file(@path) }
+      core.extensions.each do |extension|
+        extension.content_files.each { |file| file.load_file(@path) }
+      end
     end
 
     private
 
-    def parse_meta(xml)
+    def validate_meta(xml)
       raise ArgumentError 'Multiple Core Stanzas' if xml.css('core').size > 1
+    end
+
+    def parse_meta(xml)
+      validate_meta xml
       core = create_schema_entity_from_xml(xml.css('core').first)
       xml.css('extension').each do |node|
         extn = create_schema_entity_from_xml node
@@ -78,14 +85,6 @@ module DwCR
       entity.add_attributes_from_xml(xml)
       entity.add_files_from_xml(xml)
       entity
-    end
-
-    # Load Table Contents
-    def load_files(path)
-      core.content_files.each { |file| file.load_file(path) }
-      core.extensions.each do |extension|
-        extension.content_files.each { |file| file.load_file(path) }
-      end
     end
   end
 end
