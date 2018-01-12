@@ -23,6 +23,11 @@ module DwCR
       [column_name, type.to_sym, { index: index_options, default: default }]
     end
 
+    # Reurns `true` if the attribute is the foreign key column in the DwCA file
+    def foreign_key?
+      index == schema_entity.key_column && !schema_entity.is_core
+    end
+
     # Returns the maximum length for values in the column
     # which is the greater of either the length of the `default`
     # or the `max_content_length`

@@ -93,9 +93,7 @@ module DwCR
         foreign_key :schema_entity_id, :schema_entities
         foreign_key(*core_table) unless entity.is_core
         entity.schema_attributes.each do |a|
-          # skip the foreign_key of the extension
-          next if a.column_name == entity.key && !entity.is_core
-          column(*a.column_params)
+          column(*a.column_params) unless a.foreign_key?
         end
       end
     end
