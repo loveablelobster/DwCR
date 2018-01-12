@@ -94,6 +94,10 @@ module DwCR
     end
 
     context 'creates the models' do
+      it 'holds a list of generated models' do
+        expect(@schema.models).to include(DwCR::Occurrence, DwCR::Multimedia)
+      end
+
       it 'creates associations' do
         expect(Occurrence.associations).to include(:multimedia)
         expect(Multimedia.associations).to include(:occurrence)
@@ -101,7 +105,6 @@ module DwCR
         obs.add_multimedia(owner: 'me')
         obs.add_multimedia(owner: 'somone else')
         expect(obs.multimedia.size).to be 2
-        obs.destroy
       end
     end
 
@@ -112,6 +115,7 @@ module DwCR
         expect(obs.catalog_number).to be 138618
         expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
         expect(obs.schema_entity.term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
+        binding.pry
       end
     end
   end

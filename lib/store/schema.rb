@@ -14,12 +14,15 @@ module DwCR
   class Schema
     include XMLParsable
 
-    attr_reader :core
+    attr_reader :core, :models
 
-    # +path+ is the directory of the DwCA file
+    # @path holds the directory of the DwCA file
+    # @core holds the SchemaEntity instance for the _core_ stanza of the DwCA
+    # @models holds the generated models for the stanzas
     def initialize(path: Dir.pwd)
       @path = path
       @core = nil
+      @models = nil
       DwCR.create_metaschema
     end
 
@@ -42,7 +45,7 @@ module DwCR
       SchemaEntity.each do |entity|
         DwCR.create_schema_table(entity)
       end
-      DwCR.load_models
+      @models = DwCR.load_models
     end
 
     # Updates all SchemaAttribute instances
