@@ -10,9 +10,9 @@ module DwCR
 
     it 'gets the maximum lengths for each column in an array of CSV files' do
       fs = FileSet.new(file)
-      expect(fs.columns).to include({ index: 0, length: 7, type: String },
-                                    { index: 1, length: 1, type: Integer },
-                                    { index: 2, length: 3, type: Float })
+      expect(fs.columns).to include({ index: 0, length: 7, type: 'string' },
+                                    { index: 1, length: 1, type: 'integer' },
+                                    { index: 2, length: 3, type: 'float' })
     end
   end
 end

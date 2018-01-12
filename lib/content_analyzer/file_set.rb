@@ -23,7 +23,9 @@ module DwCR
       files.group_by(&:index).map do |index, column|
         length = column.map(&:length).max
         types = column.map(&:type).uniq
-        { index: index, length: length, type: common_type(types) }
+        { index: index,
+          length: length,
+          type: common_type(types).to_s.underscore }
       end
     end
 

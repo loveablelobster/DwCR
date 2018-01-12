@@ -100,8 +100,7 @@ RSpec.configure do |config|
 #   Kernel.srand config.seed
 
   config.before(:all) do
-    require_relative '../lib/db/connection'
-    require_relative '../lib/store/schematables'
+    require_relative '../lib/dwcr'
     DwCR.connect#(path: 'spec/files/test.db')
     DwCR.create_metaschema
     require_relative '../lib/models/schema_entity'

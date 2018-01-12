@@ -2,7 +2,6 @@
 
 require 'pry'
 
-require_relative '../lib/db/connection'
 require_relative '../lib/store/schema'
 
 #

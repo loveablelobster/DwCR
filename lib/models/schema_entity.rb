@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../content_analyzer/file_set'
 require_relative '../helpers/xml_parsable'
 require_relative 'schema_attribute'
 
@@ -33,9 +34,9 @@ module DwCR
       end
     end
 
-    def add_files_from_xml(xml)
+    def add_files_from_xml(xml, path: nil)
       xml.css('files').map do |file|
-        add_content_file(name: name_from(file))
+        add_content_file(name: name_from(file), path: path)
       end
     end
 
@@ -61,6 +62,11 @@ module DwCR
                                .map(&:column_name)
     end
 
+    # Returns an array of full filenames with path
+    def files
+      content_files.map(&:file_name)
+    end
+
     def foreign_key
       class_name.foreign_key
     end
@@ -78,24 +84,38 @@ module DwCR
       name.to_sym
     end
 
-    def data_row(row)
-      hash = content_headers.zip(row).to_h
-      return hash if is_core
-      foreign_key = hash.delete key
-      [foreign_key, hash]
+    def update_with(modifiers)
+      FileSet.new(files, modifiers).columns.each do |cp|
+        column = schema_attributes_dataset.first(index: cp[:index])
+        modifiers.each { |m| column.send(m.id2name + '=', cp[m]) if cp[m] }
+        column.save
+      end
     end
 
     def load_row(row)
-        method_name = 'add_' + name.singularize
       if is_core
         instance = model_get.create(data_row(row))
       else
         core = SchemaEntity.first(is_core: true)
         foreign_key, hash = *data_row(row)
         parent_row = core.model_get.first(core.key => foreign_key)
-        instance = parent_row.send(method_name, hash)
+        instance = parent_row.send(add_related, hash)
       end
-      self.send(method_name, instance)
+      send(add_related, instance)
+    end
+
+    private
+
+    # Returns the name for the method to add an instance through an association
+    def add_related
+      'add_' + name.singularize
+    end
+
+    def data_row(row)
+      hash = content_headers.zip(row).to_h
+      return hash if is_core
+      foreign_key = hash.delete key
+      [foreign_key, hash]
     end
   end
 end
