@@ -60,6 +60,13 @@ module DynamicModelQueries
     col_name = entity.schema_attributes_dataset.first(term: term).name.to_sym
     where(col_name => val)
   end
+
+  def query_by_terms(val_hash)
+    val_hash.transform_keys do |key|
+      entity.schema_attributes_dataset.first(term: term).name.to_sym
+    end
+    where(val_hash)
+  end
 end
 
 # convenience methods for the dynamic models
