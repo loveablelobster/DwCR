@@ -17,7 +17,7 @@ module DwCR
     attr_reader :core, :models
 
     # @path holds the directory of the DwCA file
-    # @core holds the SchemaEntity instance for the _core_ stanza of the DwCA
+    # @core holds the MetaEntity instance for the _core_ stanza of the DwCA
     # @models holds the generated models for the stanzas
     def initialize(path: Dir.pwd)
       @path = path
@@ -42,13 +42,13 @@ module DwCR
     # analysing each column for type and length
     def create_schema(**schema_options)
       update_schema(schema_options)
-      SchemaEntity.each do |entity|
+      MetaEntity.each do |entity|
         DwCR.create_schema_table(entity)
       end
       @models = DwCR.load_models
     end
 
-    # Updates all SchemaAttribute instances
+    # Updates all MetaAttribute instances
     # with parameters from files in ContentFile
     # _schema_options_: a Hash with attribute names as keys and boolean values
     # <tt>{ :type => true, :length => true }</tt>
@@ -57,7 +57,7 @@ module DwCR
       return unless schema_options
       schema_options.select! { |_k, v| v == true }
       modifiers = schema_options.keys
-      SchemaEntity.each { |entity| entity.update_with(modifiers) }
+      MetaEntity.each { |entity| entity.update_with(modifiers) }
     end
 
     # Loads the contents of all associated CSV files into the shema tables
@@ -70,16 +70,16 @@ module DwCR
 
     private
 
-    # Creates a SchemaEntity instance from the xml for the stanza
-    # adds SchemaAttribute instances for any field defined
-    def create_schema_entity_from_xml(xml)
-      entity = model_from_xml(xml, SchemaEntity,
+    # Creates a MetaEntity instance from the xml for the stanza
+    # adds MetaAttribute instances for any field defined
+    def create_meta_entity_from_xml(xml)
+      entity = model_from_xml(xml, MetaEntity,
                               :term, :name, :is_core, :key_column)
       entity.add_attributes_from_xml(xml)
 
       # add the _coreid_ attribute to any extension stanzas
       unless entity.is_core
-        entity.add_schema_attribute(name: name_from(xml),
+        entity.add_meta_attribute(name: name_from(xml),
                                     index: key_column_from(xml))
       end
 
@@ -91,9 +91,9 @@ module DwCR
     # gets the stanzas for the _core_ and _extensions_
     def parse_meta(xml)
       validate_meta xml
-      @core = create_schema_entity_from_xml(xml.css('core').first)
+      @core = create_meta_entity_from_xml(xml.css('core').first)
       xml.css('extension').each do |node|
-        extn = create_schema_entity_from_xml node
+        extn = create_meta_entity_from_xml node
         @core.add_extension(extn)
       end
     end

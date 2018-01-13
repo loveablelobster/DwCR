@@ -20,7 +20,7 @@ module DwCR
     context 'creates the schema' do
       it 'creates a table for `occurrences` (`core`)' do
         expect(Sequel::Model.db.schema(:occurrences).map(&:first)).to contain_exactly(:id,
-                                                                         :schema_entity_id,
+                                                                         :meta_entity_id,
                                                                          :occurrence_id,
                                                                          :catalog_number,
                                                                          :other_catalog_numbers,
@@ -69,7 +69,7 @@ module DwCR
 
       it 'creates a table for `multimedia` (`extension`)' do
         expect(Sequel::Model.db.schema(:multimedia).map(&:first)).to contain_exactly(:id,
-                                                                                     :schema_entity_id,
+                                                                                     :meta_entity_id,
                                                                                      :identifier,
                                                                                      :access_uri,
                                                                                      :title,
@@ -114,7 +114,7 @@ module DwCR
         obs = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
         expect(obs.catalog_number).to be 138618
         expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
-        expect(obs.schema_entity.term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
+        expect(obs.meta_entity.term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
         binding.pry
       end
     end

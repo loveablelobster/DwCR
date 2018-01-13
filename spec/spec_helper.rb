@@ -103,8 +103,8 @@ RSpec.configure do |config|
     require_relative '../lib/dwcr'
     DwCR.connect#(path: 'spec/files/test.db')
     DwCR.create_metaschema
-    require_relative '../lib/models/schema_entity'
-    require_relative '../lib/models/schema_attribute'
+    require_relative '../lib/models/meta_entity'
+    require_relative '../lib/models/meta_attribute'
     require_relative '../lib/models/content_file'
   end
 end

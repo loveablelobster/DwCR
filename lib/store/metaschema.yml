@@ -1,7 +1,7 @@
 ---
-!ruby/sym schema_attributes:
+!ruby/sym meta_attributes:
   -
-    - !ruby/sym schema_entity_id
+    - !ruby/sym meta_entity_id
     - !ruby/sym integer
   -
     - !ruby/sym type
@@ -26,7 +26,7 @@
     - !ruby/sym max_content_length
     - !ruby/sym integer
 
-!ruby/sym schema_entities:
+!ruby/sym meta_entities:
   -
     - !ruby/sym name
     - !ruby/sym string
@@ -48,7 +48,7 @@
 
 !ruby/sym content_files:
   -
-    - !ruby/sym schema_entity_id
+    - !ruby/sym meta_entity_id
     - !ruby/sym integer
   -
     - !ruby/sym name

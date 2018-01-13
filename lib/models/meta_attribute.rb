@@ -6,10 +6,10 @@ require_relative '../helpers/xml_parsable'
 #
 module DwCR
   #
-  class SchemaAttribute < Sequel::Model
+  class MetaAttribute < Sequel::Model
     include XMLParsable
 
-    many_to_one :schema_entity
+    many_to_one :meta_entity
 
     def column_name
       name.to_sym
@@ -25,7 +25,7 @@ module DwCR
 
     # Reurns `true` if the attribute is the foreign key column in the DwCA file
     def foreign_key?
-      index == schema_entity.key_column && !schema_entity.is_core
+      index == meta_entity.key_column && !meta_entity.is_core
     end
 
     # Returns the maximum length for values in the column
@@ -44,10 +44,10 @@ module DwCR
 
     # Returns the index options for the column
     def index_options
-      return false unless index || schema_entity.key_column
-      if schema_entity.is_core && index == schema_entity.key_column
+      return false unless index || meta_entity.key_column
+      if meta_entity.is_core && index == meta_entity.key_column
         { unique: true }
-      elsif index == schema_entity.key_column
+      elsif index == meta_entity.key_column
         true
       else
         false

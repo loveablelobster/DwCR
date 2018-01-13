@@ -40,13 +40,13 @@ module DwCR
     model_class
   end
 
-  # Load models for all SchemaEntity instances
+  # Load models for all MetaEntity instances
   #
   #
   def self.load_models
-    SchemaEntity.map do |entity|
+    MetaEntity.map do |entity|
       entity_model = DwCR.create_model(entity, *entity.assocs)
-      SchemaEntity.associate(:one_to_many,
+      MetaEntity.associate(:one_to_many,
                              entity.table_name,
                              class: entity_model)
       entity_model
@@ -57,13 +57,13 @@ end
 #
 module DynamicModelQueries
   def query_by_term(term, val)
-    col_name = entity.schema_attributes_dataset.first(term: term).name.to_sym
+    col_name = entity.meta_attributes_dataset.first(term: term).name.to_sym
     where(col_name => val)
   end
 
   def query_by_terms(val_hash)
     val_hash.transform_keys do |key|
-      entity.schema_attributes_dataset.first(term: term).name.to_sym
+      entity.meta_attributes_dataset.first(term: term).name.to_sym
     end
     where(val_hash)
   end
@@ -72,14 +72,14 @@ end
 # convenience methods for the dynamic models
 module DynamicModel
   def core?
-    schema_entity.is_core
+    meta_entity.is_core
   end
 
   def record_term
-    schema_entity.term
+    meta_entity.term
   end
 
   def term_for(column_name)
-    schema_entity.schema_attributes_dataset.first(name: column_name.to_s).term
+    meta_entity.meta_attributes_dataset.first(name: column_name.to_s).term
   end
 end

@@ -12,17 +12,17 @@ module DwCR
         td.last.each { |c| column(*c) }
       end
     end
-    require_relative '../models/schema_entity'
-    require_relative '../models/schema_attribute'
+    require_relative '../models/meta_entity'
+    require_relative '../models/meta_attribute'
     require_relative '../models/content_file'
   end
 
   def self.create_schema_table(entity)
     Sequel::Model.db.create_table? entity.table_name do
       primary_key :id
-      foreign_key :schema_entity_id, :schema_entities
+      foreign_key :meta_entity_id, :meta_entities
       DwCR.add_foreign_key(self, entity)
-      entity.schema_attributes.each do |a|
+      entity.meta_attributes.each do |a|
         column(*a.column_params) unless a.foreign_key?
       end
     end

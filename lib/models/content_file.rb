@@ -6,7 +6,7 @@ require 'csv'
 module DwCR
   #
   class ContentFile < Sequel::Model
-    many_to_one :schema_entity
+    many_to_one :meta_entity
 
     def file_name
       File.join(path, name)
@@ -14,7 +14,7 @@ module DwCR
 
     def load
       CSV.open(File.join(path, name)).each do |row|
-        schema_entity.load_row(row)
+        meta_entity.load_row(row)
       end
     end
   end
