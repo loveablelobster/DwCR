@@ -19,11 +19,11 @@ module DwCR
   #
   #
   #
-  def self.create_model(entity, *associations)
+  def self.create_model(entity, associations)
     model_class = Class.new(Sequel::Model(entity.table_name)) do
       extend DynamicModelQueries
       include DynamicModel
-      @entity = entity
+      @meta_entity = entity
       associations.each do |association|
         associate(*association)
         next if association[0] == :many_to_one
@@ -31,8 +31,8 @@ module DwCR
         add_association_dependencies(association[1] => :destroy)
       end
 
-      define_singleton_method :entity do
-        @entity
+      define_singleton_method :meta_entity do
+        @meta_entity
       end
     end
 
@@ -45,7 +45,7 @@ module DwCR
   #
   def self.load_models
     MetaEntity.map do |entity|
-      entity_model = DwCR.create_model(entity, *entity.assocs)
+      entity_model = DwCR.create_model(entity, entity.assocs)
       MetaEntity.associate(:one_to_many,
                              entity.table_name,
                              class: entity_model)
@@ -56,21 +56,26 @@ end
 
 #
 module DynamicModelQueries
+  def column_by_term(term)
+    meta_entity.meta_attributes_dataset.first(term: term.to_s).column_name
+  end
+
   def query_by_term(term, val)
-    col_name = entity.meta_attributes_dataset.first(term: term).name.to_sym
-    where(col_name => val)
+    where(column_by_term(term) => val)
   end
 
   def query_by_terms(val_hash)
-    val_hash.transform_keys do |key|
-      entity.meta_attributes_dataset.first(term: term).name.to_sym
-    end
+    val_hash.transform_keys { |key| column_by_term(key) }
     where(val_hash)
   end
 end
 
 # convenience methods for the dynamic models
 module DynamicModel
+  def column_by_term(term)
+    meta_entity.meta_attributes_dataset.first(term: term.to_s).column_name
+  end
+
   def core?
     meta_entity.is_core
   end
@@ -81,5 +86,16 @@ module DynamicModel
 
   def term_for(column_name)
     meta_entity.meta_attributes_dataset.first(name: column_name.to_s).term
+  end
+
+  def method_missing(name, *args, &block)
+    # FIXME: should treat assignment method '='
+    term = column_by_term(name)
+    super unless term
+    send(term, *args, &block)
+  end
+
+  def respond_to_missing?(name, include_private = false)
+    column_by_term(name) ? true : super
   end
 end
