@@ -14,6 +14,7 @@ module DwCR
   class Schema
     include XMLParsable
 
+    attr_accessor :path
     attr_reader :core, :models
 
     # @path holds the directory of the DwCA file
@@ -55,6 +56,9 @@ module DwCR
     # updates any attribute given as key where value is _true_
     def update_schema(schema_options)
       return unless schema_options
+
+      # FIXME: throw an error if schema is not built
+
       schema_options.select! { |_k, v| v == true }
       modifiers = schema_options.keys
       MetaEntity.each { |entity| entity.update_with(modifiers) }
