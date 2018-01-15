@@ -24,7 +24,6 @@ module DwCR
       @path = path
       @core = nil
       @models = nil
-      DwCR.create_metaschema
     end
 
     # Loads the _meta.xml_ file in _@path_

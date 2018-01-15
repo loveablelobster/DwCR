@@ -6,7 +6,8 @@
   -
     - !ruby/sym type
     - !ruby/sym string
-    - !ruby/sym default: string
+    - !ruby/sym default:
+        string
   -
     - !ruby/sym name
     - !ruby/sym string

@@ -9,6 +9,9 @@ gem 'psych'
 gem 'sequel'
 gem 'sqlite3'
 
+#
+gem 'rake'
+
 # testing
 gem 'pry'
 gem 'rspec'

@@ -6,10 +6,11 @@ require 'psych'
 module DwCR
   def self.create_metaschema
     connect unless Sequel::Model.db
-    Psych.load_file('lib/store/metaschema.yml').each do |td|
-      Sequel::Model.db.create_table? td.first do
+    tabledefs = Psych.load_file('lib/store/metaschema.yml')
+    tabledefs.to_h.each do |table, columns|
+      Sequel::Model.db.create_table? table do
         primary_key :id
-        td.last.each { |c| column(*c) }
+        columns.each { |c| column(*c) }
       end
     end
     require_relative '../models/meta_entity'
