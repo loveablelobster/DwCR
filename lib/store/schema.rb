@@ -29,8 +29,7 @@ module DwCR
     # Loads the _meta.xml_ file in _@path_
     # calls #parse_meta(xml)
     def load_schema(meta = File.join(@path, 'meta.xml'))
-      xml = File.open(meta) { |f| Nokogiri::XML(f) }
-      parse_meta(xml)
+      parse_meta(File.open(meta) { |f| Nokogiri::XML(f) })
     end
 
     # Creates the database schema for the DwCA stanzas

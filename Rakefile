@@ -22,6 +22,8 @@ task :load_dwcr do
 
   path = File.join(Dir.pwd, 'test.db') # or nil
 
+  # FIXME: issue warning if file exists
+
   # connect to the SQLite db
   DwCR.connect(path: path)
 

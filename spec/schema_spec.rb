@@ -115,7 +115,7 @@ module DwCR
         expect(obs.catalog_number).to be 138618
         expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
         expect(obs.meta_entity.term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
-        binding.pry
+#         binding.pry
       end
     end
   end
