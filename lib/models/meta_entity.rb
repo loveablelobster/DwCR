@@ -2,7 +2,6 @@
 
 require_relative '../content_analyzer/file_set'
 require_relative '../helpers/xml_parsable'
-require_relative 'meta_attribute'
 
 #
 module DwCR
@@ -15,6 +14,7 @@ module DwCR
       attr.name = name_taken ? attr.name + '!' : attr.name
     end
 
+    many_to_one :meta_archive
     one_to_many :meta_attributes, before_add: ensure_unique_name
     one_to_many :content_files
     many_to_one :core, class: self
@@ -22,6 +22,12 @@ module DwCR
 
     # xml = node.css('field')
     def add_attributes_from_xml(xml)
+      # add the _coreid_ attribute to any extension stanzas
+      unless is_core
+        add_meta_attribute(name: name_from(xml),
+                           index: key_column_from(xml))
+      end
+
       xml.css('field').each do |field|
         term = term_from field
         attribute = meta_attributes_dataset.first(term: term)
@@ -58,8 +64,8 @@ module DwCR
 
     def content_headers
       meta_attributes_dataset.exclude(index: nil)
-                               .order(:index)
-                               .map(&:column_name)
+                             .order(:index)
+                             .map(&:column_name)
     end
 
     # Returns an array of full filenames with path

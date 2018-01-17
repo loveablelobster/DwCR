@@ -2,27 +2,21 @@
 
 require 'csv'
 
-require_relative '../helpers/xml_parsable'
 require_relative '../models/dynamic_models'
 
-# This module provides functionality to create a
-# SQLite database from a DarwinCoreArchive
-# and provides an ORM layer using http://sequel.jeremyevans.net
-# Sequel::Model instances are created from the DwCA's meta.xml file
+#
 module DwCR
   # This class
   class Schema
-    include XMLParsable
-
     attr_accessor :path
-    attr_reader :core, :models
+    attr_reader :archive, :models
 
     # @path holds the directory of the DwCA file
     # @core holds the MetaEntity instance for the _core_ stanza of the DwCA
     # @models holds the generated models for the stanzas
     def initialize(path: Dir.pwd)
       @path = path
-      @core = nil
+      @archive = nil
       @models = nil
     end
 
@@ -64,40 +58,20 @@ module DwCR
 
     # Loads the contents of all associated CSV files into the shema tables
     def load_contents
-      @core.content_files.each(&:load)
-      @core.extensions.each do |extension|
+      @archive.core.content_files.each(&:load)
+      @archive.core.extensions.each do |extension|
         extension.content_files.each(&:load)
       end
     end
 
     private
 
-    # Creates a MetaEntity instance from the xml for the stanza
-    # adds MetaAttribute instances for any field defined
-    def create_meta_entity_from_xml(xml)
-      entity = model_from_xml(xml, MetaEntity,
-                              :term, :name, :is_core, :key_column)
-      entity.add_attributes_from_xml(xml)
-
-      # add the _coreid_ attribute to any extension stanzas
-      unless entity.is_core
-        entity.add_meta_attribute(name: name_from(xml),
-                                    index: key_column_from(xml))
-      end
-
-      entity.add_files_from_xml(xml, path: @path)
-      entity
-    end
-
     # Parses the xml for the DarwinCoreArchive
     # gets the stanzas for the _core_ and _extensions_
     def parse_meta(xml)
       validate_meta xml
-      @core = create_meta_entity_from_xml(xml.css('core').first)
-      xml.css('extension').each do |node|
-        extn = create_meta_entity_from_xml node
-        @core.add_extension(extn)
-      end
+      @archive = MetaArchive.create(path: @path)
+      @archive.load_entities_from xml
     end
 
     # Will raise error if the XML file is not valid

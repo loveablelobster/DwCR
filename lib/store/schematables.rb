@@ -13,6 +13,7 @@ module DwCR
         columns.each { |c| column(*c) }
       end
     end
+    require_relative '../models/meta_archive'
     require_relative '../models/meta_entity'
     require_relative '../models/meta_attribute'
     require_relative '../models/content_file'

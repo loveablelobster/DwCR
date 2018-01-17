@@ -84,11 +84,11 @@ module DwCR
     end
 
     it 'fetches the core' do
-      expect(@schema.core.class_name).to eq 'Occurrence'
+      expect(@schema.archive.core.class_name).to eq 'Occurrence'
     end
 
     it 'fetches the extensions' do
-      extensions = @schema.core.extensions_dataset
+      extensions = @schema.archive.core.extensions_dataset
       expect(extensions).to be_a Sequel::Dataset
       expect(extensions.map(&:class_name)).to include 'Multimedia'
     end
