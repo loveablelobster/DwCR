@@ -1,4 +1,30 @@
 ---
+!ruby/sym meta_archives:
+  -
+    - !ruby/sym core_id
+    - !ruby/sym integer
+    - !ruby/sym index:
+        true
+  -
+    - !ruby/sym xmlns
+    - !ruby/sym string
+    - !ruby/sym default:
+        'http://rs.tdwg.org/dwc/text/'
+  -
+    - !ruby/sym xmlns__xs # xmlns:xs
+    - !ruby/sym string
+    - !ruby/sym default:
+        'http://www.w3.org/2001/XMLSchema'
+  -
+    - !ruby/sym xmlns__xsi # xmlns:xsi
+    - !ruby/sym string
+    - !ruby/sym default:
+        'http://www.w3.org/2001/XMLSchema-instance'
+  -
+    - !ruby/sym xsi__schema_location # xsi:schemaLocation
+    - !ruby/sym string
+    - !ruby/sym default:
+        'http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd'
 !ruby/sym meta_attributes:
   -
     - !ruby/sym meta_entity_id
@@ -11,7 +37,7 @@
   -
     - !ruby/sym name
     - !ruby/sym string
-    - 
+    -
       !ruby/sym index: true
       !ruby/sym null: false
   -
@@ -31,7 +57,8 @@
   -
     - !ruby/sym name
     - !ruby/sym string
-    - !ruby/sym null: false
+    - !ruby/sym null:
+        false
   -
     - !ruby/sym term
     - !ruby/sym string
