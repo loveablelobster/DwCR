@@ -5,7 +5,34 @@ require_relative '../helpers/xml_parsable'
 
 #
 module DwCR
-  #
+  # This class represents _core_ or _extension_ stanzas in DarwinCoreArchive
+  # * +name+: the name for the stanza
+  #   default: pluralized term without namespace in underscore (snake case) form
+  # * +term+: the full term (a uri), including namespace for the stanza
+  #   see http://rs.tdwg.org/dwc/terms/index.htm
+  # * +is_core+:
+  #   _true_ if the stanza is the core stanza of the DarwinCoreArchive,
+  #   _false_ otherwise
+  # * +key_column+: the column in the stanza representing
+  #   the primary key of the core stanza or
+  #   the foreign key in am extension stanza
+  # * +fields_enclosed_by+: directive to form CSV in :content_files
+  #   default: '&quot;'
+  # * +fields_terminated_by+: fieldsTerminatedBy=","
+  # * +lines_terminated_by+: linesTerminatedBy="\r\n"
+  # * *#meta_archive*:
+  #   the MetaArchive the MetaEntity belongs to
+  # * *#meta_attributes*:
+  #   MetaAttribute instances associated with the MetaEntity
+  # * *#content_files*:
+  #   ContentFile instances associated with the MetaEntity
+  # * *#core*:
+  #   if the MetaEntity is an _extension_
+  #   returns the MetaEntity representing the _core_ stanza
+  #   nil otherwise
+  # * *#extensions*:
+  #   if the MetaEntity is the _core_ stanza
+  #   returns any MetaEntity instances representing _extension_ stanzas
   class MetaEntity < Sequel::Model
     include XMLParsable
 

@@ -17,6 +17,10 @@ module DwCR
   #   default: 'http://www.w3.org/2001/XMLSchema-instance'
   # * +xsi__schema_location+ (xsi:schemaLocation)
   #   default: 'http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd'
+  # * *#meta_entities*:
+  #   the associated MetaEntity objects
+  # * *#core*:
+  #   the associated MetaEntity object that is the core stanza in the DwCA
   class MetaArchive < Sequel::Model
     include XMLParsable
 

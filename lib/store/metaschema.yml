@@ -82,6 +82,21 @@
     - !ruby/sym key_column
     - !ruby/sym integer
   -
+    - !ruby/sym fields_enclosed_by
+    - !ruby/sym string
+    - !ruby/sym default:
+        '&quot;'
+  -
+    - !ruby/sym fields_terminated_by
+    - !ruby/sym string
+    - !ruby/sym default:
+        ','
+  -
+    - !ruby/sym lines_terminated_by
+    - !ruby/sym string
+    - !ruby/sym default:
+        '\r\n'
+  -
     - !ruby/sym core_id
     - !ruby/sym integer
     - !ruby/sym index:
