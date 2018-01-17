@@ -20,6 +20,11 @@ module DwCR
     many_to_one :core, class: self
     one_to_many :extensions, key: :core_id, class: self
 
+    def before_create
+      self.name ||= term&.split('/')&.last.tableize
+      super
+    end
+
     # xml = node.css('field')
     def add_attributes_from_xml(xml)
       # add the _coreid_ attribute to any extension stanzas
