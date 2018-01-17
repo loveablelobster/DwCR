@@ -48,34 +48,27 @@ module DwCR
     one_to_many :extensions, key: :core_id, class: self
 
     def before_create
-      self.name ||= term&.split('/')&.last.tableize
+      self.name ||= term&.split('/')&.last&.tableize
       super
     end
 
-    # xml = node.css('field')
-    def add_attributes_from_xml(xml)
-      # add the _coreid_ attribute to any extension stanzas
-      unless is_core
-        add_meta_attribute(name: name_from(xml),
-                           index: key_column_from(xml))
-      end
-
-      xml.css('field').each do |field|
-        term = term_from field
-        attribute = meta_attributes_dataset.first(term: term)
-        vals = { term: term,
-                 name: name_from(field),
-                 index: index_from(field),
-                 default: default_from(field) }
-        attribute ||= add_meta_attribute(vals)
-        attribute.update_from_xml(field, :index, :default)
-      end
+    # Creates a MetaAttribute instance from an xml node (_field_)
+    # given that the instance has not been previously defined
+    # if an instance has been previously defined, it will be updated
+    def add_attribute_from(xml)
+      attribute = meta_attributes_dataset.first(term: term_from(xml))
+      attribute ||= add_meta_attribute(values_from(xml,
+                                                   :term,
+                                                   :name,
+                                                   :index,
+                                                   :default))
+      attribute.update_from(xml, :index, :default)
     end
 
-    def add_files_from_xml(xml, path: nil)
-      xml.css('files').map do |file|
-        add_content_file(name: name_from(file), path: path)
-      end
+    # Creates a ContentFile instance from an xml node (_file_)
+    # a +path+ can be given to add files from arbitrary locations
+    def add_file_from(xml, path: nil)
+      add_content_file(name: name_from(xml), path: path)
     end
 
     # returns the definition for the associations

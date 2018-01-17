@@ -19,8 +19,11 @@ module XMLParsable
     end
   end
 
-  def index_from(field_def)
-    field_def.attributes['index']&.value&.to_i
+  # returns the index of the field or coreid (if extension)
+  def index_from(xml)
+    key_index = xml.css('coreid')&.first
+    return xml.attributes['index']&.value&.to_i unless key_index
+    key_index.attributes['index'].value.to_i
   end
 
   def key_column_from(xml)
@@ -46,8 +49,8 @@ module XMLParsable
     term&.value
   end
 
-  def update_from_xml(xml, *fields)
-    update value_hash(xml, *fields)
+  def update_from(xml, *fields)
+    update values_from(xml, *fields)
     save
   end
 
@@ -55,7 +58,7 @@ module XMLParsable
     field.id2name + '_from'
   end
 
-  def value_hash(xml, *fields)
+  def values_from(xml, *fields)
     values = fields.map { |field| send(method(field), xml) }
     fields.zip(values).to_h.compact
   end

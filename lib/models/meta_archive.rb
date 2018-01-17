@@ -36,12 +36,18 @@ module DwCR
     # methods to add records to :meta_entities association form xml
 
     # Creates a MetaEntity instance from xml node (_core_ or _extension_)
-    # adds MetaAttribute instances for any field defined
+    # adds the foreign key field (_coreid_) to any _extension_
+    # adds MetaAttribute instances for any _field_ given
+    # adds ContentFile instances for any child node of _files_
     def add_meta_entity_from(xml)
-      entity = add_meta_entity(value_hash(xml,
-                                          :term, :name, :is_core, :key_column))
-      entity.add_attributes_from_xml(xml)
-      entity.add_files_from_xml(xml, path: path)
+      entity = add_meta_entity(values_from(xml,
+                                           :term, :name, :is_core, :key_column))
+      unless entity.is_core
+        foreign_key_field = values_from(xml, :name, :index)
+        entity.add_meta_attribute(foreign_key_field)
+      end
+      xml.css('field').each { |field| entity.add_attribute_from(field) }
+      xml.css('files').each { |file| entity.add_file_from(file, path: path) }
       entity
     end
 
