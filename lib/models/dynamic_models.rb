@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative '../helpers/dynamic_model_queryable'
 #
 module DwCR
   #
@@ -7,7 +8,7 @@ module DwCR
   #
   def self.create_model(entity, associations)
     model_class = Class.new(Sequel::Model(entity.table_name)) do
-      extend DynamicModelQueries
+      extend DynamicModelQueryable
       include DynamicModel
       @meta_entity = entity
       associations.each do |association|
@@ -37,22 +38,6 @@ module DwCR
                              class: entity_model)
       entity_model
     end
-  end
-end
-
-#
-module DynamicModelQueries
-  def column_by_term(term)
-    meta_entity.meta_attributes_dataset.first(term: term.to_s).column_name
-  end
-
-  def query_by_term(term, val)
-    where(column_by_term(term) => val)
-  end
-
-  def query_by_terms(val_hash)
-    val_hash.transform_keys { |key| column_by_term(key) }
-    where(val_hash)
   end
 end
 
