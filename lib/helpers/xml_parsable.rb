@@ -33,15 +33,7 @@ module XMLParsable
 
   # Parses the name for a file, table, or column
   def name_from(xml)
-    term = term_from xml
-    is_file = xml.css('location')&.first
-
-    # the xml is a file definition if no term is found but a location
-    return is_file.text if is_file && !term
-
-    # the xml is a table or column definition
-    name = term&.split('/')&.last
-    xml.attributes['rowType'] ? name.tableize : name&.underscore || 'coreid'
+    xml.css('location').first.text
   end
 
   def term_from(xml)

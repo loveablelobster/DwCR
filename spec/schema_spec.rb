@@ -105,6 +105,7 @@ module DwCR
         obs.add_multimedia(owner: 'me')
         obs.add_multimedia(owner: 'somone else')
         expect(obs.multimedia.size).to be 2
+        obs.destroy
       end
     end
 

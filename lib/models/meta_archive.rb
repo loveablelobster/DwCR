@@ -20,7 +20,7 @@ module DwCR
   # * *#meta_entities*:
   #   the associated MetaEntity objects
   # * *#core*:
-  #   the associated MetaEntity object that is the core stanza in the DwCA
+  #   the associated MetaEntity object that is the core node in the DwCA
   class MetaArchive < Sequel::Model
     include XMLParsable
 
@@ -33,17 +33,16 @@ module DwCR
       super
     end
 
-    # methods to add records to :meta_entities association form xml
+    # Methods to add records to the :meta_entities association form xml
 
     # Creates a MetaEntity instance from xml node (_core_ or _extension_)
     # adds the foreign key field (_coreid_) to any _extension_
     # adds MetaAttribute instances for any _field_ given
     # adds ContentFile instances for any child node of _files_
     def add_meta_entity_from(xml)
-      entity = add_meta_entity(values_from(xml,
-                                           :term, :name, :is_core, :key_column))
+      entity = add_meta_entity(values_from(xml, :term, :is_core, :key_column))
       unless entity.is_core
-        foreign_key_field = values_from(xml, :name, :index)
+        foreign_key_field = { name: 'coreid', index: index_from(xml) }
         entity.add_meta_attribute(foreign_key_field)
       end
       xml.css('field').each { |field| entity.add_attribute_from(field) }

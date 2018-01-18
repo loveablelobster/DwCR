@@ -5,20 +5,6 @@ module DwCR
   #
   #
   #
-  def self.association(left_entity, right_entity)
-    options = { class: right_entity.class_name, class_namespace: 'DwCR' }
-    if left_entity.is_core
-      options[:key] = left_entity.class_name.foreign_key.to_sym
-      [:one_to_many, right_entity.table_name, options]
-    else
-      options[:key] = right_entity.class_name.foreign_key.to_sym
-      [:many_to_one, right_entity.name.singularize.to_sym, options]
-    end
-  end
-
-  #
-  #
-  #
   def self.create_model(entity, associations)
     model_class = Class.new(Sequel::Model(entity.table_name)) do
       extend DynamicModelQueries
@@ -45,7 +31,7 @@ module DwCR
   #
   def self.load_models
     MetaEntity.map do |entity|
-      entity_model = DwCR.create_model(entity, entity.assocs)
+      entity_model = DwCR.create_model(entity, entity.model_associations)
       MetaEntity.associate(:one_to_many,
                              entity.table_name,
                              class: entity_model)

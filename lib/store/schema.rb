@@ -12,8 +12,8 @@ module DwCR
     attr_reader :archive, :models
 
     # @path holds the directory of the DwCA file
-    # @core holds the MetaEntity instance for the _core_ stanza of the DwCA
-    # @models holds the generated models for the stanzas
+    # @core holds the MetaEntity instance for the _core_ node of the DwCA
+    # @models holds the generated models for the nodes
     def initialize(path: Dir.pwd)
       @path = path
       @archive = nil
@@ -26,7 +26,7 @@ module DwCR
       parse_meta(File.open(meta) { |f| Nokogiri::XML(f) })
     end
 
-    # Creates the database schema for the DwCA stanzas
+    # Creates the database schema for the DwCA nodes
     # _schema_options_:
     # - +type:+ +true+ or +false+
     # - +length:+ +true+ or +false+
@@ -46,14 +46,13 @@ module DwCR
     # _schema_options_: a Hash with attribute names as keys and boolean values
     # <tt>{ :type => true, :length => true }</tt>
     # updates any attribute given as key where value is _true_
-    def update_schema(schema_options)
-      return unless schema_options
+    def update_schema(options)
+      return unless options
 
       # FIXME: throw an error if schema is not built
 
-      schema_options.select! { |_k, v| v == true }
-      modifiers = schema_options.keys
-      MetaEntity.each { |entity| entity.update_with(modifiers) }
+      options.select! { |_k, v| v == true }
+      MetaEntity.each { |entity| entity.update_meta_attributes!(*options.keys) }
     end
 
     # Loads the contents of all associated CSV files into the shema tables
@@ -67,7 +66,7 @@ module DwCR
     private
 
     # Parses the xml for the DarwinCoreArchive
-    # gets the stanzas for the _core_ and _extensions_
+    # gets the nodes for the _core_ and _extensions_
     def parse_meta(xml)
       validate_meta xml
       @archive = MetaArchive.create(path: @path)
@@ -76,7 +75,7 @@ module DwCR
 
     # Will raise error if the XML file is not valid
     def validate_meta(xml)
-      raise ArgumentError 'Multiple Core Stanzas' if xml.css('core').size > 1
+      raise ArgumentError 'Multiple Core nodes' if xml.css('core').size > 1
     end
   end
 end
