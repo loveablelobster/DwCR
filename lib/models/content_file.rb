@@ -45,6 +45,8 @@ module DwCR
     end
 
     #
+    # if this is called on a _core_ instance, this will also destroy any
+    # dependant _extension_ records!
     def unload!
       return unless is_loaded
       CSV.foreach(file_name) { |row| delete_row(row) }
