@@ -62,6 +62,10 @@ module DynamicModel
     meta_entity.meta_attributes_dataset.first(term: term.to_s).column_name
   end
 
+  def conten_files
+    meta_entity.files
+  end
+
   def core?
     meta_entity.is_core
   end

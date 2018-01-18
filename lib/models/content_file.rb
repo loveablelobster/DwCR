@@ -4,32 +4,64 @@ require 'csv'
 
 #
 module DwCR
-  #
+  # This class represents _location_ nodes (children of the _files_ nodes)
+  # in DarwinCoreArchive, which represent csv files associated with a
+  # _core_ or _extension_ node
+  # * +name+:
+  #   the basename of the file with extension (normally .csv)
+  # * +path+:
+  #   the directory path where the file is located
+  #   set this attribute to load content files from arbitrary directories
+  # * +is_loaded+:
+  #   a flag that is set to +true+ when the ContentFile instance's
+  #   contents have been loaded from the CSV file into the database
+  # * *#meta_entity*:
+  #   the MetaEntity instance the ContentFile instance belongs to
   class ContentFile < Sequel::Model
     many_to_one :meta_entity
 
+    # Returns the full file name including the path
     def file_name
       File.join(path, name)
     end
 
-    # Returns an array of symbols for column names in associated
-    # MetaAttribute instances that are represented in the CSV files
-    # The array is sorted by the
+    # Returns an array of symbols for column names for each column in the
+    # (headerless) CSV file specified in the +file+ attribute
+    # the array is mapped from the ContentFile instance's parent MetaEntity
+    # instance's MetaAttribute instances that have an +index+
+    # The array is sorted by the +index+
     def content_headers
       meta_entity.meta_attributes_dataset.exclude(index: nil)
                                          .order(:index)
                                          .map(&:column_name)
     end
 
+    #
     def load
-      CSV.open(File.join(path, name)).each do |row|
-        load_row(row)
-      end
+      return if is_loaded
+      CSV.foreach(file_name) { |row| insert_row(row) }
+      self.is_loaded = true
+      save
+    end
+
+    #
+    def unload!
+      return unless is_loaded
+      CSV.foreach(file_name) { |row| delete_row(row) }
+      self.is_loaded = false
+      save
     end
 
     private
 
-    def load_row(row)
+    def delete_row(row)
+      row_vals = values_for row
+      row_vals.delete(meta_entity.key) unless meta_entity.is_core
+      rec = meta_entity.model_get.first(row_vals)
+      rec.destroy
+    end
+
+    def insert_row(row)
       if meta_entity.is_core
         entity = meta_entity.model_get.create(values_for(row))
       else

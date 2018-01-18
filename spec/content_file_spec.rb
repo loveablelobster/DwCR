@@ -20,5 +20,9 @@ module DwCR
       content_file = meta_entity.add_content_file(name: 'file', path: 'home')
       expect(content_file.content_headers).to contain_exactly(:term_a, :term_b)
     end
+
+    # example for load
+
+    # example for unload!
   end
 end

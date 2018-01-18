@@ -114,3 +114,8 @@
   -
     - !ruby/sym path # this will allow to create new DwCAs from arbitrary content locations
     - !ruby/sym string
+  -
+    - !ruby/sym is_loaded
+    - !ruby/sym boolean
+    - !ruby/sym default:
+        false
