@@ -24,5 +24,7 @@ module DwCR
     # example for load
 
     # example for unload!
+
+    # example for error when extension is loaded before core
   end
 end

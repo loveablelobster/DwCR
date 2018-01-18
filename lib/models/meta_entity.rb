@@ -60,6 +60,12 @@ module DwCR
       content_files.map(&:file_name)
     end
 
+    # Returns *true* if all _content_files_ have been loaded,
+    # _false_ otherwise
+    def loaded?
+      content_files_dataset.where(is_loaded: false).empty?
+    end
+
     # Returns a symbol based on the MetaEntity instance's foreign key name
     def foreign_key
       class_name.foreign_key.to_sym
