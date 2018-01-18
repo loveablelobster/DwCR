@@ -38,7 +38,7 @@ module DwCR
       MetaEntity.each do |entity|
         DwCR.create_schema_table(entity)
       end
-      @models = DwCR.load_models
+      @models = DwCR.load_models(@archive)
     end
 
     # Updates all MetaAttribute instances
