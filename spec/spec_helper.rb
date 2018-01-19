@@ -102,7 +102,7 @@ RSpec.configure do |config|
 #   Kernel.srand config.seed
 
   config.before(:all) do
-    require_relative '../lib/dwcr'
+    require_relative '../lib/dwcr_base'
     DwCR.connect#(path: 'spec/files/test.db')
     DwCR.create_metaschema
   end

@@ -1,0 +1,33 @@
+---
+NULL:
+  usage: >
+    dwcr [command] [options]
+  options:
+    -
+      - '--help'
+      - '-h'
+      - NO_ARGUMENT
+      - show help
+new:
+  usage: >
+    dwcr new [options]
+  options:
+    -
+      - '--help'
+      - '-h'
+      - NO_ARGUMENT
+      - show help
+    -
+      - '--path'
+      - '-p'
+      - REQUIRED_ARGUMENT
+      - >
+        the directory where the DarwinCore Archive is located
+        defaults to the current directory
+    -
+      - '--target'
+      - '-t'
+      - OPTIONAL_ARGUMENT
+      - >
+        the target file to be created; if no argument is provided
+        this option will create an in-memory the SQLite database
