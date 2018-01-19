@@ -3,7 +3,7 @@
 require 'sequel'
 
 require_relative 'db/connection'
-require_relative 'store/schematables'
+require_relative 'db/schematables'
 
 # This module provides functionality to create a
 # SQLite database from a DarwinCoreArchive

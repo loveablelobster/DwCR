@@ -2,7 +2,7 @@
 
 require 'pry'
 
-require_relative '../lib/store/schema'
+require_relative '../lib/db/schema'
 
 #
 module DwCR

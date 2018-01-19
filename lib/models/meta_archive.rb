@@ -28,11 +28,6 @@ module DwCR
     many_to_one :core, class: 'MetaEntity',
                        class_namespace: 'DwCR', key: :core_id
 
-    def before_create
-      self.name ||= path&.split('/')&.last
-      super
-    end
-
     # Methods to add records to the :meta_entities association form xml
 
     # Creates a MetaEntity instance from xml node (_core_ or _extension_)
@@ -60,6 +55,14 @@ module DwCR
         core.add_extension(extn)
       end
       save
+    end
+
+    private
+
+    # Sequel Model hook that creates a default +name+ from the +term+ if present
+    def before_create
+      self.name ||= path&.split('/')&.last
+      super
     end
   end
 end
