@@ -4,13 +4,9 @@ require 'sqlite3'
 
 #
 module DwCR
-  def self.connect(path: nil)
-    Sequel.sqlite(path)
-  end
-
   def self.inspect_table(table, method)
-    Sequel::Model.db.indexes(table).values.map { |x| x[:columns] }.flatten
-    Sequel::Model.db.send(method, table)
+    DB.indexes(table).values.map { |x| x[:columns] }.flatten
+    DB.send(method, table)
   rescue Sequel::Error
     false
   end

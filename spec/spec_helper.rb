@@ -103,7 +103,8 @@ RSpec.configure do |config|
 
   config.before(:all) do
     require_relative '../lib/dwcr'
-    DwCR.connect#(path: 'spec/files/test.db')
+    DB = Sequel.sqlite#(path: 'spec/files/test.db')
+#     DwCR.connect#(path: 'spec/files/test.db')
     DwCR.create_metaschema
   end
 end

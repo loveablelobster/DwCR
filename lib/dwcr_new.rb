@@ -11,6 +11,8 @@ SHELL.options.each do |opt, arg|
   end
 end
 
+DB = Sequel.sqlite(SHELL.target)
+
 binding.pry
 
 puts 'done!'
