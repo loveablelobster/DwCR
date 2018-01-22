@@ -1,0 +1,24 @@
+# frozen_string_literal: true
+
+require_relative '../lib/content_analyzer/file_contents'
+
+module DwCR
+  RSpec.describe FileContents do
+    let(:core) { FileContents.new('spec/files/test.csv').columns }
+
+    it 'determines the indices as headers for each column in a CSV file' do
+      indices = core.map(&:index)
+      expect(indices).to contain_exactly(0, 1, 2)
+    end
+
+    it 'gets the lengths for the columns' do
+      lengths = core.map(&:length)
+      expect(lengths).to contain_exactly(7, 1, 3)
+    end
+
+    it 'gets the types for the columns' do
+      types = core.map(&:type)
+      expect(types).to contain_exactly(String, Integer, Float)
+    end
+  end
+end
