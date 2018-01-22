@@ -6,9 +6,7 @@ module DwCR
     config.warnings = false
 
     config.around(:each) do |example|
-      Sequel::Model.db
-                    .transaction(rollback: :always,
-                                 auto_savepoint: true) {example.run}
+      DB.transaction(rollback: :always, auto_savepoint: true) {example.run}
     end
   end
 

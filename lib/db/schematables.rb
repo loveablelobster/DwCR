@@ -7,7 +7,7 @@ module DwCR
   def self.create_metaschema
     tabledefs = Psych.load_file(File.join(__dir__, 'metaschema_tables.yml'))
     tabledefs.to_h.each do |table, columns|
-      Sequel::Model.db.create_table? table do
+      DB.create_table? table do
         primary_key :id
         columns.each { |c| column(*c) }
       end
@@ -19,7 +19,7 @@ module DwCR
   end
 
   def self.create_schema_table(entity)
-    Sequel::Model.db.create_table? entity.table_name do
+    DB.create_table? entity.table_name do
       primary_key :id
       foreign_key :meta_entity_id, :meta_entities
       DwCR.add_foreign_key(self, entity)
