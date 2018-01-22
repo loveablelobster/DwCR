@@ -11,6 +11,8 @@ NULL:
 new:
   usage: >
     dwcr new [options]
+    creates a new DwCR
+    default name for the DwCR is the
   options:
     -
       - '--help'

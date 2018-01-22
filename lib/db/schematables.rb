@@ -6,7 +6,7 @@ require 'psych'
 module DwCR
   def self.create_metaschema
     connect unless Sequel::Model.db
-    tabledefs = Psych.load_file('resources/metaschema_tables.yml')
+    tabledefs = Psych.load_file(File.join(__dir__, 'metaschema_tables.yml'))
     tabledefs.to_h.each do |table, columns|
       Sequel::Model.db.create_table? table do
         primary_key :id

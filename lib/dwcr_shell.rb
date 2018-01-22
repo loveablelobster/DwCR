@@ -7,17 +7,24 @@ require 'psych'
 module DwCR
   #
   class Shell
-    attr_reader :options
+    attr_accessor :path
+    attr_reader :options, :target
 
     def initialize(cmd)
-      cmd_shell = Psych.load_file('resources/help.yml')[cmd]
+      cmd_shell = Psych.load_file(File.join(__dir__, 'help.yml'))[cmd]
       @usage = ["Usage: #{cmd_shell['usage']}\n"]
       @options = nil
       @usage << load_options(cmd_shell['options'])
+      @path = Dir.pwd
+      @target = target_directory @path
     end
 
     def print_help
       puts @usage
+    end
+
+    def target=(target_path)
+      @target = target_path ? target_directory(target_path) || target_path : nil
     end
 
     private
@@ -33,6 +40,11 @@ module DwCR
       end
       @options = GetoptLong.new(*cmd_opts)
       pp_opts
+    end
+
+    def target_directory(target_path)
+      return nil unless File.directory? target_path
+      File.join(target_path, File.basename(@path) + '.db')
     end
   end
 end
