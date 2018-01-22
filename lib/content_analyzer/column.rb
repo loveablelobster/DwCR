@@ -28,7 +28,7 @@ module DwCR
     # collapses all types encountered in a file's column into a single type
     def collapse(types)
       return types.first if types.size == 1
-      return nil if types.empty? # or String
+      return String if types.empty?
       return String if string?(types)
       return Float if float?(types)
       String

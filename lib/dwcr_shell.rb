@@ -33,10 +33,14 @@ module DwCR
       cmd_opts = []
       pp_opts = raw_opts.map do |opt|
         cmd_opts << opt[0..1].append(GetoptLong.const_get(opt[2]))
-        str = "\t#{opt[1]}\t#{opt[0]}"
+        str = "    #{opt[1]}    #{opt[0]}"
         fill = ''
         (40 - str.length).times { fill += ' ' }
-        str + fill + opt[3]
+        blankfill = ''
+        40.times { blankfill += ' ' }
+        optlines = opt[3].lines
+        firstline = str + fill + optlines.shift
+        [firstline, optlines.map { |line| blankfill + line }].join#("\n")
       end
       @options = GetoptLong.new(*cmd_opts)
       pp_opts

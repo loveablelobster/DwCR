@@ -52,9 +52,9 @@ module DwCR
       end
 
       context 'reports the columns common type' do
-        it 'nil for monotypic columns' do
+        it 'String for empty columns' do
       	  c = Column.new(1, [], :type)
-      	  expect(c.type).to be_nil
+      	  expect(c.type).to be String
       	end
 
       	it 'the type for monotypic columns' do

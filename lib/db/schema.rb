@@ -20,9 +20,10 @@ module DwCR
       @models = nil
     end
 
-    # Loads the _meta.xml_ file in _@path_
-    # calls #parse_meta(xml)
-    def load_schema(meta = File.join(@path, 'meta.xml'))
+    # Loads and parses the given _meta.xml_ file
+    # if none is given, will try to load the _meta.xml_ file in _@path_
+    def load_meta(meta = nil)
+      meta ||= File.join(@path, 'meta.xml')
       parse_meta(File.open(meta) { |f| Nokogiri::XML(f) })
     end
 

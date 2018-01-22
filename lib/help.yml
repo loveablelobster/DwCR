@@ -9,7 +9,7 @@ NULL:
       - NO_ARGUMENT
       - show help
 new:
-  usage: >
+  usage: |
     dwcr new [options]
     creates a new DwCR
     default name for the DwCR is the
@@ -20,16 +20,31 @@ new:
       - NO_ARGUMENT
       - show help
     -
+      - '--coltypes'
+      - '-c'
+      - NO_ARGUMENT
+      - |
+        set the column types based on contents from the included csv files
+        by default all columns will be of type 'text'
+    -
+      - '--meta'
+      - '-m'
+      - REQUIRED_ARGUMENT
+      - |
+        specify a meta.xml file for the schema
+        by default will search for meta.xml in the working directory
+        (see --path option)
+    -
       - '--path'
       - '-p'
       - REQUIRED_ARGUMENT
-      - >
+      - |
         the directory where the DarwinCore Archive is located
         defaults to the current directory
     -
       - '--target'
       - '-t'
       - OPTIONAL_ARGUMENT
-      - >
+      - |
         the target file to be created; if no argument is provided
         this option will create an in-memory the SQLite database
