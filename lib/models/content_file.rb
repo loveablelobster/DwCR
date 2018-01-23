@@ -32,7 +32,8 @@ module DwCR
     # The array is sorted by the +index+
     def content_headers
       meta_entity.meta_attributes_dataset
-                 .exclude(index: nil) # .exclude(type: nil)
+                 .exclude(index: nil)
+                 .exclude(type: nil)
                  .order(:index)
                  .map(&:column_name)
     end
@@ -63,6 +64,11 @@ module DwCR
       save
     end
 
+    private
+
+    # removes all cells from a row for which the column in all
+    # associated CSV files is empty (the associated MetaAttribute instance
+    # has <tt>type == nil</tt>)
     def compact(row)
       empty_cols = meta_entity.meta_attributes_dataset
                               .exclude(index: nil)
@@ -70,8 +76,6 @@ module DwCR
                               .map(&:index)
       row.delete_if.with_index { |_, index| empty_cols.include?(index) }
     end
-
-    private
 
     # Delets a CSV row from the DwCA table represented
     # by the instance's parent MetaEntity instance
@@ -85,12 +89,12 @@ module DwCR
     # Inserts a CSV row into the DwCA schema's _core_ table
     def insert_into_core(row)
       return unless meta_entity.is_core
-      meta_entity.model_get.create(values_for(row))
+      meta_entity.model_get.create(row_to_hash(row))
     end
 
     # Inserts a CSV row into an _extension_ table of the DwCA schema
     def insert_into_extension(row)
-      row_vals = values_for(row)
+      row_vals = row_to_hash(row)
       core_row(row_vals.delete(meta_entity.key)).send(add_related, row_vals)
     end
 
@@ -117,8 +121,10 @@ module DwCR
     # Creates a hash from a headerless CSV row
     # MetaEntity instance's :meta_attributes colum names are keys
     # the CSV row cells are values
-    def values_for(row)
-      content_headers.zip(row).to_h
+    def row_to_hash(row)
+      keys = content_headers
+      vals = compact row
+      keys.zip(vals).to_h
     end
   end
 end

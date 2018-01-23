@@ -112,10 +112,55 @@ module DwCR
     context 'loads the data' do
       it 'loads the core with associated extension records' do
         @schema.load_contents
-        obs = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
-        expect(obs.catalog_number).to be 138618
-        expect(obs.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
-        expect(obs.meta_entity.term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
+        expected_vals = { occurrence_id: 'a138e9b8-31f6-4ada-95fb-8395a41c067b',
+                          catalog_number: 138601,
+                          other_catalog_numbers: 'AVES-145245',
+                          field_number: nil,
+                          type_status: nil,
+                          event_date: Date.new(2014,9,8),
+                          recorded_by: 'Bolding Kristensen, Jan',
+                          event_remarks: nil,
+                          preparations: 'Bones - 1; Tissue - 1',
+                          modified: Date.new(2016,2,8),
+                          order: 'Passeriformes',
+                          family: 'Cardinalidae',
+                          genus: 'Piranga',
+                          specific_epithet: 'ludoviciana',
+                          infraspecific_epithet: '',
+                          scientific_name: 'Piranga ludoviciana',
+                          continent: 'North America',
+                          country: 'United States',
+                          state_province: 'Texas',
+                          county: 'Jeff Davis County',
+                          higher_geography: 'United States, Texas, Jeff Davis County',
+                          island_group: nil,
+                          island: nil,
+                          water_body: nil,
+                          locality: 'Fort Davis',
+                          location_remarks: 'Musquiz Canyon, Smithsonians´s Site; 10.4 km SE of Fort Davis',
+                          decimal_longitude: -103.8333333333,
+                          decimal_latitude: 30.5111111111,
+                          coordinate_uncertainty_in_meters: nil,
+                          geodetic_datum: 'WGS84',
+                          georeferenced_date: nil,
+                          sex: 'f-gonads',
+                          institution_code: 'NHMD',
+                          institution_id: 'http://grbio.org/cool/xxx',
+                          license: 'http://creativecommons.org/licenses/by/4.0/deed.en_US',
+                          access_rights: 'http://snm.ku.dk/xxx',
+                          collection_code: 'AV',
+                          basis_of_record: 'PreservedSpecimen',
+                          dataset_name: 'Natural History Museum of Denmark ornithological collection',
+                          kingdom: 'Animalia',
+                          phylum: 'Chordata',
+                          class: 'Aves' }
+        obs1 = DwCR::Occurrence.first(catalog_number: 138601)
+        expect(obs1.values).to include(expected_vals)
+
+        obs2 = DwCR::Occurrence.first(occurrence_id: 'fd7300ee-30eb-4ec7-afec-9d3612f63f1e')
+        expect(obs2.catalog_number).to be 138618
+        expect(obs2.multimedia.map(&:title)).to contain_exactly('NHMD_138618 Profile','NHMD_138618 Upper side', 'NHMD_138618 Under side')
+        expect(obs2.meta_entity.term).to eq 'http://rs.tdwg.org/dwc/terms/Occurrence'
 #         binding.pry
       end
     end
