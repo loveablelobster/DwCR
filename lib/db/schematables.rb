@@ -24,7 +24,7 @@ module DwCR
       foreign_key :meta_entity_id, :meta_entities
       DwCR.add_foreign_key(self, entity)
       entity.meta_attributes.each do |a|
-        column(*a.column_params) unless a.foreign_key?
+        column(*a.to_table_column) unless a.foreign_key?
       end
     end
   end

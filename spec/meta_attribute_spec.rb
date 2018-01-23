@@ -29,7 +29,7 @@ module DwCR
         entity = MetaEntity.create(name: 'item')
         params = [:term, :string, { index: false, default: nil }]
         attribute = entity.add_meta_attribute(name: 'term')
-        expect(attribute.column_params).to eq(params)
+        expect(attribute.to_table_column).to eq(params)
       end
 
       it 'with name, type and default' do
@@ -37,7 +37,7 @@ module DwCR
         params = [:term, :string, { index: false, default: 'default' }]
         attribute = entity.add_meta_attribute(name: 'term',
                                                 default: 'default')
-        expect(attribute.column_params).to eq(params)
+        expect(attribute.to_table_column).to eq(params)
       end
 
       it 'with name, type and index' do
@@ -45,7 +45,7 @@ module DwCR
         params = [:term, :string, { index: true, default: nil }]
         attribute = entity.add_meta_attribute(name: 'term',
                                                 index: 0)
-        expect(attribute.column_params).to eq(params)
+        expect(attribute.to_table_column).to eq(params)
       end
 
       it 'with name, type and unique index' do
@@ -53,7 +53,7 @@ module DwCR
         params = [:term, :string, { index: { unique: true }, default: nil }]
         attribute = entity.add_meta_attribute(name: 'term',
                                                 index: 0)
-        expect(attribute.column_params).to eq(params)
+        expect(attribute.to_table_column).to eq(params)
       end
     end
 

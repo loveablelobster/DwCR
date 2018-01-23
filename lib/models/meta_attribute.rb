@@ -37,8 +37,9 @@ module DwCR
     # Returns an array that can be splatted as arguments into the
     # Sequel::Schema::CreatTableGenerator#column method:
     # <tt>[name, type, options]</tt>
-    def column_params
-      [column_name, type.to_sym, { index: index_options, default: default }]
+    def to_table_column # FIXME: rename to_table_column
+      col_type = type.empty? ? :string : type.to_sym
+      [column_name, col_type, { index: index_options, default: default }]
     end
 
     # Reurns +true+ if the _field_ node is the foreign key in the
