@@ -32,7 +32,7 @@ module DwCR
     # The array is sorted by the +index+
     def content_headers
       meta_entity.meta_attributes_dataset
-                 .exclude(index: nil)
+                 .exclude(index: nil) # .exclude(type: nil)
                  .order(:index)
                  .map(&:column_name)
     end
@@ -63,15 +63,15 @@ module DwCR
       save
     end
 
-    private
-
     def compact(row)
-      empty_indices = meta_entity.meta_attributes_dataset
-                                 .exclude(index: nil)
-                                 .exclude(type: nil)
-                                 .order(:index)
-                                 .map(&:index)
+      empty_cols = meta_entity.meta_attributes_dataset
+                              .exclude(index: nil)
+                              .where(type: nil)
+                              .map(&:index)
+      row.delete_if.with_index { |_, index| empty_cols.include?(index) }
     end
+
+    private
 
     # Delets a CSV row from the DwCA table represented
     # by the instance's parent MetaEntity instance
