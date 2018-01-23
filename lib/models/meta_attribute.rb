@@ -34,14 +34,6 @@ module DwCR
       name.to_sym
     end
 
-    # Returns an array that can be splatted as arguments into the
-    # Sequel::Schema::CreatTableGenerator#column method:
-    # <tt>[name, type, options]</tt>
-    def to_table_column # FIXME: rename to_table_column
-      col_type = type.empty? ? :string : type.to_sym
-      [column_name, col_type, { index: index_options, default: default }]
-    end
-
     # Reurns +true+ if the _field_ node is the foreign key in the
     # _core_ or an _extension_ node in the DwCA schema, +false+ otherwise
     def foreign_key?
@@ -54,6 +46,14 @@ module DwCR
     # or the +max_content_length+ or +nil+ if neither is set
     def length
       [default&.length, max_content_length].compact.max
+    end
+
+    # Returns an array that can be splatted as arguments into the
+    # Sequel::Schema::CreatTableGenerator#column method:
+    # <tt>[name, type, options]</tt>
+    def to_table_column
+      col_type = type ? type.to_sym : :string
+      [column_name, col_type, { index: index_options, default: default }]
     end
 
     alias length= max_content_length=

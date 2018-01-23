@@ -25,7 +25,7 @@ module DwCR
         types = column.map(&:type).uniq
         { index: index,
           length: length,
-          type: common_type(types).to_s.underscore }
+          type: common_type(types)&.to_s&.underscore }
       end
     end
 

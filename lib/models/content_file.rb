@@ -65,6 +65,14 @@ module DwCR
 
     private
 
+    def compact(row)
+      empty_indices = meta_entity.meta_attributes_dataset
+                                 .exclude(index: nil)
+                                 .exclude(type: nil)
+                                 .order(:index)
+                                 .map(&:index)
+    end
+
     # Delets a CSV row from the DwCA table represented
     # by the instance's parent MetaEntity instance
     def delete_row(row)

@@ -118,7 +118,7 @@ module DwCR
     def update_meta_attributes!(*modifiers)
       FileSet.new(files, modifiers).columns.each do |cp|
         column = meta_attributes_dataset.first(index: cp[:index])
-        modifiers.each { |m| column.send(m.to_s + '=', cp[m]) if cp[m] }
+        modifiers.each { |m| column.send(m.to_s + '=', cp[m]) }
         column.save
       end
     end
