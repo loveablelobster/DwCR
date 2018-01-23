@@ -7,7 +7,7 @@ require_relative '../models/dynamic_models'
 #
 module DwCR
   # This class
-  class Schema
+  class Schema # FIXME: rename Builder
     attr_accessor :path
     attr_reader :archive, :models
 
@@ -16,7 +16,7 @@ module DwCR
     # @models holds the generated models for the nodes
     def initialize(path: Dir.pwd)
       @path = path
-      @archive = nil
+      @archive = MetaArchive.create(path: @path)
       @models = nil
     end
 
@@ -70,7 +70,6 @@ module DwCR
     # gets the nodes for the _core_ and _extensions_
     def parse_meta(xml)
       validate_meta xml
-      @archive = MetaArchive.create(path: @path)
       @archive.load_entities_from xml
     end
 

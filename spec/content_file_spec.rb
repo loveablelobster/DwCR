@@ -45,12 +45,61 @@ module DwCR
       end
     end
 
-    context 'loads' do
+    context 'inserts and deletes rows' do
+      before(:context) do
+        @file = File.join(Dir.pwd, 'table.csv')
+        CSV.open(@file, "wb") do |csv|
+          csv << ["a1", "b1", "c1"]
+          csv << ["a2", "b2", "c2"]
+        end
+      end
 
-    end
+      let(:f) do
+        s = Schema.new
+        s.archive.core = s.archive.add_meta_entity(term: 'example.org/core')
+        e = s.archive.core.add_extension(term: 'example.org/extension')
+        e.add_meta_attribute(name: 'term_a', index: 0)
+        e.add_meta_attribute(name: 'term_b', index: 1)
+        e.add_meta_attribute(name: 'term_c', index: 2)
+        s.create_schema
+        e.add_content_file(name: 'table.csv', path: Dir.pwd)
+      end
 
-    context 'unloads' do
+      context 'loads' do
+        it 'will not load if the file is already loaded' do
 
+        end
+
+        it 'will raise an error if the parent row has not been loaded' do
+
+        end
+
+        it 'loads the rows' do
+
+        end
+
+        it 'set the is_loaded flag to true after successful loading' do
+
+        end
+      end
+
+      context 'unloads' do
+        it 'will return nil if the rows to be removed have not been loaded' do
+
+        end
+
+        it 'deletes the rows' do
+
+        end
+
+         it 'set the is_loaded flag to false after successful deletion' do
+
+        end
+      end
+
+      after(:context) do
+        File.delete @file
+      end
     end
   end
 end
