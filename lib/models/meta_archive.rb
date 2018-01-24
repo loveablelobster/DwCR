@@ -24,22 +24,23 @@ module DwCR
   class MetaArchive < Sequel::Model
     include XMLParsable
 
+    ensure_core = lambda do |entity|
+      entity.is_core = true
+    end
+
     one_to_many :meta_entities
     many_to_one :core, class: 'MetaEntity',
-                       class_namespace: 'DwCR', key: :core_id
+                       class_namespace: 'DwCR',
+                       key: :core_id,
+                       setter: ensure_core
 
     # Methods to add records to the :meta_entities association form xml
 
     # Creates a MetaEntity instance from xml node (_core_ or _extension_)
-    # adds the foreign key field (_coreid_) to any _extension_
     # adds MetaAttribute instances for any _field_ given
     # adds ContentFile instances for any child node of _files_
     def add_meta_entity_from(xml)
-      entity = add_meta_entity(values_from(xml, :term, :is_core, :key_column))
-      unless entity.is_core
-        foreign_key_field = { name: 'coreid', index: index_from(xml) }
-        entity.add_meta_attribute(foreign_key_field)
-      end
+      entity = add_meta_entity(values_from(xml, :term, :key_column))
       xml.css('field').each { |field| entity.add_attribute_from(field) }
       xml.css('files').each { |file| entity.add_file_from(file, path: path) }
       entity
@@ -48,11 +49,14 @@ module DwCR
     # Gets _core_ and _extension_ nodes from the xml
     # calls #add_meta_entity_from(xml) to create
     # MetaEntity instances to the MetaArchive for every node
+    # adds the foreign key field (_coreid_) to any _extension_
     def load_entities_from(xml)
       self.core = add_meta_entity_from xml.css('core').first
+      self.core.save
       xml.css('extension').each do |node|
         extn = add_meta_entity_from node
-        core.add_extension(extn)
+        extn.add_meta_attribute(name: 'coreid', index: index_from(node))
+        self.core.add_extension(extn)
       end
       save
     end
