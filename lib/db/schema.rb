@@ -36,9 +36,7 @@ module DwCR
     # analysing each column for type and length
     def create_schema(**schema_options)
       update_schema(schema_options)
-      MetaEntity.each do |entity|
-        DwCR.create_schema_table(entity)
-      end
+      MetaEntity.each { |entity| DwCR.create_schema_table(entity) }
       @models = DwCR.load_models(@archive)
     end
 
@@ -48,7 +46,7 @@ module DwCR
     # <tt>{ :type => true, :length => true }</tt>
     # updates any attribute given as key where value is _true_
     def update_schema(options)
-      return unless options
+      return if options.empty?
 
       # FIXME: throw an error if schema is not built
 
