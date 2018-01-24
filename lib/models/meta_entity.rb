@@ -36,6 +36,11 @@ module DwCR
   class MetaEntity < Sequel::Model
     include XMLParsable
 
+    ensure_not_core = lambda do |ent, attr|
+      attr.is_core = false
+      attr.meta_archive_id = ent.meta_archive_id
+    end
+
     ensure_unique_name = lambda do |ent, attr|
       attr.name ||= attr.term&.split('/')&.last&.underscore
       name_taken = ent.meta_attributes_dataset.first(name: attr.name)
@@ -46,7 +51,7 @@ module DwCR
     one_to_many :meta_attributes, before_add: ensure_unique_name
     one_to_many :content_files
     many_to_one :core, class: self
-    one_to_many :extensions, key: :core_id, class: self
+    one_to_many :extensions, key: :core_id, class: self, before_add: ensure_not_core
 
     # Returns a string with MetaEntity instance's singularized name in camelcase
     # this is the name of the Sequel::Model in the DarwinCoreArchive schema

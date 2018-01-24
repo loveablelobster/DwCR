@@ -57,7 +57,7 @@ module DwCR
     # Loads the contents of all associated CSV files into the shema tables
     def load_contents
       @archive.core.content_files.each(&:load)
-      @archive.core.extensions.each do |extension|
+      @archive.extensions.each do |extension|
         extension.content_files.each(&:load)
       end
     end

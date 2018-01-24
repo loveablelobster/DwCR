@@ -28,23 +28,24 @@ module DwCR
       entity.is_core = true
     end
 
+    ensure_not_core = lambda do |ent, attr|
+      raise 'adding an extension without a core' unless ent.core
+      attr.is_core = false
+      attr.core = ent.core
+    end
+
     one_to_many :meta_entities
     many_to_one :core, class: 'MetaEntity',
                        class_namespace: 'DwCR',
                        key: :core_id,
                        setter: ensure_core
+    one_to_many :extensions, class: 'MetaEntity',
+                             class_namespace: 'DwCR',
+                             key: :meta_archive_id,
+                             conditions: { is_core: false },
+                             before_add: ensure_not_core
 
     # Methods to add records to the :meta_entities association form xml
-
-    # Creates a MetaEntity instance from xml node (_core_ or _extension_)
-    # adds MetaAttribute instances for any _field_ given
-    # adds ContentFile instances for any child node of _files_
-    def add_meta_entity_from(xml)
-      entity = add_meta_entity(values_from(xml, :term, :key_column))
-      xml.css('field').each { |field| entity.add_attribute_from(field) }
-      xml.css('files').each { |file| entity.add_file_from(file, path: path) }
-      entity
-    end
 
     # Gets _core_ and _extension_ nodes from the xml
     # calls #add_meta_entity_from(xml) to create
@@ -52,11 +53,11 @@ module DwCR
     # adds the foreign key field (_coreid_) to any _extension_
     def load_entities_from(xml)
       self.core = add_meta_entity_from xml.css('core').first
-      self.core.save
+      core.save
       xml.css('extension').each do |node|
         extn = add_meta_entity_from node
         extn.add_meta_attribute(name: 'coreid', index: index_from(node))
-        self.core.add_extension(extn)
+        add_extension(extn)
       end
       save
     end
@@ -67,6 +68,16 @@ module DwCR
     def before_create
       self.name ||= path&.split('/')&.last
       super
+    end
+
+    # Creates a MetaEntity instance from xml node (_core_ or _extension_)
+    # adds MetaAttribute instances for any _field_ given
+    # adds ContentFile instances for any child node of _files_
+    def add_meta_entity_from(xml)
+      entity = add_meta_entity(values_from(xml, :term, :key_column))
+      xml.css('field').each { |field| entity.add_attribute_from(field) }
+      xml.css('files').each { |file| entity.add_file_from(file, path: path) }
+      entity
     end
   end
 end
