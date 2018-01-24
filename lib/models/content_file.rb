@@ -80,7 +80,7 @@ module DwCR
     # Delets a CSV row from the DwCA table represented
     # by the instance's parent MetaEntity instance
     def delete_row(row)
-      row_vals = values_for row
+      row_vals = row_to_hash row
       row_vals.delete(meta_entity.key) unless meta_entity.is_core
       rec = meta_entity.model_get.first(row_vals)
       rec.destroy
@@ -94,7 +94,7 @@ module DwCR
 
     # Inserts a CSV row into an _extension_ table of the DwCA schema
     def insert_into_extension(row)
-      row_vals = row_to_hash(row)
+      row_vals = row_to_hash row
       core_row(row_vals.delete(meta_entity.key)).send(add_related, row_vals)
     end
 
