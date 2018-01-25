@@ -5,7 +5,7 @@ module DwCR
   RSpec.configure do |config|
     config.warnings = false
 
-    config.around(:example) do |example|
+    config.around do |example|
       DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
     end
   end
@@ -13,7 +13,23 @@ module DwCR
   RSpec.describe 'MetaArchive' do
     let(:archive) { MetaArchive.create(path: Dir.pwd) }
 
-    context 'adds core and extensions correctly' do
+    def xml
+      doc = <<~HEREDOC
+        <archive>
+          <core rowType="example.org/Core">
+            <files><location>core.csv</location></files>
+            <id index="0"/><field index="0" term="example.org/Key"/>
+          </core>
+          <extension rowType="example.org/Extension">
+            <files><location>extension.csv</location></files>
+            <coreid index="0"/><field index="1" term="example.org/Term"/>
+          </extension>
+        </archive>
+      HEREDOC
+      Nokogiri::XML(doc)
+    end
+
+    context 'when adding core and extensions' do
       it 'ensures that is_core is true for the core' do
         archive.core = archive.add_meta_entity(term: 'example.org/core')
         expect(archive.core.is_core).to be_truthy
@@ -37,51 +53,26 @@ module DwCR
       end
     end
 
-    context 'creates meta_entities from xml' do
-      before :context do
-        doc = <<~HEREDOC
-          <archive>
-            <core rowType="example.org/Core">
-            	<files><location>core.csv</location></files>
-              <id index="0"/><field index="0" term="example.org/Key"/>
-            </core>
-            <extension rowType="example.org/Extension">
-            	<files><location>extension.csv</location></files>
-              <coreid index="0"/><field index="1" term="example.org/Term"/>
-            </extension>
-          </archive>
-        HEREDOC
-        @xml = Nokogiri::XML(doc)
+    context 'when creating meta_entities from xml' do
+      it '_core_ references any _extensions_' do
+        archive.load_entities_from xml
+        expect(archive.core
+                      .extensions).to contain_exactly(*archive.extensions)
       end
 
-      context 'creates meta_entities for _core_ and _extension_ nodes' do
-        it 'as meta_entities' do
-          archive.load_entities_from @xml
-          expect(archive.meta_entities).to contain_exactly(
-            a_kind_of(MetaEntity),
-            a_kind_of(MetaEntity))
-        end
-
-        it '_core_ references any _extensions_' do
-          archive.load_entities_from @xml
-          expect(archive.core
-                        .extensions).to contain_exactly(*archive.extensions)
-        end
-
-        it '_extensions_ reference the _core_' do
-          archive.load_entities_from @xml
-          expect(archive.extensions.first.core).to eq archive.core
-        end
+      it '_extensions_ reference the _core_' do
+        archive.load_entities_from xml
+        expect(archive.extensions.first.core).to eq archive.core
       end
 
       it 'adds attributes declared in _field_ nodes' do
-        archive.load_entities_from @xml
+        archive.load_entities_from xml
         expect(archive.core.meta_attributes.map(&:values))
           .to include a_hash_including(term: 'example.org/Key', index: 0)
       end
 
       it 'adds files declared in the _files_ node' do
-        archive.load_entities_from @xml
+        archive.load_entities_from xml
         expect(archive.core.content_files.map(&:values))
           .to include a_hash_including(name: 'core.csv')
       end
