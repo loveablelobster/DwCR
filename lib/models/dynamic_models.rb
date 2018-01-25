@@ -5,12 +5,12 @@ require_relative '../helpers/dynamic_model_queryable'
 module DwCR
   # Creates a Sequel::Model class for a MetaEntity instance
   # adds all associations given for the MetaEntity instance
-  def self.create_model(entity, associations)
+  def self.create_model(entity)
     model_class = Class.new(Sequel::Model(entity.table_name)) do
       extend DynamicModelClassQueryable
       include DynamicModelQueryable
       @meta_entity = entity
-      associations.each do |association|
+      entity.model_associations.each do |association|
         associate(*association)
         next if association[0] == :many_to_one
         plugin :association_dependencies
@@ -31,7 +31,7 @@ module DwCR
   # if no explicit MetaArchive instance is given, it will load the first
   def self.load_models(archive = MetaArchive.first)
     archive.meta_entities.map do |entity|
-      entity_model = DwCR.create_model(entity, entity.model_associations)
+      entity_model = DwCR.create_model(entity)
       MetaEntity.associate(:one_to_many,
                            entity.table_name,
                            class: entity_model)
