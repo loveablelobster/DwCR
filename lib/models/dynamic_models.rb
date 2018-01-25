@@ -16,6 +16,12 @@ module DwCR
         plugin :association_dependencies
         add_association_dependencies(association[1] => :destroy)
       end
+
+#   ObjectSpace.define_finalizer( self, self.class.finalize(name) )
+
+      define_singleton_method(:finalize) do
+        @meta_entity = nil
+      end
     end
     const_set entity.class_name, model_class
     model_class

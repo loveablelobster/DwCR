@@ -3,7 +3,7 @@
 #
 module DwCR
   RSpec.configure do |config|
-    config.warnings = false
+#     config.warnings = false
 
     config.around(:each) do |example|
       DB.transaction(rollback: :always, auto_savepoint: true) {example.run}
@@ -55,13 +55,13 @@ module DwCR
       end
 
       let(:f) do
-        s = Schema.new
-        s.archive.core = s.archive.add_meta_entity(term: 'example.org/core')
-        e = s.archive.core.add_extension(term: 'example.org/extension')
+        a = MetaArchive.create path: Dir.pwd
+        a.core = a.add_meta_entity(term: 'example.org/core')
+        a.core.add_content_file(is_loaded: true)
+        e = a.add_extension(term: 'example.org/extension')
         e.add_meta_attribute(name: 'term_a', index: 0)
         e.add_meta_attribute(name: 'term_b', index: 1)
         e.add_meta_attribute(name: 'term_c', index: 2)
-        s.create_schema
         e.add_content_file(name: 'table.csv', path: Dir.pwd)
       end
 
