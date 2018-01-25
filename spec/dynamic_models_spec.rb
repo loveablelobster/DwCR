@@ -70,9 +70,9 @@ module DwCR
       end
     end
 
-#     after :example do
-#     	Object.send(:remove_const, 'DwCR::CoreItem')
-#     end
+    after :example do
+    	DwCR.send(:remove_const, 'CoreItem')
+    end
 
     after :context do
     	DB.drop_table(:core_items, :extension_items)
