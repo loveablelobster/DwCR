@@ -11,6 +11,26 @@ module DwCR
   end
 
   RSpec.describe 'ContentFile' do
+    def add_attributes_to(entity, *attrs)
+      attrs
+        .each_with_index { |a, i| entity.add_meta_attribute(name: a, index: i) }
+    end
+
+    def add_core_to(archive)
+      archive.core = archive.add_meta_entity(term: 'example.org/coreItem',
+                                             key_column: 0)
+      archive.core.save
+      add_attributes_to(archive.core, 'term_a', 'term_b', 'term_c')
+      archive.core.add_content_file(name: 'table.csv', path: Dir.pwd)
+    end
+
+    def add_extension_to(archive)
+      extension = archive.add_extension(term: 'example.org/extensionItem',
+                                        key_column: 0)
+      add_attributes_to(extension, 'term_a', 'term_b', 'term_c')
+      extension.add_content_file(name: 'table.csv', path: Dir.pwd)
+    end
+
     it 'returns the full file name including the path' do
       f = ContentFile.create(name: 'table.csv', path: File.path('/dev/null'))
       expect(f.file_name).to eq(File.path('/dev/null/table.csv'))
@@ -47,29 +67,21 @@ module DwCR
 
     context 'when loading and unloading files' do
       before :context do
-        @file = File.join(Dir.pwd, 'table.csv')
-        CSV.open(@file, 'wb') do |csv|
+        CSV.open(File.join(Dir.pwd, 'table.csv'), 'wb') do |csv|
           csv << %w[a1 b1 c1]
           csv << %w[a2 b2 c2]
         end
       end
 
       let :archive do
-        a = MetaArchive.create(name: 'content_file_spec')
-        a.core = a.add_meta_entity(term: 'example.org/coreItem', key_column: 0)
-        a.core.save
-        a.core.add_meta_attribute(name: 'term_a', index: 0)
-        a.core.add_meta_attribute(name: 'term_b', index: 1)
-        a.core.add_meta_attribute(name: 'term_c', index: 2)
-        e = a.add_extension(term: 'example.org/extensionItem', key_column: 0)
-        e.add_meta_attribute(name: 'term_a', index: 0)
-        e.add_meta_attribute(name: 'term_b', index: 1)
-        e.add_meta_attribute(name: 'term_c', index: 2)
-        a.core.add_content_file(name: 'table.csv', path: Dir.pwd)
-        e.add_content_file(name: 'table.csv', path: Dir.pwd)
-        a.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
-        @models = DwCR.load_models(a)
-        a
+        MetaArchive.create(name: 'content_file_spec')
+      end
+
+      before do
+        add_core_to archive
+        add_extension_to archive
+        archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
+        DwCR.load_models(archive)
       end
 
       it 'will not load if the file is already loaded' do
@@ -127,11 +139,12 @@ module DwCR
       end
 
       after do
-        @models.each(&:finalize)
+        CoreItem.finalize
+        ExtensionItem.finalize
       end
 
       after :context do
-        File.delete @file
+        File.delete File.join(Dir.pwd, 'table.csv')
       end
     end
   end
