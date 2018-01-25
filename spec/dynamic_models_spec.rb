@@ -5,48 +5,53 @@ module DwCR
   RSpec.configure do |config|
     config.warnings = false
 
-    config.around(:each) do |example|
-      DB.transaction(rollback: :always, auto_savepoint: true) {example.run}
+    config.around do |example|
+      DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
     end
   end
 
   RSpec.describe 'DynamicModels' do
-    before :example do
-      @archive = MetaArchive.create(name: 'content_file_spec')
-      @archive.core = @archive.add_meta_entity(term: 'example.org/coreItem',
-                                               key_column: 0)
-      @archive.core.save
-      @archive.core.add_meta_attribute(name: 'term_a', index: 0)
-      extension = @archive.add_extension(term: 'example.org/extensionItem',
-                                         key_column: 0)
-      extension.add_meta_attribute(name: 'coreid', index: 0)
-      @archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
+    let :archive do
+      a = MetaArchive.create(name: 'content_file_spec')
+      a.core = a.add_meta_entity(term: 'example.org/coreItem', key_column: 0)
+      a.core.save
+      a.core.add_meta_attribute(name: 'term_a', index: 0)
+      e = a.add_extension(term: 'example.org/extensionItem', key_column: 0)
+      e.add_meta_attribute(name: 'coreid', index: 0)
+      a.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
+      a
     end
 
-    context 'creates a model class that' do
+    context 'when created, a model class' do
       it 'has Sequel::Model in its inhertiance chain' do
-      	@m = DwCR.create_model(@archive.core)
-      	expect(@m.superclass.superclass).to be Sequel::Model
+        m = DwCR.create_model(archive.core)
+        expect(m.superclass.superclass).to be Sequel::Model
+        m.finalize
       end
 
       it 'references the MetaEntity instance it was created from' do
-        @m = DwCR.create_model(@archive.core)
-        expect(@m.meta_entity).to be @archive.core
+        m = DwCR.create_model(archive.core)
+        expect(m.meta_entity).to be archive.core
+        m.finalize
       end
 
       it 'is associated with MetaEntity' do
-        @m = DwCR.create_model(@archive.core)
-        expect(@m.associations).to include :meta_entity
+        m = DwCR.create_model(archive.core)
+        expect(m.associations).to include :meta_entity
+        m.finalize
       end
 
-      it 'is associated with ExtensionItem' do
-        @m = DwCR.create_model(@archive.core)
-        expect(@m.associations).to include :extension_items
+      it 'is associated with any extensions if it is the core' do
+        m = DwCR.create_model(archive.core)
+        expect(m.associations).to include :extension_items
+        m.finalize
       end
-    end
 
-    after :example do
-      @m.finalize
+      it 'is associated with the core if it is an extension' do
+        m = DwCR.create_model(archive.extensions.first)
+        expect(m.associations).to include :core_item
+        m.finalize
+      end
     end
   end
 end

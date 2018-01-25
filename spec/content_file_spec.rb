@@ -5,8 +5,8 @@ module DwCR
   RSpec.configure do |config|
     config.warnings = false
 
-    config.around(:each) do |example|
-      DB.transaction(rollback: :always, auto_savepoint: true) {example.run}
+    config.around do |example|
+      DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
     end
   end
 
@@ -16,7 +16,7 @@ module DwCR
       expect(f.file_name).to eq(File.path('/dev/null/table.csv'))
     end
 
-    context 'returns column names as an array of symbols for names' do
+    context 'when returning column names as an array of symbols for names' do
       let(:h) do
         e = MetaEntity.create(term: 'example.org/item')
         e.add_meta_attribute(name: 'term_a', index: 0, type: 'string')
@@ -28,121 +28,106 @@ module DwCR
         f.content_headers
       end
 
-      it 'including attributes that have index and type' do
+      it 'includes attributes that have index and type' do
         expect(h).to include(:term_a, :term_d)
       end
 
-      it 'not including attributes that do not have an index' do
-      	expect(h).not_to include :term_c
+      it 'does not include attributes that do not have an index' do
+        expect(h).not_to include :term_c
       end
 
-      it 'not including attributes that do not have a type' do
-      	expect(h).not_to include :term_b
+      it 'does not include attributes that do not have a type' do
+        expect(h).not_to include :term_b
       end
 
-      it 'not including attributes that have neither index nor type' do
-      	expect(h).not_to include :term_e
+      it 'does not include attributes that have neither index nor type' do
+        expect(h).not_to include :term_e
       end
     end
 
-    context 'inserts and deletes rows' do
+    context 'when loading and unloading files' do
       before :context do
         @file = File.join(Dir.pwd, 'table.csv')
-        CSV.open(@file, "wb") do |csv|
-          csv << ["a1", "b1", "c1"]
-          csv << ["a2", "b2", "c2"]
+        CSV.open(@file, 'wb') do |csv|
+          csv << %w[a1 b1 c1]
+          csv << %w[a2 b2 c2]
         end
       end
 
-      before :example do
-        archive = MetaArchive.create(name: 'content_file_spec')
-        archive.core = archive.add_meta_entity(term: 'example.org/coreItem',
-                                               key_column: 0)
-        archive.core.save
-        archive.core.add_meta_attribute(name: 'term_a', index: 0)
-        archive.core.add_meta_attribute(name: 'term_b', index: 1)
-        archive.core.add_meta_attribute(name: 'term_c', index: 2)
-        extension = archive.add_extension(term: 'example.org/extensionItem',
-                                          key_column: 0)
-        extension.add_meta_attribute(name: 'term_a', index: 0)
-        extension.add_meta_attribute(name: 'term_b', index: 1)
-        extension.add_meta_attribute(name: 'term_c', index: 2)
-        @core_file = archive.core
-                            .add_content_file(name: 'table.csv', path: Dir.pwd)
-        @ext_file = extension.add_content_file(name: 'table.csv', path: Dir.pwd)
-        archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
-        @models = DwCR.load_models(archive)
+      let :archive do
+        a = MetaArchive.create(name: 'content_file_spec')
+        a.core = a.add_meta_entity(term: 'example.org/coreItem', key_column: 0)
+        a.core.save
+        a.core.add_meta_attribute(name: 'term_a', index: 0)
+        a.core.add_meta_attribute(name: 'term_b', index: 1)
+        a.core.add_meta_attribute(name: 'term_c', index: 2)
+        e = a.add_extension(term: 'example.org/extensionItem', key_column: 0)
+        e.add_meta_attribute(name: 'term_a', index: 0)
+        e.add_meta_attribute(name: 'term_b', index: 1)
+        e.add_meta_attribute(name: 'term_c', index: 2)
+        a.core.add_content_file(name: 'table.csv', path: Dir.pwd)
+        e.add_content_file(name: 'table.csv', path: Dir.pwd)
+        a.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
+        @models = DwCR.load_models(a)
+        a
       end
 
-      context 'loads' do
-        it 'will not load if the file is already loaded' do
-          @core_file.load
-          expect(@core_file.load).not_to be_truthy
-        end
-
-        it 'will raise an error if the parent row has not been loaded' do
-          expect { @ext_file.load }
-            .to raise_error(RuntimeError,
-                            'core needs to be loaded before extension files')
-        end
-
-        it 'set the is_loaded flag to true after successful loading' do
-          @core_file.load
-          expect(@core_file.is_loaded).to be_truthy
-        end
-
-        it 'loads the rows for the core' do
-          @core_file.load
-          expect(DwCR::CoreItem.all.map(&:values))
-            .to contain_exactly(a_hash_including(term_a: 'a1',
-                                                 term_b: 'b1',
-                                                 term_c: 'c1'),
-                                a_hash_including(term_a: 'a2',
-                                                 term_b: 'b2',
-                                                 term_c: 'c2'))
-        end
-
-        it 'loads the rows for an extension' do
-          @core_file.load
-          @ext_file.load
-          expect(DwCR::ExtensionItem.all.map(&:values))
-            .to contain_exactly(a_hash_including(term_b: 'b1',
-                                                 term_c: 'c1'),
-                                a_hash_including(term_b: 'b2',
-                                                 term_c: 'c2'))
-          expect(DwCR::CoreItem.first.extension_items.map(&:values))
-            .to contain_exactly a_hash_including(term_b: 'b1', term_c: 'c1')
-        end
+      it 'will not load if the file is already loaded' do
+        archive.core.content_files.first.load
+        expect(archive.core.content_files.first.load).not_to be_truthy
       end
 
-      context 'unloads' do
-        it 'will return nil if the rows to be removed have not been loaded' do
-          expect(@core_file.unload!).to be_falsey
-        end
-
-        it 'deletes the rows' do
-          @core_file.load
-          expect(DwCR::CoreItem.all.map(&:values))
-            .to contain_exactly(a_hash_including(term_a: 'a1',
-                                                 term_b: 'b1',
-                                                 term_c: 'c1'),
-                                a_hash_including(term_a: 'a2',
-                                                 term_b: 'b2',
-                                                 term_c: 'c2'))
-          @core_file.unload!
-          expect(DwCR::CoreItem.all).to match_array []
-        end
-
-        it 'set the is_loaded flag to false after successful deletion' do
-          @core_file.load
-          expect(@core_file.is_loaded).to be_truthy
-          @core_file.unload!
-          expect(@core_file.is_loaded).to be_falsey
-        end
+      it 'will raise an error if the parent row has not been loaded' do
+        expect { archive.extensions.first.content_files.first.load }
+          .to raise_error(RuntimeError,
+                          'core needs to be loaded before extension files')
       end
 
-      after :example do
-        @models.each { |m| m.finalize }
+      it 'set the is_loaded flag to true after successful loading' do
+        archive.core.content_files.first.load
+        expect(archive.core.content_files.first.is_loaded).to be_truthy
+      end
+
+      it 'loads the rows for the core' do
+        archive.core.content_files.first.load
+        expect(DwCR::CoreItem.all.map(&:values))
+          .to contain_exactly(a_hash_including(term_a: 'a1', term_b: 'b1'),
+                              a_hash_including(term_a: 'a2', term_c: 'c2'))
+      end
+
+      it 'loads the rows for an extension' do
+        archive.core.content_files.first.load
+        archive.extensions.first.content_files.first.load
+        expect(DwCR::ExtensionItem.all.map(&:values))
+          .to contain_exactly(a_hash_including(term_b: 'b1', term_c: 'c1'),
+                              a_hash_including(term_b: 'b2', term_c: 'c2'))
+      end
+
+      it 'core rows reference to related extension rows' do
+        archive.core.content_files.first.load
+        archive.extensions.first.content_files.first.load
+        expect(DwCR::CoreItem.first.extension_items.map(&:values))
+          .to contain_exactly a_hash_including(term_b: 'b1', term_c: 'c1')
+      end
+
+      it 'will return nil if the rows to be removed have not been loaded' do
+        expect(archive.core.content_files.first.unload!).to be_falsey
+      end
+
+      it 'deletes the rows' do
+        archive.core.content_files.first.load
+        archive.core.content_files.first.unload!
+        expect(DwCR::CoreItem.all).to match_array []
+      end
+
+      it 'set the is_loaded flag to false after successful deletion' do
+        archive.core.content_files.first.load
+        archive.core.content_files.first.unload!
+        expect(archive.core.content_files.first.is_loaded).to be_falsey
+      end
+
+      after do
+        @models.each(&:finalize)
       end
 
       after :context do
