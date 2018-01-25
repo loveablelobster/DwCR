@@ -38,7 +38,7 @@ module DwCR
     end
 
     context 'creates meta_entities from xml' do
-      before(:context) do
+      before :context do
         doc = <<~HEREDOC
           <archive>
             <core rowType="example.org/Core">
