@@ -50,6 +50,7 @@ module DwCR
       CSV.foreach(file_name) { |row| insert_row(row) }
       self.is_loaded = true
       save
+      is_loaded
     end
 
     # Deletes all rows of the CSV file belonging to the ContentFile instance
