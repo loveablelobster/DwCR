@@ -50,8 +50,8 @@ module DwCR
 
     context 'creates a model class that' do
       it 'has Sequel::Model in its inhertiance chain' do
-      	m = DwCR.create_model(archive.meta_entities.first)
-      	expect(m.superclass.superclass).to be Sequel::Model
+      	@m = DwCR.create_model(archive.meta_entities.first)
+      	expect(@m.superclass.superclass).to be Sequel::Model
       end
 
 #       it 'references the MetaEntity instance it was created from' do
@@ -60,18 +60,18 @@ module DwCR
 #       end
 
       it 'is associated with MetaEntity' do
-        m = DwCR.create_model(archive.meta_entities.first)
-        expect(m.associations).to include :meta_entity
+        @m = DwCR.create_model(archive.meta_entities.first)
+        expect(@m.associations).to include :meta_entity
       end
 
       it 'is associated with ExtensionItem' do
-        m = DwCR.create_model(archive.meta_entities.first)
-        expect(m.associations).to include :extension_items
+        @m = DwCR.create_model(archive.meta_entities.first)
+        expect(@m.associations).to include :extension_items
       end
     end
 
     after :example do
-    	DwCR.send(:remove_const, 'CoreItem')
+    	@m.finalize
     end
 
     after :context do

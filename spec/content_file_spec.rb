@@ -46,7 +46,7 @@ module DwCR
     end
 
     context 'inserts and deletes rows' do
-      before(:context) do
+      before :context do
         @file = File.join(Dir.pwd, 'table.csv')
         CSV.open(@file, "wb") do |csv|
           csv << ["a1", "b1", "c1"]
@@ -54,38 +54,57 @@ module DwCR
         end
       end
 
+      before :example do
+        @archive = MetaArchive.create(name: 'content_file_spec')
+        @archive.core = @archive.add_meta_entity(term: 'example.org/coreItem')
+        @archive.core.save
+        extension = @archive.add_extension(term: 'example.org/extensionItem')
+        extension.add_meta_attribute(name: 'term_a')
+        extension.add_meta_attribute(name: 'term_b')
+        extension.add_meta_attribute(name: 'term_c')
+        @content_file = extension.add_content_file(name: 'table.csv')
+        @archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
+        @models = DwCR.load_models(@archive)
+      end
+
       context 'loads' do
-        it 'will not load if the file is already loaded' do pending 'spec missing'
+        it 'will not load if the file is already loaded' do
+          p @archive.core.extensions
+          binding.pry
         end
 
-        it 'will raise an error if the parent row has not been loaded' do pending 'spec missing'
-
-        end
-
-        it 'loads the rows' do pending 'spec missing'
-
-        end
-
-        it 'set the is_loaded flag to true after successful loading' do pending 'spec missing'
-
-        end
+#         it 'will raise an error if the parent row has not been loaded' do pending 'spec missing'
+#
+#         end
+#
+#         it 'loads the rows' do pending 'spec missing'
+#
+#         end
+#
+#         it 'set the is_loaded flag to true after successful loading' do pending 'spec missing'
+#
+#         end
       end
 
-      context 'unloads' do
-        it 'will return nil if the rows to be removed have not been loaded' do pending 'spec missing'
+#       context 'unloads' do
+#         it 'will return nil if the rows to be removed have not been loaded' do pending 'spec missing'
+#
+#         end
+#
+#         it 'deletes the rows' do pending 'spec missing'
+#
+#         end
+#
+#          it 'set the is_loaded flag to false after successful deletion' do pending 'spec missing'
+#
+#         end
+#       end
 
-        end
-
-        it 'deletes the rows' do pending 'spec missing'
-
-        end
-
-         it 'set the is_loaded flag to false after successful deletion' do pending 'spec missing'
-
-        end
+      after :example do
+        @models.each { |m| m.finalize }
       end
 
-      after(:context) do
+      after :context do
         File.delete @file
       end
     end
