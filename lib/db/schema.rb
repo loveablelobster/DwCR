@@ -36,7 +36,7 @@ module DwCR
     # analysing each column for type and length
     def create_schema(**schema_options)
       update_schema(schema_options)
-      MetaEntity.each { |entity| DwCR.create_schema_table(entity) }
+      @archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
       @models = DwCR.load_models(@archive)
     end
 
@@ -51,7 +51,8 @@ module DwCR
       # FIXME: throw an error if schema is not built
 
       options.select! { |_k, v| v == true }
-      MetaEntity.each { |entity| entity.update_meta_attributes!(*options.keys) }
+      @archive.meta_entities
+              .each { |entity| entity.update_meta_attributes!(*options.keys) }
     end
 
     # Loads the contents of all associated CSV files into the shema tables
