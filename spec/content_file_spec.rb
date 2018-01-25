@@ -3,7 +3,7 @@
 #
 module DwCR
   RSpec.configure do |config|
-#     config.warnings = false
+    config.warnings = false
 
     config.around(:each) do |example|
       DB.transaction(rollback: :always, auto_savepoint: true) {example.run}
@@ -54,45 +54,33 @@ module DwCR
         end
       end
 
-      let(:f) do
-        a = MetaArchive.create path: Dir.pwd
-        a.core = a.add_meta_entity(term: 'example.org/core')
-        a.core.add_content_file(is_loaded: true)
-        e = a.add_extension(term: 'example.org/extension')
-        e.add_meta_attribute(name: 'term_a', index: 0)
-        e.add_meta_attribute(name: 'term_b', index: 1)
-        e.add_meta_attribute(name: 'term_c', index: 2)
-        e.add_content_file(name: 'table.csv', path: Dir.pwd)
-      end
-
       context 'loads' do
-        it 'will not load if the file is already loaded' do
+        it 'will not load if the file is already loaded' do pending 'spec missing'
+        end
+
+        it 'will raise an error if the parent row has not been loaded' do pending 'spec missing'
 
         end
 
-        it 'will raise an error if the parent row has not been loaded' do
+        it 'loads the rows' do pending 'spec missing'
 
         end
 
-        it 'loads the rows' do
-
-        end
-
-        it 'set the is_loaded flag to true after successful loading' do
+        it 'set the is_loaded flag to true after successful loading' do pending 'spec missing'
 
         end
       end
 
       context 'unloads' do
-        it 'will return nil if the rows to be removed have not been loaded' do
+        it 'will return nil if the rows to be removed have not been loaded' do pending 'spec missing'
 
         end
 
-        it 'deletes the rows' do
+        it 'deletes the rows' do pending 'spec missing'
 
         end
 
-         it 'set the is_loaded flag to false after successful deletion' do
+         it 'set the is_loaded flag to false after successful deletion' do pending 'spec missing'
 
         end
       end

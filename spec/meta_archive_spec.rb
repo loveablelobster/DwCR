@@ -64,7 +64,8 @@ module DwCR
 
         it '_core_ references any _extensions_' do
           archive.load_entities_from @xml
-          expect(archive.core.extensions).to contain_exactly *archive.extensions
+          expect(archive.core
+                        .extensions).to contain_exactly(*archive.extensions)
         end
 
         it '_extensions_ reference the _core_' do
