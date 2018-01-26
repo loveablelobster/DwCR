@@ -29,7 +29,9 @@ schema.load_meta(meta)
 
 schema.create_schema(schema_opts)
 
-schema.load_contents
+DwCR.load_contents_for schema.archive
+
+# DWCR::MODELS = nil
 
 binding.pry
 

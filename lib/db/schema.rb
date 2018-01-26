@@ -23,7 +23,7 @@ module DwCR
     # Loads and parses the given _meta.xml_ file
     # gets the nodes for the _core_ and _extensions_
     # if no _Meta.xml_ is given, will try to load the _meta.xml_ file in _@path_
-    def load_meta(meta)
+    def load_meta(meta = nil)
       meta ||= File.join(@path, 'meta.xml')
       xml = File.open(meta) { |f| Nokogiri::XML(f) }
       # FIXME: add rescue
@@ -57,14 +57,6 @@ module DwCR
       options.select! { |_k, v| v == true }
       @archive.meta_entities
               .each { |entity| entity.update_meta_attributes!(*options.keys) }
-    end
-
-    # Loads the contents of all associated CSV files into the shema tables
-    def load_contents
-      @archive.core.content_files.each(&:load)
-      @archive.extensions.each do |extension|
-        extension.content_files.each(&:load)
-      end
     end
   end
 end

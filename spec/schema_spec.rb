@@ -111,7 +111,7 @@ module DwCR
 
     context 'loads the data' do
       it 'loads the core with associated extension records' do
-        @schema.load_contents
+        DwCR.load_contents_for @schema.archive
         expected_vals = { occurrence_id: 'a138e9b8-31f6-4ada-95fb-8395a41c067b',
                           catalog_number: 138601,
                           other_catalog_numbers: 'AVES-145245',
