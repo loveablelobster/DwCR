@@ -21,4 +21,19 @@ module DwCR
       extension.content_files.each(&:load)
     end
   end
+
+  # Updates all MetaAttribute instances in a MetaArchive
+  # with parameters from files in ContentFile
+  # _schema_options_: a Hash with attribute names as keys and boolean values
+  # <tt>{ :type => true, :length => true }</tt>
+  # updates any attribute given as key where value is _true_
+  def self.update_schema(archive, **options)
+    return if options.empty?
+
+    # FIXME: throw an error if metaschema is not loaded
+    # FIXME: handle situation where schema tables have been created
+    options.select! { |_k, v| v == true }
+    archive.meta_entities
+           .each { |entity| entity.update_meta_attributes!(*options.keys) }
+  end
 end

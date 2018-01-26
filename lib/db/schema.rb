@@ -39,24 +39,9 @@ module DwCR
     # based on the DwCA files actual content,
     # analysing each column for type and length
     def create_schema(**schema_options)
-      update_schema(schema_options)
+      DwCR.update_schema(@archive, schema_options)
       @archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
       @models = DwCR.load_models(@archive)
-    end
-
-    # Updates all MetaAttribute instances
-    # with parameters from files in ContentFile
-    # _schema_options_: a Hash with attribute names as keys and boolean values
-    # <tt>{ :type => true, :length => true }</tt>
-    # updates any attribute given as key where value is _true_
-    def update_schema(options)
-      return if options.empty?
-
-      # FIXME: throw an error if schema is not built
-
-      options.select! { |_k, v| v == true }
-      @archive.meta_entities
-              .each { |entity| entity.update_meta_attributes!(*options.keys) }
     end
   end
 end
