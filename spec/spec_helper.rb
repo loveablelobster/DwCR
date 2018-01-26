@@ -97,7 +97,7 @@ RSpec.configure do |config|
   # Setting this allows you to use `--seed` to deterministically reproduce
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
-#   Kernel.srand config.seed
+  # Kernel.srand config.seed
 
   config.before(:suite) do
     require 'pry'
@@ -105,9 +105,8 @@ RSpec.configure do |config|
     require_relative '../lib/dwcr'
     require_relative '../lib/models/dynamic_models'
 
-    DB = Sequel.sqlite#(path: 'spec/files/test.db')
+    DB = Sequel.sqlite
 
     DwCR.create_metaschema
   end
 end
-
