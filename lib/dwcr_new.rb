@@ -7,6 +7,7 @@ SHELL.options.each do |opt, arg|
   case opt
   when '--help'
     SHELL.print_help
+    exit true
   when '--coltypes'
     schema_opts[:type] = true
   when '--meta'

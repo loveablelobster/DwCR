@@ -21,10 +21,14 @@ module DwCR
     end
 
     # Loads and parses the given _meta.xml_ file
-    # if none is given, will try to load the _meta.xml_ file in _@path_
-    def load_meta(meta = nil)
+    # gets the nodes for the _core_ and _extensions_
+    # if no _Meta.xml_ is given, will try to load the _meta.xml_ file in _@path_
+    def load_meta(meta)
       meta ||= File.join(@path, 'meta.xml')
-      parse_meta(File.open(meta) { |f| Nokogiri::XML(f) })
+      xml = File.open(meta) { |f| Nokogiri::XML(f) }
+      # FIXME: add rescue
+      XMLParsable.validate_meta xml
+      @archive.load_entities_from xml
     end
 
     # Creates the database schema for the DwCA nodes
@@ -61,15 +65,6 @@ module DwCR
       @archive.extensions.each do |extension|
         extension.content_files.each(&:load)
       end
-    end
-
-    private
-
-    # Parses the xml for the DarwinCoreArchive
-    # gets the nodes for the _core_ and _extensions_
-    def parse_meta(xml)
-      XMLParsable.validate_meta xml
-      @archive.load_entities_from xml
     end
   end
 end
