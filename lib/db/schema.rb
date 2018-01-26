@@ -3,7 +3,7 @@
 require 'csv'
 
 require_relative '../models/dynamic_models'
-
+require_relative '../helpers/xml_parsable'
 #
 module DwCR
   # This class
@@ -68,13 +68,8 @@ module DwCR
     # Parses the xml for the DarwinCoreArchive
     # gets the nodes for the _core_ and _extensions_
     def parse_meta(xml)
-      validate_meta xml
+      XMLParsable.validate_meta xml
       @archive.load_entities_from xml
-    end
-
-    # Will raise error if the XML file is not valid
-    def validate_meta(xml)
-      raise ArgumentError 'Multiple Core nodes' if xml.css('core').size > 1
     end
   end
 end

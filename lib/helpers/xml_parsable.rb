@@ -4,6 +4,11 @@ require 'nokogiri'
 
 #
 module XMLParsable
+  # Will raise error if the XML file is not valid
+  def self.validate_meta(xml)
+    raise ArgumentError 'Multiple Core nodes' if xml.css('core').size > 1
+  end
+
   def default_from(field_def)
     field_def.attributes['default']&.value
   end
