@@ -6,7 +6,6 @@ require 'pry'
 
 require_relative '../lib/dwcr'
 require_relative '../lib/dwcr_shell'
-require_relative '../lib/db/schema'
 
 dwcr_cmds = %w[new]
 

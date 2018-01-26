@@ -9,6 +9,24 @@ module XMLParsable
     raise ArgumentError 'Multiple Core nodes' if xml.css('core').size > 1
   end
 
+  # Loads and parses the given _meta.xml_ file
+  # gets the nodes for the _core_ and _extensions_
+  # if no _Meta.xml_ is given, will try to load the _meta.xml_ file in _@path_
+  def parse_meta(path = nil)
+    # if nothing is given, search in the working directory
+    path ||= Dir.pwd
+
+    # set meta to default 'meta.xml' or the path
+    meta = File.directory?(path) ? File.join(path, 'meta.xml') : path
+    xml = File.open(meta) { |f| Nokogiri::XML(f) }
+
+    # FIXME: this should adapt to wheteher the mixin is included into
+    #        a MetaArchive, MetaEntity, or MetaAttribute
+    # FIXME: add rescue
+    XMLParsable.validate_meta xml
+    load_entities_from xml
+  end
+
   def default_from(field_def)
     field_def.attributes['default']&.value
   end

@@ -2,7 +2,7 @@
 
 require 'pry'
 
-require_relative '../lib/db/schema'
+# require_relative '../lib/db/schema'
 
 #
 module DwCR
@@ -10,11 +10,11 @@ module DwCR
     config.warnings = false
   end
 
-  RSpec.describe Schema do
+  RSpec.describe 'DwCR' do
     before(:all) do
-      @schema = Schema.new(path: 'spec/files')
-      @schema.load_meta
-      @schema.create_schema(type: true, length: true)
+      @archive = MetaArchive.create(path: 'spec/files')
+      @archive.parse_meta('spec/files')
+      DwCR.create_schema(@archive, type: true, length: true)
     end
 
     context 'creates the schema' do
@@ -84,18 +84,18 @@ module DwCR
     end
 
     it 'fetches the core' do
-      expect(@schema.archive.core.class_name).to eq 'Occurrence'
+      expect(@archive.core.class_name).to eq 'Occurrence'
     end
 
     it 'fetches the extensions' do
-      extensions = @schema.archive.core.extensions_dataset
+      extensions = @archive.core.extensions_dataset
       expect(extensions).to be_a Sequel::Dataset
       expect(extensions.map(&:class_name)).to include 'Multimedia'
     end
 
     context 'creates the models' do
-      it 'holds a list of generated models' do
-        expect(@schema.models).to include(DwCR::Occurrence, DwCR::Multimedia)
+      it 'holds a list of generated models' do pending 'schema is deprecated, models to be stored in constant'
+#         expect(@schema.models).to include(DwCR::Occurrence, DwCR::Multimedia)
       end
 
       it 'creates associations' do
@@ -111,7 +111,7 @@ module DwCR
 
     context 'loads the data' do
       it 'loads the core with associated extension records' do
-        DwCR.load_contents_for @schema.archive
+        DwCR.load_contents_for @archive
         expected_vals = { occurrence_id: 'a138e9b8-31f6-4ada-95fb-8395a41c067b',
                           catalog_number: 138601,
                           other_catalog_numbers: 'AVES-145245',

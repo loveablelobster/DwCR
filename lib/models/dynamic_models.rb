@@ -25,16 +25,4 @@ module DwCR
     const_set entity.class_name, model_class
     model_class
   end
-
-  # Loads models for all MetaEntity instances in the MetaArchive instance
-  # if no explicit MetaArchive instance is given, it will load the first
-  def self.load_models(archive = MetaArchive.first)
-    archive.meta_entities.map do |entity|
-      entity_model = DwCR.create_model(entity)
-      MetaEntity.associate(:one_to_many,
-                           entity.table_name,
-                           class: entity_model)
-      entity_model
-    end
-  end
 end

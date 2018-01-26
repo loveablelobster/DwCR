@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-meta = nil
 schema_opts = {}
 
 SHELL.options.each do |opt, arg|
@@ -19,19 +18,19 @@ SHELL.options.each do |opt, arg|
   end
 end
 
+meta ||= SHELL.path
+
 DB = Sequel.sqlite(SHELL.target)
 
 DwCR.create_metaschema
 
-schema = DwCR::Schema.new(path: SHELL.path)
+archive = DwCR::MetaArchive.create(path: SHELL.path)
 
-schema.load_meta(meta)
+archive.parse_meta(meta)
 
-schema.create_schema(schema_opts)
+DwCR::MODELS = DwCR.create_schema(archive, schema_opts)
 
-DwCR.load_contents_for schema.archive
-
-# DWCR::MODELS = nil
+DwCR.load_contents_for archive
 
 binding.pry
 
