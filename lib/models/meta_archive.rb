@@ -76,7 +76,7 @@ module DwCR
     def add_meta_entity_from(xml)
       entity = add_meta_entity(values_from(xml, :term, :key_column))
       xml.css('field').each { |field| entity.add_attribute_from(field) }
-      xml.css('files').each { |file| entity.add_file_from(file, path: path) }
+      entity.add_files_from(xml, path: path)
       entity
     end
   end

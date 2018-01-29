@@ -146,8 +146,8 @@ module DwCR
     # Creates a ContentFile instance from an xml node (_file_)
     # a +path+ can be given to add files from arbitrary directories
     # +name+ is parsed from the _location_ node
-    def add_file_from(xml, path: nil)
-      add_content_file(name: name_from(xml), path: path)
+    def add_files_from(xml, path: nil)
+      files_from(xml).each { |file| add_content_file(name: file, path: path) }
     end
 
     private

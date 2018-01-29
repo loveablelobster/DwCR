@@ -11,7 +11,7 @@
 			<location>core_file.csv</location>
 		</files>
 		<id index="0"/>
-		<field index="0" term="http://example.org/dwcr/terms/occurrenceID"/>
+		<field index="0" term="http://example.org/dwcr/terms/coreID"/>
 		<field index="1" term="http://example.org/dwcr/terms/termB"/>
 		<field index="2" term="http://example.org/dwcr/terms/termC"/>
 		<field index="3" term="http://example.org/dwcr/terms/termD"/>
@@ -20,9 +20,8 @@
 		<field index="6" term="http://example.org/dwcr/terms/termG"/>
 		<field index="7" term="http://example.org/dwcr/terms/termH"/>
 		<field index="8" term="http://example.org/dwcr/terms/termI"/>
-		<field index="9" term="http://example.org/elements/modified"/>
-		<field default="F default" term="http://example.org/dwc/terms/termF"/>
-		<field default="G default" term="http://example.org/dwc/terms/termJ"/>
+		<field default="F default" term="http://example.org/dwcr/terms/termF"/>
+		<field default="J default" term="http://example.org/dwcr/terms/termJ"/>
 	</core>
 	<extension fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://example.org/dwcr/terms/ExtensionItem">
 		<files>

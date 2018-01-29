@@ -54,9 +54,9 @@ module XMLParsable
     xml.css(key_tag).first.attributes['index'].value.to_i
   end
 
-  # Parses the name for a file, table, or column
-  def name_from(xml)
-    xml.css('location').first.text
+  # Parses the names for files
+  def files_from(xml)
+    xml.css('files').css('location').map(&:text)
   end
 
   def term_from(xml)
