@@ -19,7 +19,7 @@
 		<field index="5" term="http://example.org/dwcr/terms/numericColumn"/>
 		<field index="6" term="http://example.org/dwcr/terms/dateColumn"/>
 		<field default="column 4 default" term="http://example.org/dwcr/terms/mixedColumn"/>
-		<field default="default value" term="http://example.org/dwcr/terms/defaultValue"/>
+		<field default="default value" term="http://example.org/dwcr/elements/emptyColumn"/>
 	</core>
 	<extension fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://example.org/dwcr/terms/ExtensionItem">
 		<files>
@@ -29,8 +29,5 @@
 		<coreid index="0"/>
 		<field index="1" term="http://example.org/dwcr/terms/identifier"/>
 		<field index="2" term="http://example.org/dwcr/terms/coreItemNumber"/>
-		<field index="3" term="http://example.org/dwcr/terms/columnWithDefault"/>
-		<field default="default value" term="http://example.org/dwcr/terms/columnWithDefault"/>
-		<field default="another default value" term="http://example.org/elements/columnWithDefault"/>
 	</extension>
 </archive>
