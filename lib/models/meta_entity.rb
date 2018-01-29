@@ -42,6 +42,10 @@ module DwCR
       attr.meta_archive = ent.meta_archive
     end
 
+    ensure_path = lambda do |ent, attr|
+      attr.path ||= ent.meta_archive.path
+    end
+
     ensure_unique_name = lambda do |ent, attr|
       attr.name ||= attr.term&.split('/')&.last&.underscore
       name_taken = ent.meta_attributes_dataset.first(name: attr.name)
@@ -50,7 +54,7 @@ module DwCR
 
     many_to_one :meta_archive
     one_to_many :meta_attributes, before_add: ensure_unique_name
-    one_to_many :content_files
+    one_to_many :content_files, before_add: ensure_path
     many_to_one :core, class: self
     one_to_many :extensions, key: :core_id, class: self, before_add: ensure_not_core
 
@@ -69,7 +73,9 @@ module DwCR
     # Returns *true* if all _content_files_ have been loaded,
     # _false_ otherwise
     def loaded?
-      content_files_dataset.where(is_loaded: false).empty?
+      loaded_files = content_files_dataset.where(is_loaded: true)
+      return true if loaded_files.count == content_files.size
+      loaded_files.empty? ? false : loaded_files.map(&:file_name)
     end
 
     # Returns a symbol based on the MetaEntity instance's foreign key name
