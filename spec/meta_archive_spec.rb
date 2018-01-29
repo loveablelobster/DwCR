@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'support/models_shared_context'
+
 #
 module DwCR
   RSpec.configure do |config|
@@ -11,23 +13,7 @@ module DwCR
   end
 
   RSpec.describe 'MetaArchive' do
-    let(:archive) { MetaArchive.create(path: Dir.pwd) }
-
-    def xml
-      doc = <<~HEREDOC
-        <archive>
-          <core rowType="example.org/Core">
-            <files><location>core.csv</location></files>
-            <id index="0"/><field index="0" term="example.org/Key"/>
-          </core>
-          <extension rowType="example.org/Extension">
-            <files><location>extension.csv</location></files>
-            <coreid index="0"/><field index="1" term="example.org/Term"/>
-          </extension>
-        </archive>
-      HEREDOC
-      Nokogiri::XML(doc)
-    end
+    include_context 'Models helpers'
 
     context 'when adding core and extensions' do
       it 'ensures that is_core is true for the core' do
@@ -55,26 +41,27 @@ module DwCR
 
     context 'when creating meta_entities from xml' do
       it '_core_ references any _extensions_' do
-        archive.load_entities_from xml
+        archive.load_entities_from meta_xml
         expect(archive.core
                       .extensions).to contain_exactly(*archive.extensions)
       end
 
       it '_extensions_ reference the _core_' do
-        archive.load_entities_from xml
+        archive.load_entities_from meta_xml
         expect(archive.extensions.first.core).to eq archive.core
       end
 
       it 'adds attributes declared in _field_ nodes' do
-        archive.load_entities_from xml
+        archive.load_entities_from meta_xml
         expect(archive.core.meta_attributes.map(&:values))
-          .to include a_hash_including(term: 'example.org/Key', index: 0)
+          .to include a_hash_including(term: 'example.org/terms/coreID',
+                                       index: 0)
       end
 
       it 'adds files declared in the _files_ node' do
-        archive.load_entities_from xml
+        archive.load_entities_from meta_xml
         expect(archive.core.content_files.map(&:values))
-          .to include a_hash_including(name: 'core.csv')
+          .to include a_hash_including(name: 'core_file.csv')
       end
     end
   end
