@@ -126,7 +126,7 @@ module DwCR
                           family: 'Cardinalidae',
                           genus: 'Piranga',
                           specific_epithet: 'ludoviciana',
-                          infraspecific_epithet: '',
+                          infraspecific_epithet: nil,
                           scientific_name: 'Piranga ludoviciana',
                           continent: 'North America',
                           country: 'United States',
