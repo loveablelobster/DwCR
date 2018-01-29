@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'support/models_shared_context'
+
 #
 module DwCR
   RSpec.configure do |config|
@@ -11,6 +13,8 @@ module DwCR
   end
 
   RSpec.describe 'MetaAttribute' do
+    include_context 'Models helpers'
+
     context 'upon initialization' do
       it 'the `type` attribute defaults to `string`' do
         meta_attribute = MetaAttribute.create(term: 'example.org/term',
@@ -26,14 +30,14 @@ module DwCR
 
     context 'returns an array with `column_params` to create the column' do
       it 'with name and type' do
-        entity = MetaEntity.create(name: 'item')
+        entity = archive.add_meta_entity(name: 'item')
         params = [:term, :string, { index: false, default: nil }]
         attribute = entity.add_meta_attribute(name: 'term')
         expect(attribute.to_table_column).to eq(params)
       end
 
       it 'with name, type and default' do
-        entity = MetaEntity.create(name: 'item')
+        entity = archive.add_meta_entity(name: 'item')
         params = [:term, :string, { index: false, default: 'default' }]
         attribute = entity.add_meta_attribute(name: 'term',
                                                 default: 'default')
@@ -41,7 +45,7 @@ module DwCR
       end
 
       it 'with name, type and index' do
-        entity = MetaEntity.create(name: 'item', key_column: 0)
+        entity = archive.add_meta_entity(name: 'item', key_column: 0)
         params = [:term, :string, { index: true, default: nil }]
         attribute = entity.add_meta_attribute(name: 'term',
                                                 index: 0)
@@ -49,7 +53,7 @@ module DwCR
       end
 
       it 'with name, type and unique index' do
-        entity = MetaEntity.create(name: 'item', key_column: 0, is_core: true)
+        entity = archive.add_meta_entity(name: 'item', key_column: 0, is_core: true)
         params = [:term, :string, { index: { unique: true }, default: nil }]
         attribute = entity.add_meta_attribute(name: 'term',
                                                 index: 0)

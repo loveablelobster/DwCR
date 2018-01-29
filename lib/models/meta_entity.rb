@@ -38,7 +38,8 @@ module DwCR
 
     ensure_not_core = lambda do |ent, attr|
       attr.is_core = false
-      attr.meta_archive_id = ent.meta_archive_id
+      raise ArgumentError, 'extensions must be associated with a core' if !ent.is_core
+      attr.meta_archive = ent.meta_archive
     end
 
     ensure_unique_name = lambda do |ent, attr|
@@ -154,6 +155,7 @@ module DwCR
 
     # Sequel Model hook that creates a default +name+ from the +term+ if present
     def before_create
+      raise ArgumentError, 'MetaEntity instances need to belong to a MetaArchive' if !self.meta_archive
       self.name ||= term&.split('/')&.last&.underscore
       super
     end

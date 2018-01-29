@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'support/models_shared_context'
+
 #
 module DwCR
   RSpec.configure do |config|
@@ -11,6 +13,8 @@ module DwCR
   end
 
   RSpec.describe 'ContentFile' do
+    include_context 'Models helpers'
+
     def add_attributes_to(entity, *attrs)
       attrs
         .each_with_index { |a, i| entity.add_meta_attribute(name: a, index: i) }
@@ -38,7 +42,7 @@ module DwCR
 
     context 'when returning column names as an array of symbols for names' do
       let(:h) do
-        e = MetaEntity.create(term: 'example.org/item')
+        e = archive.add_meta_entity(term: 'example.org/item')
         e.add_meta_attribute(name: 'term_a', index: 0, type: 'string')
         e.add_meta_attribute(name: 'term_b', index: 1, type: nil)
         e.add_meta_attribute(name: 'term_c', index: nil, type: 'string')

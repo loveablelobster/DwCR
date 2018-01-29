@@ -9,5 +9,11 @@ module DwCR
     def meta_xml
       File.open(meta) { |f| Nokogiri::XML(f) }
     end
+
+    def core_in(archive)
+      archive.core = archive.add_meta_entity(term: 'example.org/CoreItem')
+      archive.core.save
+      archive.core
+    end
   end
 end
