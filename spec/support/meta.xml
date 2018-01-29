@@ -12,16 +12,14 @@
 		</files>
 		<id index="0"/>
 		<field index="0" term="http://example.org/dwcr/terms/coreID"/>
-		<field index="1" term="http://example.org/dwcr/terms/termB"/>
-		<field index="2" term="http://example.org/dwcr/terms/termC"/>
-		<field index="3" term="http://example.org/dwcr/terms/termD"/>
-		<field index="4" term="http://example.org/dwcr/terms/termE"/>
-		<field index="5" term="http://example.org/dwcr/terms/termF"/>
-		<field index="6" term="http://example.org/dwcr/terms/termG"/>
-		<field index="7" term="http://example.org/dwcr/terms/termH"/>
-		<field index="8" term="http://example.org/dwcr/terms/termI"/>
-		<field default="F default" term="http://example.org/dwcr/terms/termF"/>
-		<field default="J default" term="http://example.org/dwcr/terms/termJ"/>
+		<field index="1" term="http://example.org/dwcr/terms/itemNumber"/>
+		<field index="2" term="http://example.org/dwcr/terms/emptyColumn"/>
+		<field index="3" term="http://example.org/dwcr/terms/textColumn"/>
+		<field index="4" term="http://example.org/dwcr/terms/mixedColumn"/>
+		<field index="5" term="http://example.org/dwcr/terms/numericColumn"/>
+		<field index="6" term="http://example.org/dwcr/terms/dateColumn"/>
+		<field default="column 4 default" term="http://example.org/dwcr/terms/mixedColumn"/>
+		<field default="default value" term="http://example.org/dwcr/terms/defaultValue"/>
 	</core>
 	<extension fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="http://example.org/dwcr/terms/ExtensionItem">
 		<files>
@@ -30,9 +28,9 @@
 		</files>
 		<coreid index="0"/>
 		<field index="1" term="http://example.org/dwcr/terms/identifier"/>
-		<field index="2" term="http://example.org/dwcr/terms/termK"/>
-		<field index="3" term="http://example.org/dwcr/terms/termL"/>
-		<field default="L default" term="http://example.org/dwcr/terms/termL"/>
-		<field default="elements L default" term="http://example.org/elements/termL"/>
+		<field index="2" term="http://example.org/dwcr/terms/coreItemNumber"/>
+		<field index="3" term="http://example.org/dwcr/terms/columnWithDefault"/>
+		<field default="default value" term="http://example.org/dwcr/terms/columnWithDefault"/>
+		<field default="another default value" term="http://example.org/elements/columnWithDefault"/>
 	</extension>
 </archive>

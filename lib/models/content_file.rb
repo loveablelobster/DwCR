@@ -125,7 +125,7 @@ module DwCR
     def row_to_hash(row)
       keys = content_headers
       vals = compact row
-      keys.zip(vals).to_h
+      keys.zip(vals).to_h.select { |_k, v| v && !v.empty? }
     end
   end
 end
