@@ -7,64 +7,39 @@ module DwCR
   RSpec.configure do |config|
     config.warnings = false
 
-    config.around(:each) do |example|
-      DB.transaction(rollback: :always, auto_savepoint: true) {example.run}
+    config.around do |example|
+      DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
     end
   end
 
   RSpec.describe 'MetaAttribute' do
     include_context 'Models helpers'
 
-    context 'upon initialization' do
-      it 'the `type` attribute defaults to `string`' do
-        meta_attribute = MetaAttribute.create(term: 'example.org/term',
-                                                  name: 'term')
-        expect(meta_attribute.type).to eq 'string'
+    let(:attribute) { MetaAttribute.create(name: 'term') }
+
+    it 'returns the column name as symbol' do
+      expect(attribute.column_name).to be :term
+    end
+
+    context 'when returning whether a field is foreign key' do
+      let :attrs do
+        e = entity(key_column: 0, with_attributes: [{ name: 'key', index: 0 },
+                                                    { name: 'term', index: 1 }])
+        e.meta_attributes
+      end
+
+      it 'returns tyrue if the attribute is the entities key_column' do
+        expect(attrs.first.foreign_key?).to be_truthy
+      end
+
+      it 'returns false if the attribute is not the entities key_column' do
+        expect(attrs.last.foreign_key?).to be_falsey
       end
     end
 
-    it 'returns the column name for the schema as symbol' do
-      meta_attribute = MetaAttribute.create(name: 'term')
-      expect(meta_attribute.column_name).to be :term
-    end
-
-    context 'returns an array with `column_params` to create the column' do
-      it 'with name and type' do
-        entity = archive.add_meta_entity(name: 'item')
-        params = [:term, :string, { index: false, default: nil }]
-        attribute = entity.add_meta_attribute(name: 'term')
-        expect(attribute.to_table_column).to eq(params)
-      end
-
-      it 'with name, type and default' do
-        entity = archive.add_meta_entity(name: 'item')
-        params = [:term, :string, { index: false, default: 'default' }]
-        attribute = entity.add_meta_attribute(name: 'term',
-                                                default: 'default')
-        expect(attribute.to_table_column).to eq(params)
-      end
-
-      it 'with name, type and index' do
-        entity = archive.add_meta_entity(name: 'item', key_column: 0)
-        params = [:term, :string, { index: true, default: nil }]
-        attribute = entity.add_meta_attribute(name: 'term',
-                                                index: 0)
-        expect(attribute.to_table_column).to eq(params)
-      end
-
-      it 'with name, type and unique index' do
-        entity = archive.add_meta_entity(name: 'item', key_column: 0, is_core: true)
-        params = [:term, :string, { index: { unique: true }, default: nil }]
-        attribute = entity.add_meta_attribute(name: 'term',
-                                                index: 0)
-        expect(attribute.to_table_column).to eq(params)
-      end
-    end
-
-    context 'returns the length of the column equal to' do
-      it 'the length of the default value' do
-        meta_attribute = MetaAttribute.create(name: 'term',
-                                                  default: 'default')
+    context 'when returning the length of the column, length is' do
+      it 'the length of the default value if no content length given' do
+        meta_attribute = MetaAttribute.create(name: 'term', default: 'default')
         expect(meta_attribute.length).to be 7
       end
 
@@ -76,14 +51,13 @@ module DwCR
 
       it 'the maximum content length if given and larger than the default' do
         meta_attribute = MetaAttribute.create(name: 'term',
-                                                  default: 'default')
+                                              default: 'default')
         meta_attribute.max_content_length = 10
         expect(meta_attribute.length).to be 10
       end
 
       it 'the default length if longer than a given max content length' do
-        meta_attribute = MetaAttribute.create(name: 'term',
-                                                  default: 'default')
+        meta_attribute = MetaAttribute.create(name: 'term', default: 'default')
         meta_attribute.max_content_length = 5
         expect(meta_attribute.length).to be 7
       end
@@ -91,6 +65,39 @@ module DwCR
       it 'nil if there is no default value' do
         meta_attribute = MetaAttribute.create(name: 'term')
         expect(meta_attribute.length).to be_nil
+      end
+    end
+
+    context 'when returning the table column args' do
+      let :attrs do
+        entity(key_column: 0, with_attributes: [
+                 { name: 'column' },
+                 { name: 'column_with_default', default: 'default' },
+                 { name: 'key_column', index: 0 }
+               ]).meta_attributes
+      end
+
+      it 'has name and type' do
+        expect(attrs[0].to_table_column)
+          .to match_array [:column, :string, { index: false, default: nil }]
+      end
+
+      it 'has name, type and default if default is given' do
+        expect(attrs[1].to_table_column)
+          .to match_array [:column_with_default, :string,
+                           { index: false, default: 'default' }]
+      end
+
+      it 'has name, type and index if index is given' do
+        expect(attrs[2].to_table_column)
+          .to match_array [:key_column, :string, { index: true, default: nil }]
+      end
+
+      it 'has name, type and unique index' do
+        attrs[2].meta_entity.is_core = true
+        expect(attrs[2].to_table_column)
+          .to match_array [:key_column, :string,
+                           { index: { unique: true }, default: nil }]
       end
     end
   end

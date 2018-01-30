@@ -10,7 +10,7 @@ SHELL.options.each do |opt, arg|
   when '--coltypes'
     schema_opts[:type] = true
   when '--meta'
-    meta = arg
+    xml = arg
   when '--path'
     SHELL.path = arg
   when '--target'
@@ -18,7 +18,7 @@ SHELL.options.each do |opt, arg|
   end
 end
 
-meta ||= SHELL.path
+xml ||= SHELL.path
 
 DB = Sequel.sqlite(SHELL.target)
 
@@ -26,7 +26,9 @@ DwCR.create_metaschema
 
 archive = DwCR::MetaArchive.create(path: SHELL.path)
 
-archive.parse_meta(meta)
+meta_doc = XMLParsable.load_meta xml
+
+archive.load_nodes_from meta_doc
 
 DwCR::MODELS = DwCR.create_schema(archive, schema_opts)
 

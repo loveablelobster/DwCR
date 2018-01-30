@@ -51,7 +51,7 @@ module DwCR
     # calls #add_meta_entity_from(xml) to create
     # MetaEntity instances to the MetaArchive for every node
     # adds the foreign key field (_coreid_) to any _extension_
-    def load_entities_from(xml)
+    def load_nodes_from(xml)
       self.core = add_meta_entity_from xml.css('core').first
       core.save
       xml.css('extension').each do |node|

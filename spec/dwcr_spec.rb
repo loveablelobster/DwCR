@@ -13,7 +13,8 @@ module DwCR
   RSpec.describe 'DwCR' do
     before(:all) do
       @archive = MetaArchive.create(path: 'spec/files')
-      @archive.parse_meta('spec/files')
+      doc = XMLParsable.load_meta('spec/files')
+      @archive.load_nodes_from(doc)
       DwCR.create_schema(@archive, type: true, length: true)
     end
 

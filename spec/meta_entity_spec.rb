@@ -197,7 +197,7 @@ module DwCR
 
     context 'when updating columns based on contents' do
     let :attributes do
-    	archive.load_entities_from meta_xml
+    	archive.load_nodes_from meta_xml
       archive.core.update_meta_attributes!(:length, :type)
       archive.core.meta_attributes.map(&:values)
     end

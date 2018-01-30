@@ -41,25 +41,25 @@ module DwCR
 
     context 'when creating meta_entities from xml' do
       it '_core_ references any _extensions_' do
-        archive.load_entities_from meta_xml
+        archive.load_nodes_from meta_xml
         expect(archive.core
                       .extensions).to contain_exactly(*archive.extensions)
       end
 
       it '_extensions_ reference the _core_' do
-        archive.load_entities_from meta_xml
+        archive.load_nodes_from meta_xml
         expect(archive.extensions.first.core).to eq archive.core
       end
 
       it 'adds attributes declared in _field_ nodes' do
-        archive.load_entities_from meta_xml
+        archive.load_nodes_from meta_xml
         expect(archive.core.meta_attributes.map(&:values))
           .to include a_hash_including(term: 'example.org/terms/coreID',
                                        index: 0)
       end
 
       it 'adds files declared in the _files_ node' do
-        archive.load_entities_from meta_xml
+        archive.load_nodes_from meta_xml
         expect(archive.core.content_files.map(&:values))
           .to include a_hash_including(name: 'core_file.csv')
       end
