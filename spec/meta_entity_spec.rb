@@ -159,6 +159,7 @@ module DwCR
     it 'returns the constant with module name for the model class' do
       e = core
       DwCR.create_schema(archive)
+      DwCR.load_models(archive)
       expect(e.model_get).to be DwCR::CoreItem
       DwCR::CoreItem.finalize
     end

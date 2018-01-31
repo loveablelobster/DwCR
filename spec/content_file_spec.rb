@@ -13,7 +13,7 @@ module DwCR
     end
 
     def add_core_to(archive)
-      archive.core = archive.add_meta_entity(term: 'example.org/coreItem',
+      archive.core = archive.add_meta_entity(term: 'example.org/FileItem',
                                              key_column: 0)
       archive.core.save
       add_attributes_to(archive.core, 'term_a', 'term_b', 'term_c')
@@ -21,7 +21,7 @@ module DwCR
     end
 
     def add_extension_to(archive)
-      extension = archive.add_extension(term: 'example.org/extensionItem',
+      extension = archive.add_extension(term: 'example.org/FileExtensionItem',
                                         key_column: 0)
       add_attributes_to(extension, 'term_a', 'term_b', 'term_c')
       extension.add_content_file(name: 'table.csv', path: Dir.pwd)
@@ -76,8 +76,8 @@ module DwCR
       before do
         add_core_to archive
         add_extension_to archive
-        archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
-        DwCR.load_models(archive)
+        DwCR.create_schema archive
+        DwCR.load_models archive
       end
 
       it 'will not load if the file is already loaded' do
@@ -98,7 +98,7 @@ module DwCR
 
       it 'loads the rows for the core' do
         archive.core.content_files.first.load
-        expect(DwCR::CoreItem.all.map(&:values))
+        expect(DwCR::FileItem.all.map(&:values))
           .to contain_exactly(a_hash_including(term_a: 'a1', term_b: 'b1'),
                               a_hash_including(term_a: 'a2', term_c: 'c2'))
       end
@@ -106,7 +106,7 @@ module DwCR
       it 'loads the rows for an extension' do
         archive.core.content_files.first.load
         archive.extensions.first.content_files.first.load
-        expect(DwCR::ExtensionItem.all.map(&:values))
+        expect(DwCR::FileExtensionItem.all.map(&:values))
           .to contain_exactly(a_hash_including(term_b: 'b1', term_c: 'c1'),
                               a_hash_including(term_b: 'b2', term_c: 'c2'))
       end
@@ -114,7 +114,7 @@ module DwCR
       it 'core rows reference to related extension rows' do
         archive.core.content_files.first.load
         archive.extensions.first.content_files.first.load
-        expect(DwCR::CoreItem.first.extension_items.map(&:values))
+        expect(DwCR::FileItem.first.file_extension_items.map(&:values))
           .to contain_exactly a_hash_including(term_b: 'b1', term_c: 'c1')
       end
 
@@ -125,7 +125,7 @@ module DwCR
       it 'deletes the rows' do
         archive.core.content_files.first.load
         archive.core.content_files.first.unload!
-        expect(DwCR::CoreItem.all).to match_array []
+        expect(DwCR::FileItem.all).to match_array []
       end
 
       it 'set the is_loaded flag to false after successful deletion' do
@@ -135,8 +135,8 @@ module DwCR
       end
 
       after do
-        CoreItem.finalize
-        ExtensionItem.finalize
+        FileItem.finalize
+        FileExtensionItem.finalize
       end
 
       after :context do

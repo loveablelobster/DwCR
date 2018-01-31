@@ -13,25 +13,12 @@ module DwCR
   Sequel.extension :inflector
   require_relative 'inflections'
 
-  # Creates the database schema for the DwCA nodes
-  # _options_:
-  # - +type:+ +true+ or +false+
-  # - +length:+ +true+ or +false+
-  # if options are given, the schema will be updated
-  # based on the DwCA files actual content,
-  # analysing each column for type and length
-  def self.create_schema(archive, **options)
-    update_schema(archive, options)
-    archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
-    DwCR.load_models(archive)
-  end
-
   # Updates all MetaAttribute instances in a MetaArchive
   # with parameters from files in ContentFile
   # _schema_options_: a Hash with attribute names as keys and boolean values
   # <tt>{ :type => true, :length => true }</tt>
   # updates any attribute given as key where value is _true_
-  def self.update_schema(archive, **options)
+  def self.update_meta_schema(archive, **options)
     return if options.empty?
 
     # FIXME: throw an error if metaschema is not loaded
@@ -41,13 +28,16 @@ module DwCR
            .each { |entity| entity.update_meta_attributes!(*options.keys) }
   end
 
-  # Loads the contents of all CSV files associated with an archive
-  # into the shema tables
-  def self.load_contents_for(archive)
-    archive.core.content_files.each(&:load)
-    archive.extensions.each do |extension|
-      extension.content_files.each(&:load)
-    end
+  # Creates the database schema for the DwCA nodes
+  # _options_:
+  # - +type:+ +true+ or +false+
+  # - +length:+ +true+ or +false+
+  # if options are given, the schema will be updated
+  # based on the DwCA files actual content,
+  # analysing each column for type and length
+  def self.create_schema(archive, **options)
+    update_meta_schema(archive, options)
+    archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
   end
 
   # Loads models for all MetaEntity instances in the MetaArchive instance
@@ -59,6 +49,15 @@ module DwCR
                            entity.table_name,
                            class: entity_model)
       entity_model
+    end
+  end
+
+  # Loads the contents of all CSV files associated with an archive
+  # into the shema tables
+  def self.load_contents_for(archive)
+    archive.core.content_files.each(&:load)
+    archive.extensions.each do |extension|
+      extension.content_files.each(&:load)
     end
   end
 end
