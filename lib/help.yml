@@ -8,6 +8,16 @@ NULL:
       - '-h'
       - NO_ARGUMENT
       - show help
+load:
+  usage: |
+    dwcr load [file] [options]
+    loads an existing DwCR file
+  options:
+    -
+      - '--help'
+      - '-h'
+      - NO_ARGUMENT
+      - show help
 new:
   usage: |
     dwcr new [options]

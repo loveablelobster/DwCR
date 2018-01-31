@@ -7,7 +7,7 @@ require 'pry'
 require_relative '../lib/dwcr'
 require_relative '../lib/dwcr_shell'
 
-dwcr_cmds = %w[new]
+dwcr_cmds = %w[load new]
 
 this_cmd = dwcr_cmds.include?(ARGV[0]) ? ARGV.shift : nil
 
