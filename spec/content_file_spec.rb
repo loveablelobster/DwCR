@@ -4,14 +4,6 @@ require_relative 'support/models_shared_context'
 
 #
 module DwCR
-  RSpec.configure do |config|
-    config.warnings = false
-
-    config.around do |example|
-      DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
-    end
-  end
-
   RSpec.describe 'ContentFile' do
     include_context 'Models helpers'
 

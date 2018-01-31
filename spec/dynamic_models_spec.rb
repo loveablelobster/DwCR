@@ -2,14 +2,6 @@
 
 #
 module DwCR
-  RSpec.configure do |config|
-    config.warnings = false
-
-    config.around do |example|
-      DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
-    end
-  end
-
   RSpec.describe 'DynamicModels' do
     let :archive do
       a = MetaArchive.create(name: 'content_file_spec')

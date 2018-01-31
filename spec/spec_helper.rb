@@ -111,4 +111,10 @@ RSpec.configure do |config|
 
     # Set up an entire Archive here! (everything that dwcr new does)
   end
+
+  config.warnings = false
+
+  config.around do |example|
+    DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
+  end
 end

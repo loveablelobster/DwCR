@@ -8,14 +8,6 @@ class DummyParser
   include XMLParsable
 end
 
-RSpec.configure do |config|
-  config.warnings = false
-
-  config.around do |example|
-    DB.transaction(rollback: :always, auto_savepoint: true) { example.run }
-  end
-end
-
 #
 RSpec.describe XMLParsable do
   include_context 'Models helpers'
