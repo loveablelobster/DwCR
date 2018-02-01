@@ -111,6 +111,8 @@
   -
     - !ruby/sym name
     - !ruby/sym string
+    - !ruby/sym null:
+        false
   -
     - !ruby/sym path
     - !ruby/sym string
@@ -119,3 +121,4 @@
     - !ruby/sym boolean
     - !ruby/sym default:
         false
+
