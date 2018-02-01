@@ -68,6 +68,11 @@
     - !ruby/sym index:
         true
   -
+    - !ruby/sym core_id
+    - !ruby/sym integer
+    - !ruby/sym index:
+        true
+  -
     - !ruby/sym name
     - !ruby/sym string
     - !ruby/sym null:
@@ -96,11 +101,6 @@
     - !ruby/sym string
     - !ruby/sym default:
         '\r\n'
-  -
-    - !ruby/sym core_id
-    - !ruby/sym integer
-    - !ruby/sym index:
-        true
 
 !ruby/sym content_files:
   -
@@ -112,7 +112,7 @@
     - !ruby/sym name
     - !ruby/sym string
   -
-    - !ruby/sym path # this will allow to create new DwCAs from arbitrary content locations
+    - !ruby/sym path
     - !ruby/sym string
   -
     - !ruby/sym is_loaded

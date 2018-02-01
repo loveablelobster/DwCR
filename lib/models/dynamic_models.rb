@@ -7,7 +7,6 @@ module DwCR
   # adds all associations given for the MetaEntity instance
   def self.create_model(entity)
     model_class = Class.new(Sequel::Model(entity.table_name)) do
-      extend DynamicModelClassQueryable
       include DynamicModelQueryable
       @meta_entity = entity
       entity.model_associations.each do |association|
