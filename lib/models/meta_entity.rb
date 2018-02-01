@@ -128,7 +128,7 @@ module DwCR
     # * _:type_ or _'type'_
     #   will update the MetaAttribute instances' +type+ attributes
     def update_meta_attributes!(*modifiers)
-      FileSet.new(files, modifiers).columns.each do |cp|
+      TableContents::FileSet.new(files, modifiers).columns.each do |cp|
         column = meta_attributes_dataset.first(index: cp[:index])
         modifiers.each { |m| column.send(m.to_s + '=', cp[m]) }
         column.save

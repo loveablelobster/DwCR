@@ -3,7 +3,7 @@
 require_relative 'file_contents'
 
 #
-module DwCR
+module TableContents
   #
   class FileSet
     attr_reader :columns

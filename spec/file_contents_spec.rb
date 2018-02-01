@@ -3,7 +3,7 @@
 require_relative '../lib/content_analyzer/file_contents'
 
 #
-module DwCR
+module TableContents
   RSpec.describe FileContents do
     let :core do
       f = File.path('spec/support/content_analyzer_test.csv')

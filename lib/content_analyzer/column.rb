@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #
-module DwCR
+module TableContents
   #
   class Column
     attr_reader :index, :type, :length
