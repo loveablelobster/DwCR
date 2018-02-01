@@ -2,7 +2,7 @@
 
 require 'sequel'
 
-require_relative 'db/schematables'
+require_relative 'db/schema'
 require_relative 'models/dynamic_models'
 
 # This module provides functionality to create a

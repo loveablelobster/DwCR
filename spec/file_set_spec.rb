@@ -6,7 +6,7 @@ require_relative '../lib/content_analyzer/file_set'
 
 module DwCR
   RSpec.describe FileSet do
-    let(:file) { ['spec/files/test.csv'] }
+    let(:file) { [File.path('spec/support/content_analyzer_test.csv')] }
 
     it 'gets the maximum lengths for each column in an array of CSV files' do
       fs = FileSet.new(file)
