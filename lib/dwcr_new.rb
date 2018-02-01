@@ -22,7 +22,7 @@ xml ||= SHELL.path
 
 DB = Sequel.sqlite(SHELL.target)
 
-DwCR.create_metaschema
+DwCR::Metaschema.create
 
 archive = DwCR::MetaArchive.create(path: SHELL.path)
 

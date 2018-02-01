@@ -107,7 +107,7 @@ RSpec.configure do |config|
 
     DB = Sequel.sqlite
 
-    DwCR.create_metaschema
+    DwCR::Metaschema.create
 
     # Set up an entire Archive here! (everything that dwcr new does)
   end

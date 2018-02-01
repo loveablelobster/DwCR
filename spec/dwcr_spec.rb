@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'support/models_shared_context'
+
 RSpec.describe 'DwCR' do
+  include_context 'Models helpers'
 
   def create_and_load_schema
     DwCR.create_schema archive
@@ -20,13 +23,13 @@ RSpec.describe 'DwCR' do
 
   context 'when updating the (meta)schema' do
     it 'updates the column type if the type: true option is passed' do
-      DwCR.update_meta_schema archive, type: true
+      DwCR::Metaschema.update archive, type: true
       expect(archive.core.meta_attributes.map(&:to_table_column))
         .to include a_collection_including(:date_column, :date)
     end
 
     it 'updates the column type if the type: true option is passed' do
-      DwCR.update_meta_schema archive, length: true
+      DwCR::Metaschema.update archive, length: true
       expect(archive.core
                     .meta_attributes_dataset
                     .first(name: 'text_column')
@@ -35,6 +38,34 @@ RSpec.describe 'DwCR' do
   end
 
   context 'when creating the schema' do
+
+
+
+
+
+    context 'when creating a DwCA schema table' do
+      let :schema_entity do
+        a1 = { name: 'col1', index: 0 }
+        a2 = { name: 'col2', index: 1, default: 'default' }
+        entity('example.org/SchemaSpecItem',
+               key_column: 0,
+               with_attributes: [a1, a2])
+      end
+
+      it 'creates the table' do
+        DwCR.create_schema_table(schema_entity)
+        expect(DB.table_exists?(:schema_spec_items)).to be_truthy
+      end
+
+      context 'when adding a foreign key' do
+        # DwCR.add_foreign_key(table, entity)
+      end
+    end
+
+
+
+
+
     it 'creates the table for the DwCA core' do
     	DwCR.create_schema archive
     	expect(DB.table_exists?(:core_items)).to be_truthy

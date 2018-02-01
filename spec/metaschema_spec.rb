@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../lib/db/schema'
+require_relative '../lib/db/metaschema'
 
-RSpec.describe DwCR, '#module methods' do
+RSpec.describe DwCR::Metaschema, '#module methods' do
+
   context 'when creating the metaschema' do
     it 'creates the meta_archives table' do
       expect(DB.table_exists?(:meta_archives)).to be_truthy
@@ -236,19 +237,19 @@ RSpec.describe DwCR, '#module methods' do
 
   context 'when inspecting a table' do
     it 'fetches the schema for the table when passed :schema' do
-      expect(DwCR.inspect_table(:content_files, :schema))
+      expect(DwCR::Metaschema.inspect_table(:content_files, :schema))
         .to include a_collection_including(:name),
                     a_collection_including(:path),
                     a_collection_including(:is_loaded)
     end
 
     it 'fetches the indexes for the table when passed :indexes' do
-      expect(DwCR.inspect_table(:content_files, :indexes))
+      expect(DwCR::Metaschema.inspect_table(:content_files, :indexes))
         .to include :content_files_meta_entity_id_index
     end
 
     it 'returns false when the table does not exist' do
-      expect(DwCR.inspect_table(:not_a_table, :schema)).to be_falsey
+      expect(DwCR::Metaschema.inspect_table(:not_a_table, :schema)).to be_falsey
     end
   end
 
@@ -267,35 +268,31 @@ RSpec.describe DwCR, '#module methods' do
 
     it 'it returns true if the metaschema has all tables, columns,'\
        ' and indices defined in config/metaschema_tables.yml' do
-      expect(DwCR.metaschema?).to be_truthy
+      expect(DwCR::Metaschema.valid?).to be_truthy
     end
 
     context 'when inspecting columns' do
       it 'returns true if the table has all columns defined in the yml' do
-        expect(DwCR::columns?(:content_files, *content_files_schema)).to be_truthy
+        expect(DwCR::Metaschema.columns?(:content_files, *content_files_schema))
+          .to be_truthy
       end
 
       it 'returns false if the table is missing a column defined in the yml' do
-        expect(DwCR::columns?(:content_files, *incomplete_schema)).to be_falsey
+        expect(DwCR::Metaschema.columns?(:content_files, *incomplete_schema))
+          .to be_falsey
       end
     end
 
     context 'when inspecting indexes' do
       it 'returns true if the table has all columns defined in the yml' do
-        expect(DwCR::indexes?(:content_files, *content_files_schema)).to be_truthy
+        expect(DwCR::Metaschema.indexes?(:content_files, *content_files_schema))
+          .to be_truthy
       end
 
       it 'returns false if the table is missing a column defined in the yml' do
-        expect(DwCR::columns?(:content_files, *incomplete_schema)).to be_falsey
+        expect(DwCR::Metaschema.columns?(:content_files, *incomplete_schema))
+          .to be_falsey
       end
     end
-  end
-
-  context 'when creating a DwCA schema table' do
-    # DwCR.create_schema_table(entity)
-  end
-
-  context 'when adding a foreign key' do
-    # DwCR.add_foreign_key(table, entity)
   end
 end
