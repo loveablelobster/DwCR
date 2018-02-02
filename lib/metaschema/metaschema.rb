@@ -65,7 +65,6 @@ module DwCR
     def self.update(archive, **options)
       return if options.empty?
 
-      # FIXME: throw an error if metaschema is not loaded
       # FIXME: handle situation where schema tables have been created
       options.select! { |_k, v| v == true }
       archive.meta_entities
