@@ -2,9 +2,9 @@
 
 require 'psych'
 
-require_relative '../lib/content_analyzer/file_set'
+require_relative '../lib/plugins/dwca_content_analyzer/file_set'
 
-module TableContents
+module DwCAContentAnalyzer
   RSpec.describe FileSet do
     let(:file) { [File.path('spec/support/content_analyzer_test.csv')] }
 

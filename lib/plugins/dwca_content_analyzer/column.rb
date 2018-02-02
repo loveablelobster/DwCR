@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 #
-module TableContents
+module DwCAContentAnalyzer
   #
   class Column
     attr_reader :index, :type, :length

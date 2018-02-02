@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../content_analyzer/file_set'
 require_relative '../helpers/xml_parsable'
 
 #

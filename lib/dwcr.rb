@@ -4,6 +4,7 @@ require 'sequel'
 
 require_relative 'db/metaschema'
 require_relative 'models/dynamic_models'
+require_relative 'plugins/dwca_content_analyzer/file_set'
 
 # This module provides functionality to create a
 # SQLite database from a DarwinCoreArchive

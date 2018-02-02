@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../content_analyzer/file_set'
 require_relative '../helpers/xml_parsable'
 
 #
@@ -128,7 +127,7 @@ module DwCR
     # * _:type_ or _'type'_
     #   will update the MetaAttribute instances' +type+ attributes
     def update_meta_attributes!(*modifiers)
-      TableContents::FileSet.new(files, modifiers).columns.each do |cp|
+      DwCAContentAnalyzer::FileSet.new(files, modifiers).columns.each do |cp|
         column = meta_attributes_dataset.first(index: cp[:index])
         modifiers.each { |m| column.send(m.to_s + '=', cp[m]) }
         column.save

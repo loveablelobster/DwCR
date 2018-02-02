@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../lib/content_analyzer/file_contents'
+require_relative '../lib/plugins/dwca_content_analyzer/file_contents'
 
 #
-module TableContents
+module DwCAContentAnalyzer
   RSpec.describe FileContents do
     let :core do
       f = File.path('spec/support/content_analyzer_test.csv')

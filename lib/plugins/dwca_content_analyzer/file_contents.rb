@@ -6,7 +6,7 @@ require_relative 'column'
 require_relative 'csv_converters'
 
 #
-module TableContents
+module DwCAContentAnalyzer
   #
   class FileContents
     attr_reader :columns

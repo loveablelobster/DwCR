@@ -2,9 +2,9 @@
 
 require 'date'
 
-require_relative '../lib/content_analyzer/column'
+require_relative '../lib/plugins/dwca_content_analyzer/column'
 
-module TableContents
+module DwCAContentAnalyzer
   RSpec.describe Column, 'analyzes the contents of a CSV column' do
     context 'is intitialized with a `index`, `contents` and `detectors`' do
       it '`index` is required' do
