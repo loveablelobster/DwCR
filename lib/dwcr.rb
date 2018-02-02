@@ -2,7 +2,7 @@
 
 require 'sequel'
 
-require_relative 'db/metaschema'
+require_relative 'metaschema/metaschema'
 require_relative 'models/dynamic_models'
 require_relative 'plugins/dwca_content_analyzer/file_set'
 
@@ -12,7 +12,7 @@ require_relative 'plugins/dwca_content_analyzer/file_set'
 # Sequel::Model instances are created from the DwCA's meta.xml file
 module DwCR
   Sequel.extension :inflector
-  require_relative 'inflections'
+  require_relative 'config/inflections'
 
   # Creates the table for +entity+ (a MetaEntity instanc)
   # inserts foreign key for meta_entities

@@ -77,7 +77,7 @@ module DwCR
     # returns true if all tables, columns, and indices as given in
     # _config/metaschema_tables.yml_ are present
     def self.valid?
-      tabledefs = Psych.load_file('lib/db/metaschema_tables.yml')
+      tabledefs = Psych.load_file('lib/metaschema/metaschema_tables.yml')
       status = tabledefs.map do |td|
         table = td.first
         columns = td.last
