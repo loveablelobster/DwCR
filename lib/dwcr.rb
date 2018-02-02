@@ -14,6 +14,13 @@ module DwCR
   Sequel.extension :inflector
   require_relative 'inflections'
 
+  # Creates the table for +entity+ (a MetaEntity instanc)
+  # inserts foreign key for meta_entities
+  # skips the _coreid_ field declared in _extensions_ in the DwCA meta.xml
+  # (this field is redundant, because relationships are re-established upon
+  # import using SQL primary and foreign keys)
+  # inserts the proper SQL foreign key into _extensions_
+  # adds columns for any +meta_attributes+ associated with +entity+
   def self.create_schema_table(entity)
     DB.create_table? entity.table_name do
       primary_key :id

@@ -37,24 +37,48 @@ RSpec.describe 'DwCR' do
     end
   end
 
-  context 'when creating the schema' do
-
-
-
-
+  context 'when creating the DwCA schema' do
 
     context 'when creating a DwCA schema table' do
       let :schema_entity do
-        a1 = { name: 'col1', index: 0 }
-        a2 = { name: 'col2', index: 1, default: 'default' }
-        entity('example.org/SchemaSpecItem',
-               key_column: 0,
-               with_attributes: [a1, a2])
+        fk = { name: 'dwca_foreign_key_field', index: 0 }
+        a1 = { name: 'col1', index: 1 }
+        a2 = { name: 'col2', index: 2, default: 'default' }
+        e = entity('example.org/SchemaSpecItem',
+                   key_column: 0,
+                   with_attributes: [fk, a1, a2])
+        archive.core.add_extension(e)
+        e
       end
 
+      before { DwCR.create_schema_table(schema_entity) }
+
       it 'creates the table' do
-        DwCR.create_schema_table(schema_entity)
         expect(DB.table_exists?(:schema_spec_items)).to be_truthy
+      end
+
+      it 'inserts a foreign key for meta_entities' do
+        expect(DB.schema(:schema_spec_items))
+          .to include a_collection_including(:meta_entity_id,
+                                             a_hash_including(type: :integer))
+      end
+
+      it 'skips the foreign key field declared in extensions' do
+      	expect(DB.schema(:schema_spec_items))
+      	  .not_to include a_collection_including(:dwca_foreign_key_field)
+      end
+
+      it 'adds the SQL foreign key to extension tables' do
+        expect(DB.schema(:schema_spec_items))
+          .to include a_collection_including(:core_item_id,
+                                             a_hash_including(type: :integer))
+      end
+
+      it 'adds any regular fields' do
+      	expect(DB.schema(:schema_spec_items))
+      	  .to include a_collection_including(:col1),
+      	              a_collection_including(:col2,
+      	                                     a_hash_including(default: '\'default\''))
       end
 
       context 'when adding a foreign key' do
