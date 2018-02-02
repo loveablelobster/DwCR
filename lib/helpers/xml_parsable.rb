@@ -91,7 +91,7 @@ module XMLParsable
   # Returns a hash with model attributes as keys,
   # values parsed from xml as values
   # applies to _field_ nodes
-  def values_from(xml, *attrs) # FIXME: rename fields -> attrs
+  def values_from(xml, *attrs)
     values = attrs.map { |attr| send(method(attr), xml) }
     attrs.zip(values).to_h.compact
   end
