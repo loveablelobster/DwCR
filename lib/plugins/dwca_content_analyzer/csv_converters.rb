@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# set custom CSV::Converters
 CSV::Converters[:safe_numeric] = lambda do |field|
   case field.strip
   when /^-?[0-9]+$/

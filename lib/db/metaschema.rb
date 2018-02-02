@@ -5,7 +5,8 @@ require 'sqlite3'
 
 #
 module DwCR
-  #
+  # This module provides functionality to create, update, and verify the
+  # part of the DwCR schema needed to persist information about the DwCR
   module Metaschema
     # Creates the tables for the metaschema present in every DwCR
     # _meta_archives_, _meta_entities_, _meta_attributes_, _content_files_
