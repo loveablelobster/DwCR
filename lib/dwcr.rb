@@ -25,16 +25,11 @@ module DwCR
     DB.create_table? entity.table_name do
       primary_key :id
       foreign_key :meta_entity_id, :meta_entities
-      DwCR.add_foreign_key(self, entity)
+      foreign_key entity.core.foreign_key, entity.core.table_name if entity.core
       entity.meta_attributes.each do |a|
         column(*a.to_table_column) unless a.foreign_key?
       end
     end
-  end
-
-  def self.add_foreign_key(table, entity)
-    return unless entity.core
-    table.foreign_key(entity.core.foreign_key, entity.core.table_name)
   end
 
   # Creates the database schema for the DwCA nodes

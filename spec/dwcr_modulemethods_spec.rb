@@ -2,7 +2,7 @@
 
 require_relative 'support/models_shared_context'
 
-RSpec.describe 'DwCR' do
+RSpec.describe DwCR, '#module methods' do
   include_context 'Models helpers'
 
   def create_and_load_schema
@@ -28,7 +28,7 @@ RSpec.describe 'DwCR' do
         .to include a_collection_including(:date_column, :date)
     end
 
-    it 'updates the column type if the type: true option is passed' do
+    it 'updates the column length if the length: true option is passed' do
       DwCR::Metaschema.update archive, length: true
       expect(archive.core
                     .meta_attributes_dataset
@@ -38,7 +38,6 @@ RSpec.describe 'DwCR' do
   end
 
   context 'when creating the DwCA schema' do
-
     context 'when creating a DwCA schema table' do
       let :schema_entity do
         fk = { name: 'dwca_foreign_key_field', index: 0 }
@@ -64,8 +63,8 @@ RSpec.describe 'DwCR' do
       end
 
       it 'skips the foreign key field declared in extensions' do
-      	expect(DB.schema(:schema_spec_items))
-      	  .not_to include a_collection_including(:dwca_foreign_key_field)
+        expect(DB.schema(:schema_spec_items))
+          .not_to include a_collection_including(:dwca_foreign_key_field)
       end
 
       it 'adds the SQL foreign key to extension tables' do
@@ -75,29 +74,22 @@ RSpec.describe 'DwCR' do
       end
 
       it 'adds any regular fields' do
-      	expect(DB.schema(:schema_spec_items))
-      	  .to include a_collection_including(:col1),
-      	              a_collection_including(:col2,
-      	                                     a_hash_including(default: '\'default\''))
-      end
-
-      context 'when adding a foreign key' do
-        # DwCR.add_foreign_key(table, entity)
+        d = '\'default\''
+        expect(DB.schema(:schema_spec_items))
+          .to include a_collection_including(:col1),
+                      a_collection_including(:col2,
+                                             a_hash_including(default: d))
       end
     end
 
-
-
-
-
     it 'creates the table for the DwCA core' do
-    	DwCR.create_schema archive
-    	expect(DB.table_exists?(:core_items)).to be_truthy
+      DwCR.create_schema archive
+      expect(DB.table_exists?(:core_items)).to be_truthy
     end
 
     it 'creates the table for DwCA extensions' do
-    	DwCR.create_schema archive
-    	expect(DB.table_exists?(:extension_items)).to be_truthy
+      DwCR.create_schema archive
+      expect(DB.table_exists?(:extension_items)).to be_truthy
     end
 
     it 'updates the schema before creating tables if options are passed' do
