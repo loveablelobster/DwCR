@@ -5,7 +5,7 @@ require 'getoptlong'
 require 'pry'
 
 require_relative '../lib/dwcr'
-require_relative '../lib/dwcr_shell'
+require_relative '../lib/cli/dwcr_shell'
 
 dwcr_cmds = %w[load new]
 
@@ -16,8 +16,8 @@ SHELL = DwCR::Shell.new this_cmd
 if this_cmd
   scrpt_dir = __dir__.split('/')
   scrpt_dir.pop
-  scrpt_dir.push 'lib'
-  cmd_scrpt = File.join(scrpt_dir, "dwcr_#{this_cmd}.rb")
+  scrpt_dir.concat %W[lib cli dwcr_#{this_cmd}.rb]
+  cmd_scrpt = File.join scrpt_dir
   load cmd_scrpt
 end
 
