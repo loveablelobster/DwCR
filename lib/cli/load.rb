@@ -14,10 +14,10 @@ module CLI
   ::DB = Sequel.sqlite(SHELL.target)
 
   # FIXME: these requires should not be in DwCR::create_metaschema
-  require_relative '../metaschema/archive'
-  require_relative '../metaschema/entity'
-  require_relative '../metaschema/attribute'
-  require_relative '../metaschema/content_file'
+  require_relative '../dwcr/metaschema/archive'
+  require_relative '../dwcr/metaschema/entity'
+  require_relative '../dwcr/metaschema/attribute'
+  require_relative '../dwcr/metaschema/content_file'
 
   DwCR::MODELS = DwCR.load_models
 
