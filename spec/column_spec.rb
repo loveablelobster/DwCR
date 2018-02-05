@@ -2,7 +2,7 @@
 
 require 'date'
 
-require_relative '../lib/plugins/dwca_content_analyzer/column'
+require_relative '../lib/dwca_content_analyzer/column'
 
 module DwCAContentAnalyzer
   RSpec.describe Column, 'analyzes the contents of a CSV column' do

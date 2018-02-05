@@ -2,7 +2,7 @@
 
 require 'psych'
 
-require_relative '../lib/plugins/dwca_content_analyzer/file_set'
+require_relative '../lib/dwca_content_analyzer/file_set'
 
 module DwCAContentAnalyzer
   RSpec.describe FileSet do

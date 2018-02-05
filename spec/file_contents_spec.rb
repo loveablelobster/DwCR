@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib/plugins/dwca_content_analyzer/file_contents'
+require_relative '../lib/dwca_content_analyzer/file_contents'
 
 #
 module DwCAContentAnalyzer
