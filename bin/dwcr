@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+
+# frozen_string_literal: true
+
+require 'getoptlong'
+require 'pry'
+require 'dwcr'
+require 'cli/shell'
+
+# require_relative '../lib/dwcr'
+# require_relative '../lib/cli/shell'
+
+dwcr_cmds = %w[load new]
+
+this_cmd = dwcr_cmds.include?(ARGV[0]) ? ARGV.shift : nil
+
+SHELL = CLI::Shell.new this_cmd
+
+if this_cmd
+  scrpt_dir = __dir__.split('/')
+  scrpt_dir.pop
+  scrpt_dir.concat %W[lib cli #{this_cmd}.rb]
+  cmd_scrpt = File.join scrpt_dir
+  load cmd_scrpt
+end
+
+SHELL.options.each do |opt, arg|
+  case opt
+  when '--help'
+    SHELL.print_help
+  end
+end

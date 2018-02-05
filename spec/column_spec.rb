@@ -2,9 +2,9 @@
 
 require 'date'
 
-require_relative '../lib/content_analyzer/column'
+require_relative '../lib/dwca_content_analyzer/column'
 
-module DwCR
+module DwCAContentAnalyzer
   RSpec.describe Column, 'analyzes the contents of a CSV column' do
     context 'is intitialized with a `index`, `contents` and `detectors`' do
       it '`index` is required' do
@@ -52,9 +52,9 @@ module DwCR
       end
 
       context 'reports the columns common type' do
-        it 'String for empty columns' do
+        it 'nil for empty columns' do
       	  c = Column.new(1, [], :type)
-      	  expect(c.type).to be String
+      	  expect(c.type).to be_nil
       	end
 
       	it 'the type for monotypic columns' do

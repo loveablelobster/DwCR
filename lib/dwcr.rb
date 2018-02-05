@@ -1,15 +1,14 @@
-# frozen_string_literal: true
-
+require 'csv'
+require 'nokogiri'
+require 'psych'
 require 'sequel'
+require 'sqlite3'
 
-require_relative 'db/connection'
-require_relative 'db/schematables'
+require_relative 'dwca_content_analyzer/file_set'
+require_relative 'dwcr/dynamic_model_queryable'
+require_relative 'dwcr/dynamic_models'
+require_relative 'dwcr/metaschema/metaschema'
+require_relative 'dwcr/schema'
 
-# This module provides functionality to create a
-# SQLite database from a DarwinCoreArchive
-# and provides an ORM layer using http://sequel.jeremyevans.net
-# Sequel::Model instances are created from the DwCA's meta.xml file
-module DwCR
-  Sequel.extension :inflector
-  require_relative 'inflections'
-end
+Sequel.extension :inflector
+require_relative 'dwcr/inflections'

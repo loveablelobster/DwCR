@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<archive xmlns="http://example.org/dwcr/spec/"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://example.org/spec/ example.org/spec/example_dwcr_spec.xsd">
+	<core fieldsEnclosedBy="&quot;"
+	      fieldsTerminatedBy=","
+	      linesTerminatedBy="\r\n"
+	      rowType="http://example.org/dwcr/terms/CoreItem">
+		<files>
+			<location>core_file.csv</location>
+		</files>
+		<id index="0"/>
+		<field index="0" term="example.org/terms/coreID"/>
+		<field index="1" term="example.org/terms/itemNumber"/>
+		<field index="2" term="example.org/terms/emptyColumn"/>
+		<field index="3" term="example.org/terms/textColumn"/>
+		<field index="4" term="example.org/terms/mixedColumn"/>
+		<field index="5" term="example.org/terms/numericColumn"/>
+		<field index="6" term="example.org/terms/dateColumn"/>
+		<field default="column 4 default" term="example.org/terms/mixedColumn"/>
+		<field default="default value" term="example.org/elements/emptyColumn"/>
+	</core>
+	<extension fieldsEnclosedBy="&quot;" fieldsTerminatedBy="," linesTerminatedBy="\r\n" rowType="example.org/terms/ExtensionItem">
+		<files>
+			<location>extension_file1.csv</location>
+			<location>extension_file2.csv</location>
+		</files>
+		<coreid index="0"/>
+		<field index="1" term="example.org/terms/identifier"/>
+		<field index="2" term="example.org/terms/coreItemNumber"/>
+	</extension>
+</archive>

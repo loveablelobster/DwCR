@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
-require_relative '../lib/content_analyzer/file_contents'
+require_relative '../lib/dwca_content_analyzer/file_contents'
 
-module DwCR
+#
+module DwCAContentAnalyzer
   RSpec.describe FileContents do
-    let(:core) { FileContents.new('spec/files/test.csv').columns }
+    let :core do
+      f = File.path('spec/support/content_analyzer_test.csv')
+      FileContents.new(f).columns
+    end
 
     it 'determines the indices as headers for each column in a CSV file' do
       indices = core.map(&:index)
