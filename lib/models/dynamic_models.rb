@@ -3,12 +3,12 @@
 require_relative '../helpers/dynamic_model_queryable'
 #
 module DwCR
-  # Creates a Sequel::Model class for a MetaEntity instance
-  # adds all associations given for the MetaEntity instance
+  # Creates a Sequel::Model class for a Entity instance
+  # adds all associations given for the Entity instance
   def self.create_model(entity)
     model_class = Class.new(Sequel::Model(entity.table_name)) do
       include DynamicModelQueryable
-      @meta_entity = entity
+      @entity = entity
       entity.model_associations.each do |association|
         associate(*association)
         next if association[0] == :many_to_one
@@ -17,7 +17,7 @@ module DwCR
       end
 
       define_singleton_method(:finalize) do
-        @meta_entity = nil
+        @entity = nil
         Module.nesting.last.send(:remove_const, entity.class_name)
       end
     end

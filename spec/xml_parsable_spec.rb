@@ -71,8 +71,8 @@ RSpec.describe XMLParsable do
                     default: 'default value'
     end
 
-    it 'updates a MetaAttribute model instance with values parsed from xml' do
-    	a = entity(with_attributes: %w[column]).meta_attributes.first
+    it 'updates a Attribute model instance with values parsed from xml' do
+    	a = entity(with_attributes: %w[column]).attributes.first
     	a.update_from xml, :index, :term, :default
     	expect(a.values).to include index: 1,
                     term: 'example.org/terms/column',

@@ -5,12 +5,12 @@ module DynamicModelQueryable
 
   #
   module DynamicModelClassQueryable
-    def meta_entity
-      @meta_entity
+    def entity
+      @entity
     end
 
     def column_by_term(term)
-      meta_entity.meta_attributes_dataset.first(term: term.to_s).column_name
+      entity.attributes_dataset.first(term: term.to_s).column_name
     end
 
     def query_by_term(term, val)
@@ -28,23 +28,23 @@ module DynamicModelQueryable
   end
 
   def column_by_term(term)
-    meta_entity.meta_attributes_dataset.first(term: term.to_s).column_name
+    entity.attributes_dataset.first(term: term.to_s).column_name
   end
 
   def source_files
-    meta_entity.files
+    entity.files
   end
 
   def core?
-    meta_entity.is_core
+    entity.is_core
   end
 
   def record_term
-    meta_entity.term
+    entity.term
   end
 
   def term_for(column_name)
-    meta_entity.meta_attributes_dataset.first(name: column_name.to_s).term
+    entity.attributes_dataset.first(name: column_name.to_s).term
   end
 
   def method_missing(name, *args, &block)

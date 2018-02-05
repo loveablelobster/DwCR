@@ -4,10 +4,10 @@ require_relative 'support/models_shared_context'
 
 #
 module DwCR
-  RSpec.describe 'MetaAttribute' do
+  RSpec.describe 'Attribute' do
     include_context 'Models helpers'
 
-    let(:attribute) { MetaAttribute.create(name: 'term') }
+    let(:attribute) { Metaschema::Attribute.create(name: 'term') }
 
     it 'returns the column name as symbol' do
       expect(attribute.column_name).to be :term
@@ -17,7 +17,7 @@ module DwCR
       let :attrs do
         e = entity(key_column: 0, with_attributes: [{ name: 'key', index: 0 },
                                                     { name: 'term', index: 1 }])
-        e.meta_attributes
+        e.attributes
       end
 
       it 'returns tyrue if the attribute is the entities key_column' do
@@ -31,32 +31,32 @@ module DwCR
 
     context 'when returning the length of the column, length is' do
       it 'the length of the default value if no content length given' do
-        meta_attribute = MetaAttribute.create(name: 'term', default: 'default')
-        expect(meta_attribute.length).to be 7
+        attribute = Metaschema::Attribute.create(name: 'term', default: 'default')
+        expect(attribute.length).to be 7
       end
 
       it 'the maximum content length if given and no default set' do
-        meta_attribute = MetaAttribute.create(name: 'term')
-        meta_attribute.max_content_length = 10
-        expect(meta_attribute.length).to be 10
+        attribute = Metaschema::Attribute.create(name: 'term')
+        attribute.max_content_length = 10
+        expect(attribute.length).to be 10
       end
 
       it 'the maximum content length if given and larger than the default' do
-        meta_attribute = MetaAttribute.create(name: 'term',
+        attribute = Metaschema::Attribute.create(name: 'term',
                                               default: 'default')
-        meta_attribute.max_content_length = 10
-        expect(meta_attribute.length).to be 10
+        attribute.max_content_length = 10
+        expect(attribute.length).to be 10
       end
 
       it 'the default length if longer than a given max content length' do
-        meta_attribute = MetaAttribute.create(name: 'term', default: 'default')
-        meta_attribute.max_content_length = 5
-        expect(meta_attribute.length).to be 7
+        attribute = Metaschema::Attribute.create(name: 'term', default: 'default')
+        attribute.max_content_length = 5
+        expect(attribute.length).to be 7
       end
 
       it 'nil if there is no default value' do
-        meta_attribute = MetaAttribute.create(name: 'term')
-        expect(meta_attribute.length).to be_nil
+        attribute = Metaschema::Attribute.create(name: 'term')
+        expect(attribute.length).to be_nil
       end
     end
 
@@ -66,7 +66,7 @@ module DwCR
                  { name: 'column' },
                  { name: 'column_with_default', default: 'default' },
                  { name: 'key_column', index: 0 }
-               ]).meta_attributes
+               ]).attributes
       end
 
       it 'has name and type' do
@@ -86,7 +86,7 @@ module DwCR
       end
 
       it 'has name, type and unique index' do
-        attrs[2].meta_entity.is_core = true
+        attrs[2].entity.is_core = true
         expect(attrs[2].to_table_column)
           .to match_array [:key_column, :string,
                            { index: { unique: true }, default: nil }]

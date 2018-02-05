@@ -12,10 +12,10 @@ SHELL.target = ARGV.shift
 DB = Sequel.sqlite(SHELL.target)
 
 # FIXME: these requires should not be in DwCR::create_metaschema
-require_relative '../models/meta_archive'
-require_relative '../models/meta_entity'
-require_relative '../models/meta_attribute'
-require_relative '../models/content_file'
+require_relative '../metaschema/archive'
+require_relative '../metaschema/entity'
+require_relative '../metaschema/attribute'
+require_relative '../metaschema/content_file'
 
 DwCR::MODELS = DwCR.load_models
 

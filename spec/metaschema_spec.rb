@@ -5,12 +5,12 @@ require_relative '../lib/metaschema/metaschema'
 RSpec.describe DwCR::Metaschema, '#module methods' do
 
   context 'when creating the metaschema' do
-    it 'creates the meta_archives table' do
-      expect(DB.table_exists?(:meta_archives)).to be_truthy
+    it 'creates the archives table' do
+      expect(DB.table_exists?(:archives)).to be_truthy
     end
 
-    context 'when created the meta_archives table' do
-      let(:columns) { DB.schema(:meta_archives) }
+    context 'when created the archives table' do
+      let(:columns) { DB.schema(:archives) }
 
       it 'has a core_id foreign key column (integer)' do
         expect(columns)
@@ -70,16 +70,16 @@ RSpec.describe DwCR::Metaschema, '#module methods' do
       end
     end
 
-    it 'creates the meta_attributes table' do
-      expect(DB.table_exists?(:meta_attributes)).to be_truthy
+    it 'creates the attributes table' do
+      expect(DB.table_exists?(:attributes)).to be_truthy
     end
 
-    context 'when creating the meta_attributes table' do
-      let(:columns) { DB.schema(:meta_attributes) }
+    context 'when creating the attributes table' do
+      let(:columns) { DB.schema(:attributes) }
 
-      it 'has a meta_entity_id foreign key column (integer)' do
+      it 'has a entity_id foreign key column (integer)' do
         expect(columns)
-          .to include a_collection_including(:meta_entity_id,
+          .to include a_collection_including(:entity_id,
                                              a_hash_including(type: :integer))
         # FIXME: test for index: true
       end
@@ -126,16 +126,16 @@ RSpec.describe DwCR::Metaschema, '#module methods' do
       end
     end
 
-    it 'creates the meta_entities table' do
-      expect(DB.table_exists?(:meta_entities)).to be_truthy
+    it 'creates the entities table' do
+      expect(DB.table_exists?(:entities)).to be_truthy
     end
 
-    context 'when creating the meta_entities table' do
-      let(:columns) { DB.schema(:meta_entities) }
+    context 'when creating the entities table' do
+      let(:columns) { DB.schema(:entities) }
 
-      it 'has a meta_archive_id foreign key column (integer)' do
+      it 'has a archive_id foreign key column (integer)' do
         expect(columns)
-          .to include a_collection_including(:meta_archive_id,
+          .to include a_collection_including(:archive_id,
                                              a_hash_including(type: :integer))
         # FIXME: test for index: true
       end
@@ -205,9 +205,9 @@ RSpec.describe DwCR::Metaschema, '#module methods' do
     context 'when creating the content_files table' do
       let(:columns) { DB.schema(:content_files) }
 
-      it 'has a meta_entity_id foreign key column (integer)' do
+      it 'has a entity_id foreign key column (integer)' do
         expect(columns)
-          .to include a_collection_including(:meta_entity_id,
+          .to include a_collection_including(:entity_id,
                                              a_hash_including(type: :integer))
         # FIXME: test for index: true
       end
@@ -245,7 +245,7 @@ RSpec.describe DwCR::Metaschema, '#module methods' do
 
     it 'fetches the indexes for the table when passed :indexes' do
       expect(DwCR::Metaschema.inspect_table(:content_files, :indexes))
-        .to include :content_files_meta_entity_id_index
+        .to include :content_files_entity_id_index
     end
 
     it 'returns false when the table does not exist' do

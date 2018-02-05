@@ -9,7 +9,7 @@ module DwCR
   # part of the DwCR schema needed to persist information about the DwCR
   module Metaschema
     # Creates the tables for the metaschema present in every DwCR
-    # _meta_archives_, _meta_entities_, _meta_attributes_, _content_files_
+    # _archives_, _entities_, _attributes_, _content_files_
     # loads the Sequel::Model classes for these tables
     def self.create
       tabledefs = Psych.load_file(File.join(__dir__, 'metaschema_tables.yml'))
@@ -19,10 +19,10 @@ module DwCR
           columns.each { |c| column(*c) }
         end
       end
-      require_relative '../models/meta_archive'
-      require_relative '../models/meta_entity'
-      require_relative '../models/meta_attribute'
-      require_relative '../models/content_file'
+      require_relative 'archive'
+      require_relative 'entity'
+      require_relative 'attribute'
+      require_relative 'content_file'
     end
 
     # Returns schema or index parameters for a table, depending on the
@@ -58,7 +58,7 @@ module DwCR
       exp_idxs & db_idxs.values.map { |x| x[:columns] }.flatten == exp_idxs
     end
 
-    # Updates all MetaAttribute instances in a MetaArchive
+    # Updates all Attribute instances in a Archive
     # with parameters from files in ContentFile
     # _schema_options_: a Hash with attribute names as keys and boolean values
     # <tt>{ :type => true, :length => true }</tt>
@@ -68,8 +68,8 @@ module DwCR
 
       # FIXME: handle situation where schema tables have been created
       options.select! { |_k, v| v == true }
-      archive.meta_entities
-             .each { |entity| entity.update_meta_attributes!(*options.keys) }
+      archive.entities
+             .each { |entity| entity.update_attributes!(*options.keys) }
     end
 
     # Performs an integrity check on the metaschema in the DWCR file

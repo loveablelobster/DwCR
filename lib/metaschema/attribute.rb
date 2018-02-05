@@ -5,6 +5,8 @@ require_relative '../helpers/xml_parsable'
 
 #
 module DwCR
+  module Metaschema
+
   # This class represents _field_ nodes in the DarwinCoreArchive
   # that correspond to columns in table sof the DwCA schema
   # and where applicable the ContentFile instances
@@ -17,16 +19,16 @@ module DwCR
   # * +default+: the default vale for columns in the
   #   DwCA schema table
   # * +index+: the column index in the ContentFile instances
-  #   associated with the MetaAttribute instances' parent MetaEntity instance
+  #   associated with the Attribute instances' parent Entity instance
   # * +max_content_length+: the maximum string length of values
   #   in the corresponding column in the ContentFile instances
-  #   associated with the MetaAttribute instances' parent MetaEntity instance
-  # * *#meta_entity*:
-  #   the MetaEntity instance the MetaAttribute instance belongs to
-  class MetaAttribute < Sequel::Model
+  #   associated with the Attribute instances' parent Entity instance
+  # * *#entity*:
+  #   the Entity instance the Attribute instance belongs to
+  class Attribute < Sequel::Model
     include XMLParsable
 
-    many_to_one :meta_entity
+    many_to_one :entity
 
     # Returns a symbol for the +name+ that is
     # the name of the column in the DarwinCoreArchive schema
@@ -37,7 +39,7 @@ module DwCR
     # Reurns +true+ if the _field_ node is the foreign key in the
     # _core_ or an _extension_ node in the DwCA schema, +false+ otherwise
     def foreign_key?
-      index == meta_entity.key_column && !meta_entity.is_core
+      index == entity.key_column && !entity.is_core
     end
 
     # Returns the maximum length for values in the corresponding column
@@ -67,12 +69,13 @@ module DwCR
     # therefore the below else clause will never be reached in DwCR files
     # generated from an existing DarwinCoreArchive
     def index_options
-      return false unless index && index == meta_entity.key_column
-      if meta_entity.is_core
+      return false unless index && index == entity.key_column
+      if entity.is_core
         { unique: true }
       else
         true
       end
     end
+  end
   end
 end

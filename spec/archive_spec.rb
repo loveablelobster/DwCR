@@ -4,23 +4,23 @@ require_relative 'support/models_shared_context'
 
 #
 module DwCR
-  RSpec.describe 'MetaArchive' do
+  RSpec.describe 'Archive' do
     include_context 'Models helpers'
 
     context 'when adding core and extensions' do
       it 'ensures that is_core is true for the core' do
-        archive.core = archive.add_meta_entity(term: 'example.org/core')
+        archive.core = archive.add_entity(term: 'example.org/core')
         expect(archive.core.is_core).to be_truthy
       end
 
       it 'ensures that is_core is false for extensions' do
-        archive.core = archive.add_meta_entity(term: 'example.org/core')
+        archive.core = archive.add_entity(term: 'example.org/core')
         extension = archive.add_extension(term: 'example.org/extension')
         expect(extension.is_core).to be_falsey
       end
 
       it 'ensures that extensions added reference the core' do
-        archive.core = archive.add_meta_entity(term: 'example.org/core')
+        archive.core = archive.add_entity(term: 'example.org/core')
         extension = archive.add_extension(term: 'example.org/extension')
         expect(extension.core).to be archive.core
       end
@@ -31,7 +31,7 @@ module DwCR
       end
     end
 
-    context 'when creating meta_entities from xml' do
+    context 'when creating entities from xml' do
       it '_core_ references any _extensions_' do
         archive.load_nodes_from meta_xml
         expect(archive.core
@@ -45,7 +45,7 @@ module DwCR
 
       it 'adds attributes declared in _field_ nodes' do
         archive.load_nodes_from meta_xml
-        expect(archive.core.meta_attributes.map(&:values))
+        expect(archive.core.attributes.map(&:values))
           .to include a_hash_including(term: 'example.org/terms/coreID',
                                        index: 0)
       end

@@ -4,13 +4,13 @@
 module DwCR
   RSpec.describe 'DynamicModels' do
     let :archive do
-      a = MetaArchive.create(name: 'content_file_spec')
-      a.core = a.add_meta_entity(term: 'example.org/coreItem', key_column: 0)
+      a = Metaschema::Archive.create(name: 'content_file_spec')
+      a.core = a.add_entity(term: 'example.org/coreItem', key_column: 0)
       a.core.save
-      a.core.add_meta_attribute(name: 'term_a', index: 0)
+      a.core.add_attribute(name: 'term_a', index: 0)
       e = a.add_extension(term: 'example.org/extensionItem', key_column: 0)
-      e.add_meta_attribute(name: 'coreid', index: 0)
-      a.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
+      e.add_attribute(name: 'coreid', index: 0)
+      a.entities.each { |entity| DwCR.create_schema_table(entity) }
       a
     end
 
@@ -21,15 +21,15 @@ module DwCR
         m.finalize
       end
 
-      it 'references the MetaEntity instance it was created from' do
+      it 'references the Entity instance it was created from' do
         m = DwCR.create_model(archive.core)
-        expect(m.meta_entity).to be archive.core
+        expect(m.entity).to be archive.core
         m.finalize
       end
 
-      it 'is associated with MetaEntity' do
+      it 'is associated with Entity' do
         m = DwCR.create_model(archive.core)
-        expect(m.associations).to include :meta_entity
+        expect(m.associations).to include :entity
         m.finalize
       end
 

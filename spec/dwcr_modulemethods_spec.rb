@@ -12,7 +12,7 @@ RSpec.describe DwCR, '#module methods' do
 
   let :archive do
     path = File.path('spec/support/example_archive')
-    archive = DwCR::MetaArchive.create(path: path)
+    archive = DwCR::Metaschema::Archive.create(path: path)
     archive.load_nodes_from(XMLParsable.load_meta(File.join(path, 'meta.xml')))
   end
 
@@ -24,14 +24,14 @@ RSpec.describe DwCR, '#module methods' do
   context 'when updating the (meta)schema' do
     it 'updates the column type if the type: true option is passed' do
       DwCR::Metaschema.update archive, type: true
-      expect(archive.core.meta_attributes.map(&:to_table_column))
+      expect(archive.core.attributes.map(&:to_table_column))
         .to include a_collection_including(:date_column, :date)
     end
 
     it 'updates the column length if the length: true option is passed' do
       DwCR::Metaschema.update archive, length: true
       expect(archive.core
-                    .meta_attributes_dataset
+                    .attributes_dataset
                     .first(name: 'text_column')
                     .length).to be 25
     end
@@ -56,9 +56,9 @@ RSpec.describe DwCR, '#module methods' do
         expect(DB.table_exists?(:schema_spec_items)).to be_truthy
       end
 
-      it 'inserts a foreign key for meta_entities' do
+      it 'inserts a foreign key for entities' do
         expect(DB.schema(:schema_spec_items))
-          .to include a_collection_including(:meta_entity_id,
+          .to include a_collection_including(:entity_id,
                                              a_hash_including(type: :integer))
       end
 

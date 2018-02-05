@@ -14,19 +14,19 @@ module DwCR
   Sequel.extension :inflector
   require_relative 'config/inflections'
 
-  # Creates the table for +entity+ (a MetaEntity instanc)
-  # inserts foreign key for meta_entities
+  # Creates the table for +entity+ (a Entity instanc)
+  # inserts foreign key for entities
   # skips the _coreid_ field declared in _extensions_ in the DwCA meta.xml
   # (this field is redundant, because relationships are re-established upon
   # import using SQL primary and foreign keys)
   # inserts the proper SQL foreign key into _extensions_
-  # adds columns for any +meta_attributes+ associated with +entity+
+  # adds columns for any +attributes+ associated with +entity+
   def self.create_schema_table(entity)
     DB.create_table? entity.table_name do
       primary_key :id
-      foreign_key :meta_entity_id, :meta_entities
+      foreign_key :entity_id, :entities
       foreign_key entity.core.foreign_key, entity.core.table_name if entity.core
-      entity.meta_attributes.each do |a|
+      entity.attributes.each do |a|
         column(*a.to_table_column) unless a.foreign_key?
       end
     end
@@ -41,17 +41,17 @@ module DwCR
   # analysing each column for type and length
   def self.create_schema(archive, **options)
     Metaschema.update(archive, options)
-    archive.meta_entities.each { |entity| DwCR.create_schema_table(entity) }
+    archive.entities.each { |entity| DwCR.create_schema_table(entity) }
   end
 
-  # Loads models for all MetaEntity instances in the MetaArchive instance
-  # if no explicit MetaArchive instance is given, it will load the first
-  def self.load_models(archive = MetaArchive.first)
-    archive.meta_entities.map do |entity|
+  # Loads models for all Entity instances in the Archive instance
+  # if no explicit Archive instance is given, it will load the first
+  def self.load_models(archive = Archive.first)
+    archive.entities.map do |entity|
       entity_model = DwCR.create_model(entity)
-      MetaEntity.associate(:one_to_many,
-                           entity.table_name,
-                           class: entity_model)
+      Metaschema::Entity.associate(:one_to_many,
+                                       entity.table_name,
+                                       class: entity_model)
       entity_model
     end
   end

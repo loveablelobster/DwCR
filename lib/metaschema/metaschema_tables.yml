@@ -1,5 +1,5 @@
 ---
-!ruby/sym meta_archives:
+!ruby/sym archives:
   -
     - !ruby/sym core_id
     - !ruby/sym integer
@@ -31,9 +31,9 @@
     - !ruby/sym string
     - !ruby/sym default:
         'http://rs.tdwg.org/dwc/text/ http://rs.tdwg.org/dwc/text/tdwg_dwc_text.xsd'
-!ruby/sym meta_attributes:
+!ruby/sym attributes:
   -
-    - !ruby/sym meta_entity_id
+    - !ruby/sym entity_id
     - !ruby/sym integer
     - !ruby/sym index:
         true
@@ -61,9 +61,9 @@
     - !ruby/sym max_content_length
     - !ruby/sym integer
 
-!ruby/sym meta_entities:
+!ruby/sym entities:
   -
-    - !ruby/sym meta_archive_id
+    - !ruby/sym archive_id
     - !ruby/sym integer
     - !ruby/sym index:
         true
@@ -104,7 +104,7 @@
 
 !ruby/sym content_files:
   -
-    - !ruby/sym meta_entity_id
+    - !ruby/sym entity_id
     - !ruby/sym integer
     - !ruby/sym index:
         true

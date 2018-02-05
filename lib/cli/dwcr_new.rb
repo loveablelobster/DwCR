@@ -24,7 +24,7 @@ DB = Sequel.sqlite(SHELL.target)
 
 DwCR::Metaschema.create
 
-archive = DwCR::MetaArchive.create(path: SHELL.path)
+archive = DwCR::Archive.create(path: SHELL.path)
 
 meta_doc = XMLParsable.load_meta xml
 

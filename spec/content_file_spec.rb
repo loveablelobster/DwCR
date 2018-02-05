@@ -9,11 +9,11 @@ module DwCR
 
     def add_attributes_to(entity, *attrs)
       attrs
-        .each_with_index { |a, i| entity.add_meta_attribute(name: a, index: i) }
+        .each_with_index { |a, i| entity.add_attribute(name: a, index: i) }
     end
 
     def add_core_to(archive)
-      archive.core = archive.add_meta_entity(term: 'example.org/FileItem',
+      archive.core = archive.add_entity(term: 'example.org/FileItem',
                                              key_column: 0)
       archive.core.save
       add_attributes_to(archive.core, 'term_a', 'term_b', 'term_c')
@@ -28,18 +28,18 @@ module DwCR
     end
 
     it 'returns the full file name including the path' do
-      f = ContentFile.create(name: 'table.csv', path: File.path('/dev/null'))
+      f = Metaschema::ContentFile.create(name: 'table.csv', path: File.path('/dev/null'))
       expect(f.file_name).to eq(File.path('/dev/null/table.csv'))
     end
 
     context 'when returning column names as an array of symbols for names' do
       let(:h) do
-        e = archive.add_meta_entity(term: 'example.org/item')
-        e.add_meta_attribute(name: 'term_a', index: 0, type: 'string')
-        e.add_meta_attribute(name: 'term_b', index: 1, type: nil)
-        e.add_meta_attribute(name: 'term_c', index: nil, type: 'string')
-        e.add_meta_attribute(name: 'term_d', index: 2, type: 'string')
-        e.add_meta_attribute(name: 'term_e', index: nil, type: nil)
+        e = archive.add_entity(term: 'example.org/item')
+        e.add_attribute(name: 'term_a', index: 0, type: 'string')
+        e.add_attribute(name: 'term_b', index: 1, type: nil)
+        e.add_attribute(name: 'term_c', index: nil, type: 'string')
+        e.add_attribute(name: 'term_d', index: 2, type: 'string')
+        e.add_attribute(name: 'term_e', index: nil, type: nil)
         f = e.add_content_file(name: 'table.csv')
         f.content_headers
       end
@@ -70,7 +70,7 @@ module DwCR
       end
 
       let :archive do
-        MetaArchive.create(name: 'content_file_spec')
+        Metaschema::Archive.create(name: 'content_file_spec')
       end
 
       before do

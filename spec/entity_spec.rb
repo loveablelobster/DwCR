@@ -4,26 +4,26 @@ require_relative 'support/models_shared_context'
 
 #
 module DwCR
-  RSpec.describe 'MetaEntity' do
+  RSpec.describe 'Entity' do
     include_context 'Models helpers'
 
     context 'when creating new instances' do
       it 'throws an error if the core is not associated with an archive' do
         m = 'ArgumentError:'\
-            ' MetaEntity instances need to belong to a MetaArchive'
-        expect { MetaEntity.create(term: 'example.org/DanglingItem') }
+            ' Entity instances need to belong to a Archive'
+        expect { Metaschema::Entity.create(term: 'example.org/DanglingItem') }
           .to raise_error(Sequel::DatabaseError, m)
       end
 
       it 'inserts name from last component of term (lowercase, underscore)' do
-        meta_entity = archive.add_meta_entity(term: 'example.org/AnItem')
-        expect(meta_entity.name).to eq 'an_item'
+        entity = archive.add_entity(term: 'example.org/AnItem')
+        expect(entity.name).to eq 'an_item'
       end
     end
 
     context 'when adding extensions to the core' do
       it 'throws an error if the core is not associated with an archive' do
-        extension = archive.add_meta_entity(term: 'example.org/XtnItem')
+        extension = archive.add_entity(term: 'example.org/XtnItem')
         expect { extension.add_extension(term: 'example.org/NestedXtn') }
           .to raise_error(ArgumentError,
                           'extensions must be associated with a core')
@@ -31,7 +31,7 @@ module DwCR
 
       it 'associates the extension with the archive' do
         extension = core.add_extension(term: 'example.org/XtnItem')
-        expect(extension.meta_archive).to be archive
+        expect(extension.archive).to be archive
       end
 
       it 'sets the is_core flag to false' do
@@ -40,26 +40,26 @@ module DwCR
       end
     end
 
-    context 'when adding MetaAttributes (columns)' do
+    context 'when adding Attributes (columns)' do
       it 'ensures the column name is unique' do
-        attrs = entity(with_attributes: %w[term term]).meta_attributes
+        attrs = entity(with_attributes: %w[term term]).attributes
         attr1, attr2 = *attrs
         expect(attr1.name == attr2.name).to be_falsey
       end
 
       it 'suffixs subsequent occurrences of a term with !' do
-        attr = entity(with_attributes: %w[term term]).meta_attributes.last
+        attr = entity(with_attributes: %w[term term]).attributes.last
         expect(attr.name).to eq 'term!'
       end
 
       it 'auto generates a name for a column from the term' do
         attr = { term: 'example.org/termA' }
-        expect(entity(with_attributes: [attr]).meta_attributes.last.name)
+        expect(entity(with_attributes: [attr]).attributes.last.name)
           .to eq 'term_a'
       end
 
       it 'rasies an error if there is neither name nor term' do
-        expect { entity('example.org/Item').add_meta_attribute(index: 0) }
+        expect { entity('example.org/Item').add_attribute(index: 0) }
           .to raise_error Sequel::NotNullConstraintViolation
       end
     end
@@ -108,8 +108,8 @@ module DwCR
       it 'includes args for the association to self' do
         core.add_extension(term: 'example.org/ExtensionItem')
         expect(archive.core.model_associations)
-          .to include a_collection_including(:many_to_one, :meta_entity,
-                                             class: DwCR::MetaEntity)
+          .to include a_collection_including(:many_to_one, :entity,
+                                             class: DwCR::Metaschema::Entity)
       end
 
       context 'when it is the core' do
@@ -191,8 +191,8 @@ module DwCR
     context 'when updating columns based on contents' do
     let :attributes do
     	archive.load_nodes_from meta_xml
-      archive.core.update_meta_attributes!(:length, :type)
-      archive.core.meta_attributes.map(&:values)
+      archive.core.update_attributes!(:length, :type)
+      archive.core.attributes.map(&:values)
     end
 
     it 'sets the type according to the type in the content files' do
