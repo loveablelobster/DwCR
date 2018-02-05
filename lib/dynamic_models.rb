@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../helpers/dynamic_model_queryable'
+require_relative 'dynamic_model_queryable'
 #
 module DwCR
   # Creates a Sequel::Model class for a Entity instance

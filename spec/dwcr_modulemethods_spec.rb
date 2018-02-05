@@ -13,7 +13,7 @@ RSpec.describe DwCR, '#module methods' do
   let :archive do
     path = File.path('spec/support/example_archive')
     archive = DwCR::Metaschema::Archive.create(path: path)
-    archive.load_nodes_from(XMLParsable.load_meta(File.join(path, 'meta.xml')))
+    archive.load_nodes_from(DwCR::Metaschema::XMLParsable.load_meta(File.join(path, 'meta.xml')))
   end
 
   after do

@@ -3,7 +3,7 @@
 require 'sequel'
 
 require_relative 'metaschema/metaschema'
-require_relative 'models/dynamic_models'
+require_relative 'dynamic_models'
 require_relative 'dwca_content_analyzer/file_set'
 
 # This module provides functionality to create a

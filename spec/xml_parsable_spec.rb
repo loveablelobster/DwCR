@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require_relative '../lib/helpers/xml_parsable'
+require_relative '../lib/metaschema/xml_parsable'
 require_relative 'support/models_shared_context'
 
 # Dummy class to test mixin
 class DummyParser
-  include XMLParsable
+  include DwCR::Metaschema::XMLParsable
 end
 
 #
-RSpec.describe XMLParsable do
+RSpec.describe DwCR::Metaschema::XMLParsable do
   include_context 'Models helpers'
 
   let :xml_root do

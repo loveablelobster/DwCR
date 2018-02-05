@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 require 'nokogiri'
+#
+module DwCR
+  #
+  module Metaschema
 
 #
 module XMLParsable
@@ -95,4 +99,6 @@ module XMLParsable
     values = attrs.map { |attr| send(method(attr), xml) }
     attrs.zip(values).to_h.compact
   end
+end
+end
 end
