@@ -12,7 +12,7 @@ require_relative 'dwca_content_analyzer/file_set'
 # Sequel::Model instances are created from the DwCA's meta.xml file
 module DwCR
   Sequel.extension :inflector
-  require_relative 'config/inflections'
+  require_relative 'inflections'
 
   # Creates the table for +entity+ (a Entity instanc)
   # inserts foreign key for entities
@@ -46,7 +46,7 @@ module DwCR
 
   # Loads models for all Entity instances in the Archive instance
   # if no explicit Archive instance is given, it will load the first
-  def self.load_models(archive = Archive.first)
+  def self.load_models(archive = Metaschema::Archive.first)
     archive.entities.map do |entity|
       entity_model = DwCR.create_model(entity)
       Metaschema::Entity.associate(:one_to_many,

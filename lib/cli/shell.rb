@@ -4,7 +4,7 @@ require 'getoptlong'
 require 'psych'
 
 #
-module DwCR
+module CLI
   #
   class Shell
     attr_accessor :path
