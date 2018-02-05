@@ -1,11 +1,14 @@
+#!/usr/bin/env ruby
+
 # frozen_string_literal: true
 
 require 'getoptlong'
-
 require 'pry'
+require 'dwcr'
+require 'cli/shell'
 
-require_relative '../lib/dwcr'
-require_relative '../lib/cli/shell'
+# require_relative '../lib/dwcr'
+# require_relative '../lib/cli/shell'
 
 dwcr_cmds = %w[load new]
 
