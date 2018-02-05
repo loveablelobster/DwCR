@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib/metaschema/xml_parsable'
+require_relative '../lib/dwcr/metaschema/xml_parsable'
 require_relative 'support/models_shared_context'
 
 # Dummy class to test mixin

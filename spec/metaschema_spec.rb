@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../lib/metaschema/metaschema'
+require_relative '../lib/dwcr/metaschema/metaschema'
 
 RSpec.describe DwCR::Metaschema, '#module methods' do
 
@@ -255,7 +255,7 @@ RSpec.describe DwCR::Metaschema, '#module methods' do
 
   context 'when verifying metaschema integrity' do
     let :content_files_schema do
-      path = '/lib/metaschema/metaschema_tables.yml'
+      path = '/lib/dwcr/metaschema/metaschema_tables.yml'
       yml = File.join(File.expand_path(Dir.pwd), path)
       Psych.load_file(File.path(yml))[:content_files]
     end

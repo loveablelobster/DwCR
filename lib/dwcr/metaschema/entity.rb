@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'xml_parsable'
-
 #
 module DwCR
   #

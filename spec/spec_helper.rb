@@ -103,7 +103,6 @@ RSpec.configure do |config|
     require 'pry'
 
     require_relative '../lib/dwcr'
-    require_relative '../lib/dynamic_models'
 
     DB = Sequel.sqlite
 
