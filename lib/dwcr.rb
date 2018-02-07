@@ -1,4 +1,5 @@
 require 'csv'
+require 'json'
 require 'nokogiri'
 require 'psych'
 require 'sequel'
