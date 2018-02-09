@@ -7,10 +7,14 @@ module DwCR
   RSpec.describe 'Attribute' do
     include_context 'Models helpers'
 
-    let(:attribute) { Metaschema::Attribute.create(name: 'term') }
+    let(:attribute) { Metaschema::Attribute.create(name: 'term', term: 'example.org/Term') }
 
     it 'returns the column name as symbol' do
       expect(attribute.column_name).to be :term
+    end
+
+    it 'returns the last component of the term (baseterm)' do
+      expect(attribute.baseterm).to eq 'Term'
     end
 
     context 'when returning whether a field is foreign key' do

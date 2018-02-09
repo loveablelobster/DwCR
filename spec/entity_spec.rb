@@ -64,6 +64,10 @@ module DwCR
       end
     end
 
+    it 'returns a baseterm (last component of the term)' do
+      expect(entity('example.org/Item').baseterm).to eq 'Item'
+    end
+
     it 'returns a class name' do
       expect(entity('example.org/Item').class_name).to eq 'Item'
     end

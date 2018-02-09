@@ -60,6 +60,11 @@ module DwCR
       one_to_many :extensions, key: :core_id, class: self,
                                before_add: ensure_not_core
 
+      # Returns the last component of the term
+      def baseterm
+        term.split('/').last
+      end
+
       # Returns a string with Entity instance's singularized name in camelcase
       # this is the name of the Sequel::Model in the DarwinCoreArchive schema
       def class_name

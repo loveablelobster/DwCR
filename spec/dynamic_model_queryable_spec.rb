@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+ # frozen_string_literal: true
 
 RSpec.describe 'Dynamic Models mixins' do
   before :context do
@@ -10,8 +10,37 @@ RSpec.describe 'Dynamic Models mixins' do
     DwCR.load_contents_for archive
   end
 
-  it 'returns a record in json format' do
-    rec = DwCR::CoreItem.first(item_number: 1)
+  let(:core_row) { DwCR::CoreItem.first(item_number: 1) }
+
+  let(:extension_row) { DwCR::ExtensionItem.first(identifier: 'extension-2-4') }
+
+  context 'when returning extension rows' do
+    it 'returns nil if the record is an extension itself' do
+    	expect(DwCR::ExtensionItem.first.extension_rows).to be_nil
+    end
+
+    it 'returns the rows for the extension given in the argument' do
+      expect(core_row.extension_rows)
+        .to match_array core_row.extension_items
+    end
+  end
+
+  context 'when returning the row values, the returned hash' do
+    it 'does not contain the primary key' do
+      expect(core_row.row_values).not_to include :id
+    end
+
+    it 'does not contain the foreign key for the entity' do
+      expect(core_row.row_values).not_to include :entity_id
+    end
+
+    it 'does not contain the foreign key for the core'\
+       ' if the row is an extension' do
+      expect(extension_row.row_values).not_to include :core_item_id
+    end
+  end
+
+  it 'returns a record' do
 
     hsh = {
       'example.org/terms/coreID' => "core-1",
@@ -28,9 +57,7 @@ RSpec.describe 'Dynamic Models mixins' do
                                              { 'example.org/terms/identifier'=>"extension-2-6", 'example.org/terms/coreItemNumber' => 1 }
                                            ]
     }
-#     p JSON.generate hsh
-#     p rec
-    expect(rec.to_json).to eq hsh
+    expect(core_row.to_record).to eq hsh
   end
 
   after :context do

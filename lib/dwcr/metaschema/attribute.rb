@@ -27,6 +27,11 @@ module DwCR
 
     many_to_one :entity
 
+    # Returns the last component of the term
+    def baseterm
+      term&.split('/')&.last
+    end
+
     # Returns a symbol for the +name+ that is
     # the name of the column in the DarwinCoreArchive schema
     def column_name
