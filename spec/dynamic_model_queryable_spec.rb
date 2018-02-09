@@ -90,8 +90,12 @@ RSpec.describe DynamicModelQueryable do
   	end
 
   	it 'returns an extension row as hash with keys as specified'\
-  	   ' including the core row the extension row belongs to' do pending
-
+  	   ' including the core row the extension row belongs to' do
+  	  crow = extension_row.core_item.to_hash_with(:term)
+      expect(extension_row.to_record)
+        .to include 'example.org/terms/identifier' => "extension-2-4",
+                    'example.org/terms/coreItemNumber' => 1,
+                    'http://example.org/dwcr/terms/CoreItem' => crow
   	end
   end
 
@@ -100,22 +104,3 @@ RSpec.describe DynamicModelQueryable do
     DwCR::ExtensionItem.finalize
   end
 end
-#   it 'returns a record' do
-#
-#     hsh = {
-#       'example.org/terms/coreID' => "core-1",
-#       'example.org/terms/itemNumber' => 1,
-#       'example.org/terms/emptyColumn' => nil,
-#       'example.org/terms/textColumn' => "Text with 18 chars",
-#       'example.org/terms/mixedColumn' => "Text",
-#       'example.org/terms/numericColumn' => 1,
-#       'example.org/terms/dateColumn' => "2017-06-12",
-#       'example.org/elements/emptyColumn' => "default value",
-#       'example.org/terms/ExtensionItem' => [
-#                                              { 'example.org/terms/identifier' => "extension-2-4", 'example.org/terms/coreItemNumber' => 1 },
-#                                              { 'example.org/terms/identifier'=>"extension-2-5", 'example.org/terms/coreItemNumber' => 1 },
-#                                              { 'example.org/terms/identifier'=>"extension-2-6", 'example.org/terms/coreItemNumber' => 1 }
-#                                            ]
-#     }
-#     expect(core_row.to_record).to eq hsh
-#   end

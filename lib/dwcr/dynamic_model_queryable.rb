@@ -8,25 +8,26 @@ module DynamicModelQueryable
       @entity
     end
 
-    def column_by_term(term)
-      @entity.attributes_dataset.first(term: term.to_s).column_name
-    end
-
-    def query_by_term(term, val)
-      where(column_by_term(term) => val)
-    end
-
-    def query_by_terms(val_hash)
-      val_hash.transform_keys { |key| column_by_term(key) }
-      where(val_hash)
-    end
+#     def column_by_term(term)
+#       @entity.attributes_dataset.first(term: term.to_s).column_name
+#     end
+#
+#     def query_by_term(term, val)
+#       where(column_by_term(term) => val)
+#     end
+#
+#     def query_by_terms(val_hash)
+#       val_hash.transform_keys { |key| column_by_term(key) }
+#       where(val_hash)
+#     end
   end
 
   def self.included(host_class)
     host_class.extend(DynamicModelClassQueryable)
   end
 
-  #
+  # Returns the related core row of an extension row
+  # will return nil if the row is a core row itself
   def core_row
     return nil if entity.is_core
     send(entity.core.name)
@@ -47,7 +48,7 @@ module DynamicModelQueryable
   end
 
   # Returns a value hash for the row without primary or foreign keys
-  # where the keys in the hash can be the _term_, _baseterm_ or _name_
+  # where the keys in the hash can be the _term_, _baseterm_, or _name_
   # of the attributes, depending on the argument given
   def to_hash_with(keys = :term)
     return row_values if keys == :name
@@ -57,15 +58,23 @@ module DynamicModelQueryable
     end
   end
 
+  # Returns a full record (current row and all related rows)
+  # as a hash with kes as specified in the argument
+  # either as _term_, _baseterm_, or _name_
   def to_record(keys: :term)
     record_hash = to_hash_with(keys)
-    extension_rows.each do |row|
-      key = row.entity.send(keys)
-      record_hash[key] ||= []
-      record_hash[key] << row.to_hash_with(keys)
+    if entity.is_core
+      extension_rows.each do |row|
+        key = row.entity.send(keys)
+        record_hash[key] ||= []
+        record_hash[key] << row.to_hash_with(keys)
+      end
+    else
+      record_hash[entity.core.send(keys)] = core_row.to_hash_with(keys)
     end
     record_hash
   end
+
 #   def column_by_term(term)
 #     entity.attributes_dataset.first(term: term.to_s)&.column_name
 #   end
