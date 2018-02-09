@@ -47,9 +47,14 @@ module DwCR
         expect(attr1.name == attr2.name).to be_falsey
       end
 
-      it 'suffixs subsequent occurrences of a term with !' do
+      it 'suffixs subsequent occurrences of a name with !' do
         attr = entity(with_attributes: %w[term term]).attributes.last
         expect(attr.name).to eq 'term!'
+      end
+
+      it 'if name is not ambiguous, sets the unambiguous flag to false' do
+        attrs = entity(with_attributes: %w[term term]).attributes
+        expect(attrs.map(&:unambiguous)).to contain_exactly false, false
       end
 
       it 'auto generates a name for a column from the term' do

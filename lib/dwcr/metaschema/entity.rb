@@ -50,7 +50,12 @@ module DwCR
       ensure_unique_name = lambda do |ent, attr|
         attr.name ||= attr.term&.split('/')&.last&.underscore
         name_taken = ent.attributes_dataset.first(name: attr.name)
-        attr.name = name_taken ? attr.name + '!' : attr.name
+        if name_taken
+          attr.name += '!'
+          attr.unambiguous = false
+          name_taken.unambiguous = false
+          name_taken.save
+        end
       end
 
       many_to_one :archive
@@ -151,10 +156,7 @@ module DwCR
       # if an instance has been previously defined, it will be updated
       def add_attribute_from(xml)
         attribute = attributes_dataset.first(term: term_from(xml))
-        attribute ||= add_attribute(values_from(xml,
-                                                     :term,
-                                                     :index,
-                                                     :default))
+        attribute ||= add_attribute(values_from(xml, :term, :index, :default))
         attribute.update_from(xml, :index, :default)
       end
 

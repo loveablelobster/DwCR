@@ -26,6 +26,12 @@ module DynamicModelQueryable
     host_class.extend(DynamicModelClassQueryable)
   end
 
+  #
+  def core_row
+    return nil if entity.is_core
+    send(entity.core.name)
+  end
+
   # Returns an array of all related extension rows of a core row
   # will return nil if the row is an extension itself
   def extension_rows
@@ -44,6 +50,7 @@ module DynamicModelQueryable
   # where the keys in the hash can be the _term_, _baseterm_ or _name_
   # of the attributes, depending on the argument given
   def to_hash_with(keys = :term)
+    return row_values if keys == :name
     row_values.transform_keys do |key|
       attribute = entity.attributes_dataset.first(name: key.to_s)
       attribute.send(keys)

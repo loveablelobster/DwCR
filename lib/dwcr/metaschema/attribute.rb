@@ -28,8 +28,9 @@ module DwCR
     many_to_one :entity
 
     # Returns the last component of the term
+    # will return the full term is the term is not unambiguous
     def baseterm
-      term&.split('/')&.last
+      unambiguous ? term&.split('/')&.last : term
     end
 
     # Returns a symbol for the +name+ that is

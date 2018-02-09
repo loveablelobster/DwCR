@@ -60,6 +60,12 @@
   -
     - !ruby/sym max_content_length
     - !ruby/sym integer
+  -
+    - !ruby/sym unambiguous
+    - !ruby/sym boolean
+    - !ruby/sym default:
+        true
+
 
 !ruby/sym entities:
   -

@@ -1,6 +1,8 @@
- # frozen_string_literal: true
+# frozen_string_literal: true
 
-RSpec.describe 'Dynamic Models mixins' do
+require_relative '../lib/dwcr/dynamic_model_queryable'
+
+RSpec.describe DynamicModelQueryable do
   before :context do
     path = File.path('spec/support/example_archive')
     archive = DwCR::Metaschema::Archive.create(path: path)
@@ -16,12 +18,23 @@ RSpec.describe 'Dynamic Models mixins' do
 
   context 'when returning extension rows' do
     it 'returns nil if the record is an extension itself' do
-    	expect(DwCR::ExtensionItem.first.extension_rows).to be_nil
+      expect(extension_row.extension_rows).to be_nil
     end
 
     it 'returns the rows for the extension given in the argument' do
       expect(core_row.extension_rows)
         .to match_array core_row.extension_items
+    end
+  end
+
+  context 'when returning the core row' do
+    it 'returns nil if the record is the core itself' do
+      expect(core_row.core_row).to be_nil
+    end
+
+    it 'returns the rows for the extension given in the argument' do
+      expect(extension_row.core_row)
+        .to be extension_row.core_item
     end
   end
 
@@ -40,24 +53,46 @@ RSpec.describe 'Dynamic Models mixins' do
     end
   end
 
-  it 'returns a record' do
+  context 'when returning a hash with given kind of key' do
+    it 'returns the normal row_values hash if the _keys_ argument is +name+' do
+      expect(core_row.to_hash_with(:name))
+        .to include empty_column: nil,
+                    mixed_column: 'Text',
+                    numeric_column: 1,
+                    empty_column!: 'default value'
+    end
 
-    hsh = {
-      'example.org/terms/coreID' => "core-1",
-      'example.org/terms/itemNumber' => 1,
-      'example.org/terms/emptyColumn' => nil,
-      'example.org/terms/textColumn' => "Text with 18 chars",
-      'example.org/terms/mixedColumn' => "Text",
-      'example.org/terms/numericColumn' => 1,
-      'example.org/terms/dateColumn' => "2017-06-12",
-      'example.org/elements/emptyColumn' => "default value",
-      'example.org/terms/ExtensionItem' => [
-                                             { 'example.org/terms/identifier' => "extension-2-4", 'example.org/terms/coreItemNumber' => 1 },
-                                             { 'example.org/terms/identifier'=>"extension-2-5", 'example.org/terms/coreItemNumber' => 1 },
-                                             { 'example.org/terms/identifier'=>"extension-2-6", 'example.org/terms/coreItemNumber' => 1 }
-                                           ]
-    }
-    expect(core_row.to_record).to eq hsh
+    it 'returns the hash with basrterms'\
+       ' (where ambiguous baseterms will be the full terms)' do
+      expect(core_row.to_hash_with(:baseterm))
+        .to include 'example.org/terms/emptyColumn' => nil,
+                    'mixedColumn' => 'Text',
+                    'numericColumn' => 1,
+                    'example.org/elements/emptyColumn' => 'default value'
+    end
+
+    it 'returns the hash with terms' do
+      expect(core_row.to_hash_with(:term))
+        .to include 'example.org/terms/emptyColumn' => nil,
+                    'example.org/terms/mixedColumn' => 'Text',
+                    'example.org/terms/numericColumn' => 1,
+                    'example.org/elements/emptyColumn' => 'default value'
+    end
+  end
+
+  context 'when returning full records' do
+  	it 'returns a core row as hash with keys as specified'\
+  	   ' including all extension rows' do
+  	  xtnrows = core_row.extension_items.map { |ei| ei.to_hash_with(:term) }
+      expect(core_row.to_record)
+        .to include 'example.org/terms/coreID' => "core-1",
+                    'example.org/terms/ExtensionItem' => match_array(xtnrows)
+  	end
+
+  	it 'returns an extension row as hash with keys as specified'\
+  	   ' including the core row the extension row belongs to' do pending
+
+  	end
   end
 
   after :context do
@@ -65,3 +100,22 @@ RSpec.describe 'Dynamic Models mixins' do
     DwCR::ExtensionItem.finalize
   end
 end
+#   it 'returns a record' do
+#
+#     hsh = {
+#       'example.org/terms/coreID' => "core-1",
+#       'example.org/terms/itemNumber' => 1,
+#       'example.org/terms/emptyColumn' => nil,
+#       'example.org/terms/textColumn' => "Text with 18 chars",
+#       'example.org/terms/mixedColumn' => "Text",
+#       'example.org/terms/numericColumn' => 1,
+#       'example.org/terms/dateColumn' => "2017-06-12",
+#       'example.org/elements/emptyColumn' => "default value",
+#       'example.org/terms/ExtensionItem' => [
+#                                              { 'example.org/terms/identifier' => "extension-2-4", 'example.org/terms/coreItemNumber' => 1 },
+#                                              { 'example.org/terms/identifier'=>"extension-2-5", 'example.org/terms/coreItemNumber' => 1 },
+#                                              { 'example.org/terms/identifier'=>"extension-2-6", 'example.org/terms/coreItemNumber' => 1 }
+#                                            ]
+#     }
+#     expect(core_row.to_record).to eq hsh
+#   end
