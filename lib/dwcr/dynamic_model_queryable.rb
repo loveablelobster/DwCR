@@ -10,7 +10,7 @@ module DynamicModelQueryable
     end
 
     def column_by_term(term)
-      entity.attributes_dataset.first(term: term.to_s).column_name
+      @entity.attributes_dataset.first(term: term.to_s).column_name
     end
 
     def query_by_term(term, val)
@@ -43,8 +43,8 @@ module DynamicModelQueryable
     entity.term
   end
 
-  def term_for(column_name)
-    entity.attributes_dataset.first(name: column_name.to_s).term
+  def attribute_for(column_name)
+    entity.attributes_dataset.first(name: column_name.to_s)
   end
 
   def extension_rows
@@ -57,30 +57,21 @@ module DynamicModelQueryable
     to_hash.clone.delete_if { |key, _| keys_to_delete.compact.include? key }
   end
 
-  def to_hash_with_terms
-    record_values.transform_keys { |key| term_for(key) }
+  def to_hash_with_keys(keys = :term)
+    record_values.transform_keys { |key| attribute_for(key).send(keys) }
   end
 
-  def to_json(keys: :full)
+  def to_json(keys: :term)
     keys_to_delete = %i{id entity_id}
     keys_to_delete << entity.foreign_key if core?
 
-    hash = to_hash_with_terms
+    hash = to_hash_with_keys(keys)
 
-    extension_rows.map do |rowset|
-      p rowset[0].term
-      p rowset[1].map { |row| row.record_values }
-#       [r[0].term, r[1].map { |rec| rec.record_values }]
-
+    extension_rows.each do |rowset|
+      key = rowset[0].send(keys)
+      hash[key] = rowset[1].map { |row| row.to_hash_with_keys(keys) }
     end
 
-    entity.extensions.each do |xt|
-      xtrecs = self.send(xt.table_name).map(&:values).map do |rc|
-        rchsh = rc.clone.delete_if { |k, _| keys_to_delete.include? k }
-        rchsh.transform_keys { |key| xt.attributes_dataset.first(name: key.to_s).term }
-      end
-      hash[xt.term] = xtrecs
-    end
     hash
   end
 
