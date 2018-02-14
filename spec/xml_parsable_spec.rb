@@ -12,19 +12,39 @@ end
 RSpec.describe DwCR::Metaschema::XMLParsable do
   include_context 'Models helpers'
 
-  let :xml_root do
-    meta_xml.css('archive')
-            .first
+  let :xml_doc do
+    meta = File.join('spec', 'support', 'example_archive', 'meta.xml')
+    File.open(meta) { |f| Nokogiri::XML(f) }
   end
 
   let(:dummy_parser) { DummyParser.new }
 
   context 'when validating the meta.xml file' do
+    it 'raises an exception is the document root is not archive' do
+      xml_na  = Nokogiri::XML('<root></root>')
+      expect { described_class.validate_meta(xml_na) }
+        .to raise_error ArgumentError, 'Root is not archive'
+    end
+
+    it 'raises an exception is the document has no core node' do
+      xml_na  = Nokogiri::XML('<archive><extension/></archive>')
+      expect { described_class.validate_meta(xml_na) }
+        .to raise_error ArgumentError, 'Missing core node'
+    end
+
     it 'raises an exception if the meta.xml contains multiple core nodes' do
-      xml_root.add_child(Nokogiri::XML::Node.new('core',
+      xml_doc.root.add_child(Nokogiri::XML::Node.new('core',
                                                  Nokogiri::XML('<core/>')))
-      expect { described_class.validate_meta(xml_root) }
-        .to raise_error ArgumentError, 'Multiple Core nodes'
+      expect { described_class.validate_meta(xml_doc) }
+        .to raise_error ArgumentError, 'Multiple core nodes'
+    end
+
+    it 'raises an exception if the meta.xml archive (root) node'\
+       ' contains child nodes other than core or extension' do
+      xml_doc.root.add_child(Nokogiri::XML::Node.new('bogus',
+                                                 Nokogiri::XML('<bogus/>')))
+      expect { described_class.validate_meta(xml_doc) }
+        .to raise_error ArgumentError, 'Invalid node'
     end
   end
 
