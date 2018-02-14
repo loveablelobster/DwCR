@@ -99,6 +99,42 @@ RSpec.describe DynamicModelQueryable do
   	end
   end
 
+  context 'when returning JSON' do
+    it 'returns a core and all related extensions as JSON ' do
+      expect(core_row.to_json)
+        .to eq '{"example.org/terms/coreID":"core-1",'\
+               '"example.org/terms/itemNumber":1,'\
+               '"example.org/terms/emptyColumn":null,'\
+               '"example.org/terms/textColumn":"Text with 18 chars",'\
+               '"example.org/terms/mixedColumn":"Text",'\
+               '"example.org/terms/numericColumn":1,'\
+               '"example.org/terms/dateColumn":"2017-06-12",'\
+               '"example.org/elements/emptyColumn":"default value",'\
+               '"example.org/terms/ExtensionItem":['\
+               '{"example.org/terms/identifier":"extension-2-4",'\
+               '"example.org/terms/coreItemNumber":1}'\
+               ',{"example.org/terms/identifier":"extension-2-5",'\
+               '"example.org/terms/coreItemNumber":1},'\
+               '{"example.org/terms/identifier":"extension-2-6",'\
+               '"example.org/terms/coreItemNumber":1}]}'
+    end
+
+    it 'returns an extensions and the core it belongs to as JSON ' do
+      expect(extension_row.to_json)
+        .to eq '{"example.org/terms/identifier":"extension-2-4",'\
+               '"example.org/terms/coreItemNumber":1,'\
+               '"http://example.org/dwcr/terms/CoreItem":'\
+               '{"example.org/terms/coreID":"core-1",'\
+               '"example.org/terms/itemNumber":1,'\
+               '"example.org/terms/emptyColumn":null,'\
+               '"example.org/terms/textColumn":"Text with 18 chars",'\
+               '"example.org/terms/mixedColumn":"Text",'\
+               '"example.org/terms/numericColumn":1,'\
+               '"example.org/terms/dateColumn":"2017-06-12",'\
+               '"example.org/elements/emptyColumn":"default value"}}'
+    end
+  end
+
   after :context do
     DwCR::CoreItem.finalize
     DwCR::ExtensionItem.finalize
