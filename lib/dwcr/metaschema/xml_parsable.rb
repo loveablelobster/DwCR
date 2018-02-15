@@ -10,16 +10,18 @@ module DwCR
       # will raise errors if the file is not valid
       # currently only covers validation against multiple core instances
       def self.validate_meta(xml)
-        doc_root = xml.root
-        raise ArgumentError, 'Root is not archive' unless doc_root.name == 'archive'
-        root_children = doc_root.elements
-                                .map(&:name)
-                                .inject(Hash.new(0)) { |total, e| total[e.to_sym] += 1 ;total }
-        c_nodes = root_children.delete :core
-        raise ArgumentError, 'Missing core node' unless c_nodes
-        raise ArgumentError, 'Multiple core nodes' if c_nodes > 1
-        root_children.delete :extension
-        raise ArgumentError, 'Invalid node' unless root_children.empty?
+        raise ArgumentError, 'Root is not archive' unless xml.root.name == 'archive'
+
+        xml_elements = xml.root.elements
+        xml_core = xml_elements.css 'core'
+        raise ArgumentError, 'Missing core node' if xml_core.empty?
+        raise ArgumentError, 'Multiple core nodes' if xml_core.count > 1
+
+        xml_elements -= xml_core
+        xml_xtns = xml_elements.css 'extension'
+        xml_elements -= xml_xtns
+        raise ArgumentError, 'Invalid node' unless xml_elements.empty?
+
         xml
       end
 
