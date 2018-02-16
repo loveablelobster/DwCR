@@ -18,6 +18,12 @@ load:
       - '-h'
       - NO_ARGUMENT
       - show help
+    -
+      - '--interactive'
+      - '-i'
+      - NO_ARGUMENT
+      - |
+        starts an interactive Pry session
 new:
   usage: |
     dwcr new [options]

@@ -6,6 +6,8 @@ module CLI
     when '--help'
       SHELL.print_help
       exit true
+    when '--interactive'
+      SHELL.session = true
     end
   end
 
@@ -13,17 +15,11 @@ module CLI
 
   ::DB = Sequel.sqlite(SHELL.target)
 
-  # FIXME: these requires should not be in DwCR::create_metaschema
-  require_relative '../dwcr/metaschema/archive'
-  require_relative '../dwcr/metaschema/entity'
-  require_relative '../dwcr/metaschema/attribute'
-  require_relative '../dwcr/metaschema/content_file'
+  DwCR::Metaschema.load_models
 
   DwCR::MODELS = DwCR.load_models
 
-  puts "this should be loading #{SHELL.target}"
+  binding.pry if SHELL.session
 
-  binding.pry
-
-  puts 'done!'
+  exit true
 end

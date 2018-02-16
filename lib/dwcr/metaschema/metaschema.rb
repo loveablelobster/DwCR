@@ -18,6 +18,11 @@ module DwCR
           columns.each { |c| column(*c) }
         end
       end
+      load_models
+    end
+
+    # Loads all Sequel::Model classes for the metaschema
+    def self.load_models
       require_relative 'archive'
       require_relative 'entity'
       require_relative 'attribute'

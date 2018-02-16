@@ -7,7 +7,7 @@ require 'psych'
 module CLI
   #
   class Shell
-    attr_accessor :path
+    attr_accessor :path, :session
     attr_reader :options, :target
 
     def initialize(cmd)
@@ -17,6 +17,7 @@ module CLI
       @usage << load_options(cmd_shell['options'])
       @path = Dir.pwd
       @target = target_directory @path
+      @session = false
     end
 
     def print_help
