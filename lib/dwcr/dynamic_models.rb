@@ -17,6 +17,7 @@ module DwCR
 
       define_singleton_method(:finalize) do
         @entity = nil
+        instance_methods(false).each { |method| remove_method(method) }
         Module.nesting.last.send(:remove_const, entity.class_name)
       end
     end
