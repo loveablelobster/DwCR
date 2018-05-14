@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.summary = 'DwCA stored in a SQLite database, with Sequel models'
   s.description = File.read(File.join(File.dirname(__FILE__), 'README.md'))
   s.requirements = ['SQLite']
-  s.version = '0.0.3'
+  s.version = '0.0.5'
   s.author = 'Martin Stein'
   s.email = 'loveablelobster@fastmail.fm'
   s.homepage = 'https://github.com/loveablelobster/DwCR'
