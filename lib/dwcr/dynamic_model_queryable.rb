@@ -2,10 +2,28 @@
 
 # convenience methods for the dynamic models
 module DynamicModelQueryable
-  #
+  # convenience class methods for the dynamic models
   module DynamicModelClassQueryable
+    # Returns the _term_ or _baseterm_ for a column name.
+    # <em>col_name</em> the column name, can be passed as Symbol or String.
+    def attribute_for(col_name)
+      entity.attributes_dataset.first(name: col_name.to_s)
+    end
+
+    # Returns the Metschema::Entity the class belongs to.
     def entity
       @entity
+    end
+
+    # Returns a nested array of all keys/terms/baseterms in the order values
+    # will be inserted by the #to_a method of the DynamicModelQueryable mixin.
+    def template(keys = :term)
+      tmpl = columns.map { |c| attribute_for(c)&.send(keys) }.compact
+      return tmpl unless entity.is_core
+      entity.extensions.each do |xtn|
+        tmpl << xtn.model_get.template(keys)
+      end
+      tmpl
     end
   end
 
@@ -32,6 +50,15 @@ module DynamicModelQueryable
     keys_to_delete = %i[id entity_id]
     keys_to_delete.push(entity.core&.foreign_key).compact
     to_hash.clone.delete_if { |key, _| keys_to_delete.include? key }
+  end
+
+  # Returns a nested array of values only in consistent order
+  def to_a
+    row_array = row_values.map { |_key, value| value }
+    return row_array unless entity.is_core
+    entity.extensions.inject(row_array) do |memo, xtn|
+      memo << send(xtn.table_name).map(&:to_a)
+    end
   end
 
   # Returns a value hash for the row without primary or foreign keys

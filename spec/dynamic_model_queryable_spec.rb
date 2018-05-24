@@ -135,6 +135,27 @@ RSpec.describe DynamicModelQueryable do
     end
   end
 
+  it 'returns a nested array of the full record' do
+    expect(core_row.to_a)
+    .to match_array ['core-1', 1, nil, 'Text with 18 chars', 'Text', 1,
+                     '2017-06-12', 'default value', [['extension-2-4', 1],
+                     ['extension-2-5', 1], ['extension-2-6', 1]]]
+  end
+
+  it 'renders a template' do
+    expect(DwCR::CoreItem.template)
+      .to match_array ['example.org/terms/coreID',
+                       'example.org/terms/itemNumber',
+                       'example.org/terms/emptyColumn',
+                       'example.org/terms/textColumn',
+                       'example.org/terms/mixedColumn',
+                       'example.org/terms/numericColumn',
+                       'example.org/terms/dateColumn',
+                       'example.org/elements/emptyColumn',
+                       ['example.org/terms/identifier',
+                        'example.org/terms/coreItemNumber']]
+  end
+
   after :context do
     DwCR::CoreItem.finalize
     DwCR::ExtensionItem.finalize
