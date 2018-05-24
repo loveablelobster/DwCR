@@ -25,6 +25,7 @@ module DwCR
       include XMLParsable
 
       ensure_core = lambda do |entity|
+        self.core_id = entity.id
         entity.is_core = true
       end
 

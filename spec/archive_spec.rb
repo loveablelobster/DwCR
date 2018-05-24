@@ -19,6 +19,11 @@ module DwCR
         expect(extension.is_core).to be_falsey
       end
 
+      it 'ensures that the core_id is set for the archive' do
+        archive.core = archive.add_entity(term: 'example.org/core')
+        expect(archive.core_id).not_to be nil
+      end
+
       it 'ensures that extensions added reference the core' do
         archive.core = archive.add_entity(term: 'example.org/core')
         extension = archive.add_extension(term: 'example.org/extension')
