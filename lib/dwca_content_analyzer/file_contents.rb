@@ -24,14 +24,14 @@ module DwCAContentAnalyzer
       table.by_col!.map do |col|
         header = col[0]
         contents = col[1]
-        Column.new(header, contents, *@detectors)
+        Column.new(header.to_i, contents, *@detectors)
       end
     end
 
     # reads the first line of the CSV file
     # returns the columns indices as an array
     def headers(file)
-      Array.new(CSV.open(file, &:readline).size) { |i| i }
+      Array.new(CSV.open(file, &:readline).size) { |i| i.to_s }
     end
 
     def load_table(file)
