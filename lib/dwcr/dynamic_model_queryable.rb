@@ -4,10 +4,10 @@
 module DynamicModelQueryable
   # convenience class methods for the dynamic models
   module DynamicModelClassQueryable
-    # Returns the _term_ or _baseterm_ for a column name.
-    # <em>col_name</em> the column name, can be passed as Symbol or String.
-    def attribute_for(col_name)
-      entity.attributes_dataset.first(name: col_name.to_s)
+    # Returns the Metaschema::Attribute for a +column_name+ (the header of the
+    # column, can be passed as Symbol or String).
+    def attribute_for(column_name)
+      entity.attributes_dataset.first(name: column_name.to_s)
     end
 
     # Returns the Metschema::Entity the class belongs to.
@@ -15,11 +15,15 @@ module DynamicModelQueryable
       @entity
     end
 
-    # Returns a nested array of all keys/terms/baseterms in the order values
-    # will be inserted by the #to_a method of the DynamicModelQueryable mixin.
+    # Returns a nested array of all terms in the order values
+    # will be returned by #to_a. Each item in the nested array will be an array
+    # with the entity term at index 0 and the attribute term at index 1.
     def template(keys = :term)
-      tmpl = columns.map { |c| attribute_for(c)&.send(keys) }.compact
-      return tmpl unless entity.is_core
+      tmpl = columns.map do |column|
+        next unless attribute = attribute_for(column)
+        [entity.send(keys), attribute.send(keys)]
+      end.compact
+      return tmpl.compact unless entity.is_core
       entity.extensions.each do |xtn|
         tmpl << xtn.model_get.template(keys)
       end
@@ -27,32 +31,33 @@ module DynamicModelQueryable
     end
   end
 
+  # Extends the class that DynamicModelQueryable is mixed in with
+  # DynamicModelClassQueryable
   def self.included(host_class)
     host_class.extend(DynamicModelClassQueryable)
   end
 
-  # Returns the related core row of an extension row
-  # will return nil if the row is a core row itself
+  # Returns the core row for +self+. Will return +nil+ if +self+ is the core.
   def core_row
     return nil if entity.is_core
     send(entity.core.name)
   end
 
-  # Returns an array of all related extension rows of a core row
-  # will return nil if the row is an extension itself
+  # Returns an array of all related extension rows for +self+. Will return +nil+
+  # if +self+ is an extension.
   def extension_rows
     return nil unless entity.is_core
     entity.extensions.map { |xtn| send(xtn.table_name) }.flatten
   end
 
-  # Returns a value hash for the row without primary or foreign keys
+  # Returns a value hash for +self+ without primary or foreign keys.
   def row_values
     keys_to_delete = %i[id entity_id]
     keys_to_delete.push(entity.core&.foreign_key).compact
     to_hash.clone.delete_if { |key, _| keys_to_delete.include? key }
   end
 
-  # Returns a nested array of values only in consistent order
+  # Returns a nested array of values only in consistent order.
   def to_a
     row_array = row_values.map { |_key, value| value }
     return row_array unless entity.is_core
@@ -72,14 +77,13 @@ module DynamicModelQueryable
     end
   end
 
-  # Returns the full record as JSON
+  # Returns the #full_record for +self+ as JSON.
   def to_json
     JSON.generate(to_record)
   end
 
-  # Returns a full record (current row and all related rows)
-  # as a hash with kes as specified in the argument
-  # either as _term_, _baseterm_, or _name_
+  # Returns the full record (current row and all related rows) for +self+
+  # as a hash with +keys+ (+:term+, +:baseterm+, or +:name+).
   def to_record(keys: :term)
     record_hash = to_hash_with(keys)
     if entity.is_core
