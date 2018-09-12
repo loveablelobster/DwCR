@@ -21,7 +21,7 @@ module DynamicModelQueryable
     def template(keys = :term)
       tmpl = columns.map do |column|
         next unless attribute = attribute_for(column)
-        [entity.send(keys), attribute.send(keys)]
+        [attribute.send(keys), entity.send(keys)]
       end.compact
       return tmpl.compact unless entity.is_core
       entity.extensions.each do |xtn|

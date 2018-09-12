@@ -43,16 +43,16 @@ RSpec.describe DynamicModelQueryable do
   describe '.template' do
     subject(:template) { DwCR::CoreItem.template }
 
-    let(:core_id) { [core_term, term('coreID')] }
-    let(:item_number) { [core_term, term('itemNumber')] }
-    let(:empty_column1) { [core_term, term('emptyColumn')] }
-    let(:text_column) { [core_term, term('textColumn')] }
-    let(:mixed_column) { [core_term, term('mixedColumn')] }
-    let(:numeric_column) { [core_term, term('numericColumn')] }
-    let(:date_column) { [core_term, term('dateColumn')] }
-    let(:empty_column2) { [core_term, 'example.org/elements/emptyColumn'] }
-    let(:identifier) { [extension_term, term('identifier')] }
-    let(:core_item_number) { [extension_term, term('coreItemNumber')] }
+    let(:core_id) { [term('coreID'), core_term] }
+    let(:item_number) { [term('itemNumber'), core_term] }
+    let(:empty_column1) { [term('emptyColumn'), core_term] }
+    let(:text_column) { [term('textColumn'), core_term] }
+    let(:mixed_column) { [term('mixedColumn'), core_term] }
+    let(:numeric_column) { [term('numericColumn'), core_term] }
+    let(:date_column) { [term('dateColumn'), core_term] }
+    let(:empty_column2) { ['example.org/elements/emptyColumn', core_term] }
+    let(:identifier) { [term('identifier'), extension_term] }
+    let(:core_item_number) { [term('coreItemNumber'), extension_term] }
 
     it do
       expect(template)
