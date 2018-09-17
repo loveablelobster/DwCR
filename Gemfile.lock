@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    dwcr (0.0.8)
+    dwcr (0.0.9)
       nokogiri (~> 1)
       psych (~> 3)
       sequel (~> 5)

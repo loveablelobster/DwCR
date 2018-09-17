@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# convenience methods for the dynamic models
+# DynamicModelQueryable contains methods for the dynamic DwCR models.
 module DynamicModelQueryable
-  # convenience class methods for the dynamic models
+  # DynamicModelClassQueryable contains class methods for dynamic DwCR models.
   module DynamicModelClassQueryable
     # Returns the Metaschema::Attribute for a +column_name+ (the header of the
     # column, can be passed as Symbol or String).
@@ -28,6 +28,11 @@ module DynamicModelQueryable
         tmpl << xtn.model_get.template(keys)
       end
       tmpl
+    end
+
+    # Returns the full DwC class term (a uri), including namespace.
+    def term
+      entity.term
     end
   end
 

@@ -64,6 +64,12 @@ RSpec.describe DynamicModelQueryable do
     end
   end
 
+  describe '.term' do
+    subject { DwCR::CoreItem.term }
+
+    it { is_expected.to eq 'http://example.org/dwcr/terms/CoreItem' }
+  end
+
   describe '#core_row' do
     context 'when self is a core row' do
       subject { core_row.core_row }
